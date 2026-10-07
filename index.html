@@ -849,43 +849,49 @@
                     lastReminderSentDate: null
                 }
             ];
+            saveToStorage();
             updateDashboard();
-            syncWithBackend();
+            pushToBackend(false);
             showToast('โหลดข้อมูลตัวอย่างสำเร็จ (สำหรับ Developer Test)');
             console.log('Demo data loaded successfully via loadDemoData()');
         };
 
-        // Initialize Application
-        function initApp() {
-            // Load transactions (Empty by default if no user transactions)
+        function normalizeSubscription(s) {
+            return {
+                id: String(s.id || generateUniqueId()),
+                merchant: String(s.merchant || 'Subscription'),
+                amount: parseFloat(s.amount) || 0,
+                category: String(s.category || 'Subscription'),
+                recurrence: String(s.recurrence || 'monthly'),
+                lastPaidDate: String(s.lastPaidDate || getTodayString()),
+                nextBillingDate: String(s.nextBillingDate || ''),
+                reminderDays: parseInt(s.reminderDays, 10) || 1,
+                email: String(s.email || ''),
+                active: s.active !== false && s.active !== 'false' && s.active !== 0,
+                lastReminderSentDate: s.lastReminderSentDate ? String(s.lastReminderSentDate) : null,
+                createdAt: s.createdAt ? String(s.createdAt) : new Date().toISOString(),
+                updatedAt: s.updatedAt ? String(s.updatedAt) : new Date().toISOString()
+            };
+        }
+
+        function loadFromStorage() {
             const storedTxs = localStorage.getItem('ai_manager_txs');
             if (storedTxs) {
                 try {
                     const parsed = JSON.parse(storedTxs);
                     if (Array.isArray(parsed)) {
-                        transactions = parsed;
-                        // Migrate older data schema if missing fields
-                        transactions.forEach(tx => {
-                            if (tx.category === 'Subscription' && !tx.nextBillingDate) {
-                                tx.recurrence = tx.recurrence || 'monthly';
-                                tx.lastPaidDate = tx.lastPaidDate || getTodayString();
-                                tx.nextBillingDate = addRecurrence(tx.lastPaidDate, tx.recurrence);
-                                tx.reminderDays = tx.reminderDays || 1;
-                            }
-                            if (tx.email === undefined) tx.email = '';
-                            if (tx.active === undefined) tx.active = true;
-                            if (tx.lastReminderSentDate === undefined) tx.lastReminderSentDate = null;
-                        });
-                    } else {
-                        transactions = [];
+                        transactions = parsed.map(normalizeSubscription);
+                        return;
                     }
                 } catch (e) {
-                    transactions = [];
+                    console.warn('Error reading LocalStorage cache:', e);
                 }
-            } else {
-                transactions = [];
             }
+            transactions = [];
+        }
 
+        // Initialize Application
+        async function initApp() {
             // Load email settings
             const storedEmail = localStorage.getItem('ai_manager_email');
             if (storedEmail) {
@@ -901,6 +907,9 @@
             document.getElementById('email-opt-unused').checked = emailSettings.unusedOpt !== false;
             updateGasStatusBadge();
 
+            // Load cached transactions for fast immediate rendering
+            loadFromStorage();
+
             // Setup default dates for inputs
             const today = getTodayString();
             document.getElementById('manual-last-paid').value = today;
@@ -912,9 +921,16 @@
             // Setup Drag & Drop listeners
             setupDragAndDrop();
 
-            // Render UI
+            // Render UI with cached state
             renderPresetUI();
             updateDashboard();
+
+            // CLOUD SYNC (SOURCE OF TRUTH):
+            // If GAS Web App URL is configured, PULL latest subscriptions from Google Sheets
+            const url = (emailSettings.gasWebAppUrl || '').trim();
+            if (url && url.startsWith('http')) {
+                await pullFromBackend(false, { allowPushIfRemoteEmpty: false });
+            }
         }
 
         function setupDragAndDrop() {
@@ -1115,8 +1131,9 @@
             });
 
             closePresetModal();
+            saveToStorage();
             updateDashboard();
-            syncWithBackend();
+            pushToBackend(false);
             showToast(`เพิ่ม ${merchant} (฿${amount}) เรียบร้อย! รอบถัดไป: ${formatDateDisplay(nextBillingDate)}`);
         }
 
@@ -1165,8 +1182,9 @@
             document.getElementById('manual-merchant').value = '';
             document.getElementById('manual-amount').value = '';
             if (document.getElementById('manual-email')) document.getElementById('manual-email').value = '';
+            saveToStorage();
             updateDashboard();
-            syncWithBackend();
+            pushToBackend(false);
             showToast(`บันทึกรายการ ${merchant} เรียบร้อยแล้ว!`);
         }
 
@@ -1307,8 +1325,9 @@
                 updatedAt: nowIso
             });
 
+            saveToStorage();
             updateDashboard();
-            syncWithBackend();
+            pushToBackend(false);
             document.getElementById('scan-result').classList.add('hidden');
             document.getElementById('file-input').value = '';
             if (document.getElementById('res-email')) document.getElementById('res-email').value = '';
@@ -1351,8 +1370,18 @@
             tx.updatedAt = new Date().toISOString();
 
             // 4. Update Storage, UI & Sync Backend
+            saveToStorage();
             updateDashboard();
-            syncWithBackend();
+
+            const url = (emailSettings.gasWebAppUrl || '').trim();
+            if (url && url.startsWith('http')) {
+                fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action: 'markAsPaid', id: targetId })
+                }).catch(e => console.warn('markAsPaid error:', e));
+            }
+            pushToBackend(false);
             showToast(`บันทึกชำระเงิน ${tx.merchant} เรียบร้อย! รอบถัดไปคือ ${formatDateDisplay(tx.nextBillingDate)}`);
         }
 
@@ -1374,8 +1403,20 @@
             if (confirm(`คุณต้องการลบ "${name}" ใช่หรือไม่?`)) {
                 // Filter out strictly by unique ID
                 transactions = transactions.filter(t => String(t.id).trim() !== targetId);
+                saveToStorage();
                 updateDashboard();
-                syncWithBackend();
+
+                const url = (emailSettings.gasWebAppUrl || '').trim();
+                if (url && url.startsWith('http')) {
+                    fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({ action: 'deleteSubscription', id: targetId })
+                    }).catch(e => console.warn('deleteSubscription error:', e));
+                    if (transactions.length > 0) {
+                        pushToBackend(false);
+                    }
+                }
                 showToast(`ลบ "${name}" เรียบร้อยแล้ว`);
             }
         }
@@ -1773,14 +1814,114 @@
             }
         }
 
-        // Sync Subscriptions to Google Sheets via Apps Script Web App
-        async function syncWithBackend(isManual = false) {
+        // ==============================================================================
+        // PULL: Google Sheets (Source of Truth) -> Frontend
+        // ==============================================================================
+        async function pullFromBackend(isManual = false, options = {}) {
             const url = (emailSettings.gasWebAppUrl || '').trim();
             if (!url || !url.startsWith('http')) {
                 if (isManual) {
-                    alert('กรุณากรอก Google Apps Script Web App URL ก่อนทำการซิงค์ข้อมูลกับ Google Sheets');
+                    alert('กรุณากรอก Google Apps Script Web App URL ก่อนทำการดึงข้อมูล');
                 }
-                return;
+                return false;
+            }
+
+            try {
+                let remoteList = null;
+
+                // วิธีที่ 1: ดึงผ่าน GET (action=getSubscriptions)
+                const getUrl = url + (url.indexOf('?') === -1 ? '?action=getSubscriptions' : '&action=getSubscriptions');
+                try {
+                    const resGet = await fetch(getUrl, {
+                        method: 'GET',
+                        headers: { 'Accept': 'application/json' }
+                    });
+                    const jsonGet = await resGet.json();
+                    if (jsonGet && jsonGet.status === 'success' && Array.isArray(jsonGet.data)) {
+                        remoteList = jsonGet.data;
+                    }
+                } catch (getErr) {
+                    console.warn('GET getSubscriptions warning, trying POST fallback:', getErr);
+                }
+
+                // วิธีที่ 2: สำรองด้วย POST (action=getSubscriptions) หาก GET ติดปัญหา
+                if (remoteList === null) {
+                    try {
+                        const resPost = await fetch(url, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                            body: JSON.stringify({ action: 'getSubscriptions' })
+                        });
+                        const jsonPost = await resPost.json();
+                        if (jsonPost && jsonPost.status === 'success' && Array.isArray(jsonPost.data)) {
+                            remoteList = jsonPost.data;
+                        }
+                    } catch (postErr) {
+                        console.warn('POST getSubscriptions also failed:', postErr);
+                    }
+                }
+
+                if (remoteList === null) {
+                    throw new Error('ไม่สามารถเชื่อมต่อหรือดึงข้อมูลจาก Google Apps Script ได้ (โปรดตรวจสอบ Web App URL และสิทธิ์ Anyone)');
+                }
+
+                // กรณีที่ 1 & กรณีที่ 2: Google Sheets มีข้อมูล (Cloud เป็น Source of Truth)
+                if (remoteList.length > 0) {
+                    transactions = remoteList.map(normalizeSubscription);
+                    saveToStorage(); // Cache ลง LocalStorage
+                    updateDashboard();
+                    if (isManual) {
+                        showToast(`โหลดข้อมูล ${transactions.length} รายการจาก Google Sheets สำเร็จ!`);
+                    }
+                    return true;
+                }
+
+                // กรณีที่ 3: Google Sheets ไม่มีข้อมูล แต่ LocalStorage มี Subscription
+                if (transactions.length > 0) {
+                    if (options.allowPushIfRemoteEmpty) {
+                        // Push LocalStorage ขึ้น Google Sheets แล้วใช้ Google Sheets เป็น Source of Truth
+                        await pushToBackend(false);
+                        if (isManual) {
+                            showToast(`ซิงค์ข้อมูล ${transactions.length} รายการจากเครื่องขึ้น Google Sheets เรียบร้อย!`);
+                        }
+                    }
+                    return true;
+                }
+
+                // กรณีที่ 4: ไม่มีข้อมูลทั้งสองฝั่ง -> แสดง Empty State
+                transactions = [];
+                saveToStorage();
+                updateDashboard();
+                if (isManual) {
+                    showToast('Google Sheets ยังไม่มีข้อมูล Subscription');
+                }
+                return true;
+
+            } catch (err) {
+                console.error('PULL Error:', err);
+                if (isManual) {
+                    alert('เกิดข้อผิดพลาดในการโหลดข้อมูลจาก Google Sheets:\n' + err.message);
+                }
+                return false;
+            }
+        }
+
+        // ==============================================================================
+        // PUSH: Frontend -> Google Sheets
+        // ==============================================================================
+        async function pushToBackend(isManual = false) {
+            const url = (emailSettings.gasWebAppUrl || '').trim();
+            if (!url || !url.startsWith('http')) {
+                if (isManual) {
+                    alert('กรุณากรอก Google Apps Script Web App URL ก่อน');
+                }
+                return false;
+            }
+
+            // 🛡️ ป้องกันไม่ให้ส่ง [] ไปล้างชีตโดยไม่ได้ตั้งใจ
+            if (!transactions || transactions.length === 0) {
+                console.warn('pushToBackend ข้ามการทำงาน: transactions ว่างเปล่าเพื่อป้องกันการเขียนทับข้อมูลใน Google Sheets');
+                return false;
             }
 
             try {
@@ -1795,15 +1936,27 @@
                     body: JSON.stringify(payload)
                 });
                 const json = await res.json();
-                if (json.status === 'success' && isManual) {
-                    showToast(`ซิงค์ข้อมูล ${transactions.length} รายการไปยัง Google Sheets เรียบร้อย!`);
+                if (json && json.status === 'success') {
+                    if (isManual) {
+                        showToast(`ซิงค์ข้อมูล ${transactions.length} รายการไปยัง Google Sheets เรียบร้อย!`);
+                    }
+                    return true;
                 }
+                return false;
             } catch (err) {
-                console.warn('Backend sync warning (running local mode):', err);
+                console.warn('PUSH Error:', err);
                 if (isManual) {
                     showToast('ซิงค์กับ Google Sheets ไม่สำเร็จ โปรดตรวจสอบ Web App URL', false);
                 }
+                return false;
             }
+        }
+
+        // ฟังก์ชันสำหรับปุ่ม [ Sync Google Sheets ]
+        async function syncWithBackend(isManual = false) {
+            // เมื่อกด Sync จะทำการ PULL ข้อมูลล่าสุดจาก Google Sheets ก่อนเสมอ (Source of Truth)
+            // หากชีตว่างเปล่าและเครื่องมีข้อมูล จะ Push ขึ้นไป (allowPushIfRemoteEmpty: true)
+            return await pullFromBackend(isManual, { allowPushIfRemoteEmpty: true });
         }
 
         // Send Real Test Email via Google Apps Script Backend
@@ -1860,10 +2013,12 @@
         }
 
         // Save Email Settings & Connect
-        function saveEmailSettings(e) {
+        async function saveEmailSettings(e) {
             e.preventDefault();
+            const newUrl = document.getElementById('gas-url').value.trim();
+
             emailSettings = {
-                gasWebAppUrl: document.getElementById('gas-url').value.trim(),
+                gasWebAppUrl: newUrl,
                 alertDays: document.getElementById('alert-days').value,
                 monthlyOpt: document.getElementById('email-opt-monthly').checked,
                 unusedOpt: document.getElementById('email-opt-unused').checked
@@ -1876,9 +2031,9 @@
             setTimeout(() => toast.classList.add('hidden'), 3500);
             showToast('บันทึกการตั้งค่าแจ้งเตือน Gmail สำเร็จ!');
 
-            // Automatically sync current subscriptions to Google Sheets
-            if (emailSettings.gasWebAppUrl) {
-                syncWithBackend(false);
+            // เมื่อบันทึก URL ให้ทำ PULL จาก Google Sheets ทันที (ห้าม overwrite ด้วย [])
+            if (newUrl && newUrl.startsWith('http')) {
+                await pullFromBackend(true, { allowPushIfRemoteEmpty: true });
             }
         }
 

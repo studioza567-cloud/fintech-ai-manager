@@ -139,6 +139,12 @@ function doPost(e) {
       });
     }
 
+    // 4.0 ดึงข้อมูล Subscription ทั้งหมด (Get Subscriptions via POST)
+    if (action === "getSubscriptions") {
+      const list = getAllSubscriptions();
+      return jsonResponse({ status: "success", data: list });
+    }
+
     // 4.3 อัปเดตเมื่อผู้ใช้กด Mark as Paid
     if (action === "markAsPaid") {
       const subId = payload.id;
@@ -166,6 +172,16 @@ function doPost(e) {
         status: "success",
         message: "รันตรวจสอบรอบบิลสำเร็จ ส่งอีเมลไปแล้ว " + sentCount + " ฉบับ",
         sentCount: sentCount
+      });
+    }
+
+    // 4.6 ลบรายการ Subscription ตาม ID (Delete Subscription)
+    if (action === "deleteSubscription") {
+      const subId = payload.id;
+      const deleted = deleteSubscriptionInSheet(subId);
+      return jsonResponse({
+        status: deleted ? "success" : "not_found",
+        message: deleted ? "ลบรายการใน Google Sheets สำเร็จ" : "ไม่พบ Subscription ID นี้ในชีต"
       });
     }
 
@@ -312,26 +328,34 @@ function getAllSubscriptions() {
   const list = [];
   for (let i = 1; i < data.length; i++) {
     const row = data[i];
+    if (!row[0] && !row[1]) continue; // ข้ามแถวที่ว่างเปล่า
     list.push({
-      id: row[0],
-      merchant: row[1],
-      amount: row[2],
-      category: row[3],
-      recurrence: row[4],
+      id: String(row[0]),
+      merchant: String(row[1] || ""),
+      amount: Number(row[2]) || 0,
+      category: String(row[3] || "Subscription"),
+      recurrence: String(row[4] || "monthly"),
       lastPaidDate: formatDateStr(row[5]),
       nextBillingDate: formatDateStr(row[6]),
-      reminderDays: row[7],
-      email: row[8],
-      active: row[9],
+      reminderDays: parseInt(row[7], 10) || 1,
+      email: String(row[8] || ""),
+      active: (row[9] === true || row[9] === "true" || row[9] === 1 || row[9] === "TRUE"),
       lastReminderSentDate: formatDateStr(row[10]),
-      createdAt: row[11],
-      updatedAt: row[12]
+      createdAt: row[11] ? String(row[11]) : "",
+      updatedAt: row[12] ? String(row[12]) : ""
     });
   }
   return list;
 }
 
 function syncSubscriptionsToSheet(subscriptions, defaultEmail) {
+  // 🛡️ SAFETY GUARD: ป้องกันการเผลอลบข้อมูลทั้งหมดหาก subscriptions เป็น array ว่าง
+  // การล้างข้อมูลทั้งหมดต้องทำผ่าน action: "resetData" เท่านั้น
+  if (!Array.isArray(subscriptions) || subscriptions.length === 0) {
+    Logger.log("syncSubscriptionsToSheet skipped: empty subscriptions array.");
+    return;
+  }
+
   const sheet = getOrCreateSheet();
   const existingMap = {};
   const currentData = sheet.getDataRange().getValues();
@@ -350,8 +374,6 @@ function syncSubscriptionsToSheet(subscriptions, defaultEmail) {
     sheet.deleteRows(2, currentData.length - 1);
   }
 
-  if (subscriptions.length === 0) return;
-
   const nowIso = new Date().toISOString();
   const rows = [];
 
@@ -367,8 +389,8 @@ function syncSubscriptionsToSheet(subscriptions, defaultEmail) {
       s.lastPaidDate || getTodayString(),
       s.nextBillingDate || "",
       parseInt(s.reminderDays, 10) || 1,
-      s.email || defaultEmail || "kongphop693@gmail.com",
-      s.active !== false,
+      s.email || defaultEmail || "",
+      s.active !== false && s.active !== "false",
       s.lastReminderSentDate || existing.lastReminderSentDate || "",
       existing.createdAt || s.createdAt || nowIso,
       nowIso
@@ -377,6 +399,21 @@ function syncSubscriptionsToSheet(subscriptions, defaultEmail) {
   }
 
   sheet.getRange(2, 1, rows.length, rows[0].length).setValues(rows);
+}
+
+function deleteSubscriptionInSheet(subId) {
+  if (!subId) return false;
+  const sheet = getOrCreateSheet();
+  const data = sheet.getDataRange().getValues();
+
+  for (let i = 1; i < data.length; i++) {
+    if (String(data[i][0]).trim() === String(subId).trim()) {
+      sheet.deleteRow(i + 1);
+      Logger.log("Deleted subscription from sheet: " + subId);
+      return true;
+    }
+  }
+  return false;
 }
 
 function updateMarkAsPaidInSheet(subId, todayStr) {
