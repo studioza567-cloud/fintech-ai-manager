@@ -71,78 +71,127 @@
             </div>
         </section>
 
-        <!-- OCR Scanning and Quick Add Section -->
+        <!-- Method Selection Tabs (Choose between Slip Scan, Preset Apps, and Manual Input) -->
         <section class="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl">
-            <div class="max-w-2xl mx-auto text-center mb-6">
+            <div class="max-w-3xl mx-auto text-center mb-6">
                 <h2 class="text-2xl font-bold text-slate-100 flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-expand text-emerald-400"></i> สแกนสลิปด้วย OCR หรือเพิ่มแอปยอดนิยม
+                    <i class="fa-solid fa-circle-plus text-emerald-400"></i> วิธีการเพิ่มรายการรายจ่าย / Subscription
                 </h2>
-                <p class="text-sm text-slate-400 mt-1">อัปโหลดสลิปธนาคารจริง หรือเลือกแอป/บริการยอดนิยมเพื่อเพิ่มเข้าประวัติทันที</p>
-            </div>
+                <p class="text-sm text-slate-400 mt-1">เลือกวิธีเพิ่มข้อมูลที่คุณสะดวกที่สุด</p>
 
-            <!-- Upload Zone -->
-            <div id="drop-zone" onclick="document.getElementById('file-input').click()" 
-                 class="border-2 border-dashed border-slate-700 hover:border-emerald-500/80 bg-slate-950/60 transition-all rounded-2xl p-8 text-center cursor-pointer max-w-2xl mx-auto relative group">
-                <input type="file" id="file-input" accept="image/*" class="hidden" onchange="handleFileUpload(event)">
-                <div class="w-16 h-16 bg-slate-800 group-hover:bg-emerald-500/10 group-hover:text-emerald-400 text-slate-300 rounded-2xl flex items-center justify-center mx-auto text-2xl mb-4 transition-all">
-                    <i class="fa-solid fa-file-invoice-dollar"></i>
-                </div>
-                <p class="font-semibold text-slate-200">วางไฟล์ภาพสลิปที่นี่ หรือ <span class="text-emerald-400 underline">คลิกเลือกรูปภาพ</span></p>
-                <p class="text-xs text-slate-500 mt-2">ระบบ AI รองรับสลิปโอนเงิน (KPlus, SCB, Krungthai, TrueMoney, ฯลฯ) ภาษาไทยและอังกฤษ</p>
-            </div>
-
-            <!-- OCR Progress Bar -->
-            <div id="ocr-loading" class="hidden max-w-2xl mx-auto mt-6 bg-slate-950 p-6 rounded-2xl border border-slate-800 text-center">
-                <div class="flex items-center justify-center gap-3 text-emerald-400 font-medium mb-3">
-                    <i class="fa-solid fa-circle-notch animate-spin text-xl"></i>
-                    <span id="ocr-status-text">กำลังโหลด Tesseract AI Engine...</span>
-                </div>
-                <div class="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden">
-                    <div id="ocr-progress-bar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-2.5 rounded-full w-0 transition-all duration-300"></div>
+                <!-- Mode Switcher Buttons -->
+                <div class="flex flex-wrap justify-center gap-2 mt-4">
+                    <button onclick="switchAddMode('scan')" id="tab-btn-scan" class="px-4 py-2 rounded-xl text-xs font-semibold bg-emerald-500 text-slate-950 transition-all">
+                        <i class="fa-solid fa-expand mr-1"></i> สแกนสลิปด้วย AI OCR
+                    </button>
+                    <button onclick="switchAddMode('preset')" id="tab-btn-preset" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all">
+                        <i class="fa-solid fa-icons mr-1"></i> เลือกจากแอปยอดนิยม (Quick Add)
+                    </button>
+                    <button onclick="switchAddMode('manual')" id="tab-btn-manual" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all">
+                        <i class="fa-solid fa-keyboard mr-1"></i> พิมพ์กรอกข้อมูลเอง
+                    </button>
                 </div>
             </div>
 
-            <!-- OCR Confirmation & Form -->
-            <div id="scan-result" class="hidden max-w-2xl mx-auto mt-6 bg-slate-950 border border-emerald-500/40 p-6 rounded-2xl space-y-4">
-                <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                    <span class="text-xs font-semibold text-emerald-400 flex items-center gap-2">
-                        <i class="fa-solid fa-circle-check"></i> ผลการวิเคราะห์ข้อมูลสำเร็จ
-                    </span>
-                    <span class="text-xs text-slate-400" id="scan-time"></span>
+            <!-- MODE 1: OCR Slip Scanner -->
+            <div id="mode-scan" class="space-y-4">
+                <div id="drop-zone" onclick="document.getElementById('file-input').click()" 
+                     class="border-2 border-dashed border-slate-700 hover:border-emerald-500/80 bg-slate-950/60 transition-all rounded-2xl p-8 text-center cursor-pointer max-w-2xl mx-auto relative group">
+                    <input type="file" id="file-input" accept="image/*" class="hidden" onchange="handleFileUpload(event)">
+                    <div class="w-16 h-16 bg-slate-800 group-hover:bg-emerald-500/10 group-hover:text-emerald-400 text-slate-300 rounded-2xl flex items-center justify-center mx-auto text-2xl mb-4 transition-all">
+                        <i class="fa-solid fa-file-invoice-dollar"></i>
+                    </div>
+                    <p class="font-semibold text-slate-200">วางไฟล์ภาพสลิปที่นี่ หรือ <span class="text-emerald-400 underline">คลิกเลือกรูปภาพ</span></p>
+                    <p class="text-xs text-slate-500 mt-2">ระบบ AI รองรับสลิปโอนเงิน (KPlus, SCB, Krungthai, TrueMoney ฯลฯ) ภาษาไทยและอังกฤษ</p>
                 </div>
 
+                <!-- Progress & Result Containers for Scan Mode -->
+                <div id="ocr-loading" class="hidden max-w-2xl mx-auto bg-slate-950 p-6 rounded-2xl border border-slate-800 text-center">
+                    <div class="flex items-center justify-center gap-3 text-emerald-400 font-medium mb-3">
+                        <i class="fa-solid fa-circle-notch animate-spin text-xl"></i>
+                        <span id="ocr-status-text">กำลังโหลด Tesseract AI Engine...</span>
+                    </div>
+                    <div class="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden">
+                        <div id="ocr-progress-bar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-2.5 rounded-full w-0 transition-all duration-300"></div>
+                    </div>
+                </div>
+
+                <div id="scan-result" class="hidden max-w-2xl mx-auto bg-slate-950 border border-emerald-500/40 p-6 rounded-2xl space-y-4">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                        <span class="text-xs font-semibold text-emerald-400 flex items-center gap-2">
+                            <i class="fa-solid fa-circle-check"></i> ผลการวิเคราะห์ข้อมูลสำเร็จ
+                        </span>
+                        <span class="text-xs text-slate-400" id="scan-time"></span>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-xs text-slate-400 block mb-1">ชื่อร้านค้า / บริการ:</label>
+                            <input type="text" id="res-merchant" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-100 font-semibold focus:border-emerald-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="text-xs text-slate-400 block mb-1">จำนวนเงิน (บาท):</label>
+                            <input type="number" step="0.01" id="res-amount" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-emerald-400 font-bold focus:border-emerald-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="text-xs text-slate-400 block mb-1">หมวดหมู่อัตโนมัติ:</label>
+                            <select id="res-category" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-100 focus:border-emerald-500 outline-none">
+                                <option value="Subscription">Subscription (บริการรายเดือน)</option>
+                                <option value="Food & Beverage">Food & Beverage (อาหาร/เครื่องดื่ม)</option>
+                                <option value="Transportation">Transportation (การเดินทาง)</option>
+                                <option value="Ghost Expense">Ghost Expense (รายจ่ายจุกจิก)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-xs text-slate-400 block mb-1">การตรวจพบความถี่:</label>
+                            <input type="text" id="res-recurrence" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-amber-400 font-medium focus:border-emerald-500 outline-none">
+                        </div>
+                    </div>
+                    <details class="text-xs text-slate-400 bg-slate-900/50 p-3 rounded-xl border border-slate-800/80">
+                        <summary class="cursor-pointer font-medium hover:text-slate-200">ตรวจสอบข้อความตัวจริงที่แกะได้จากสลิป (Raw OCR Text)</summary>
+                        <p id="raw-ocr-text" class="mt-2 font-mono text-slate-400 whitespace-pre-wrap text-[11px] bg-slate-900 p-2.5 rounded border border-slate-800 max-h-36 overflow-y-auto"></p>
+                    </details>
+                    <button onclick="confirmTransaction()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 rounded-xl transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-plus"></i> ยืนยันบันทึกเข้าประวัติการเงินจริง
+                    </button>
+                </div>
+            </div>
+
+            <!-- MODE 2: Preset App Selector (Quick Add) -->
+            <div id="mode-preset" class="hidden space-y-6 max-w-4xl mx-auto">
+                <div class="flex flex-wrap gap-2 justify-center border-b border-slate-800 pb-3" id="category-filter-bar">
+                    <!-- Category Filters generated dynamically -->
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-h-96 overflow-y-auto p-1" id="preset-grid">
+                    <!-- Preset App Cards generated dynamically -->
+                </div>
+            </div>
+
+            <!-- MODE 3: Manual Input Form -->
+            <div id="mode-manual" class="hidden max-w-xl mx-auto bg-slate-950 border border-slate-800 p-6 rounded-2xl space-y-4">
+                <h3 class="text-sm font-semibold text-emerald-400 flex items-center gap-2">
+                    <i class="fa-solid fa-pen-to-square"></i> กรอกข้อมูลด้วยตนเอง
+                </h3>
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1">ชื่อแอป / บริการ / ร้านค้า:</label>
+                    <input type="text" id="manual-merchant" placeholder="เช่น Disney+ Hotstar, Netflix, ซื้อกาแฟ ฯลฯ" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-slate-100 focus:border-emerald-500 outline-none">
+                </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="text-xs text-slate-400 block mb-1">ชื่อร้านค้า / บริการ:</label>
-                        <input type="text" id="res-merchant" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-100 font-semibold focus:border-emerald-500 outline-none">
-                    </div>
-                    <div>
                         <label class="text-xs text-slate-400 block mb-1">จำนวนเงิน (บาท):</label>
-                        <input type="number" step="0.01" id="res-amount" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-emerald-400 font-bold focus:border-emerald-500 outline-none">
+                        <input type="number" step="0.01" id="manual-amount" placeholder="0.00" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-emerald-400 font-bold focus:border-emerald-500 outline-none">
                     </div>
                     <div>
-                        <label class="text-xs text-slate-400 block mb-1">หมวดหมู่อัตโนมัติ:</label>
-                        <select id="res-category" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-100 focus:border-emerald-500 outline-none">
+                        <label class="text-xs text-slate-400 block mb-1">หมวดหมู่:</label>
+                        <select id="manual-category" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-slate-100 focus:border-emerald-500 outline-none">
                             <option value="Subscription">Subscription (บริการรายเดือน)</option>
                             <option value="Food & Beverage">Food & Beverage (อาหาร/เครื่องดื่ม)</option>
                             <option value="Transportation">Transportation (การเดินทาง)</option>
                             <option value="Ghost Expense">Ghost Expense (รายจ่ายจุกจิก)</option>
                         </select>
                     </div>
-                    <div>
-                        <label class="text-xs text-slate-400 block mb-1">การตรวจพบความถี่:</label>
-                        <input type="text" id="res-recurrence" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-amber-400 font-medium focus:border-emerald-500 outline-none">
-                    </div>
                 </div>
-
-                <!-- Raw OCR Inspector -->
-                <details class="text-xs text-slate-400 bg-slate-900/50 p-3 rounded-xl border border-slate-800/80">
-                    <summary class="cursor-pointer font-medium hover:text-slate-200">ตรวจสอบข้อความตัวจริงที่แกะได้จากสลิป (Raw OCR Text)</summary>
-                    <p id="raw-ocr-text" class="mt-2 font-mono text-slate-400 whitespace-pre-wrap text-[11px] bg-slate-900 p-2.5 rounded border border-slate-800 max-h-36 overflow-y-auto"></p>
-                </details>
-
-                <button onclick="confirmTransaction()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 rounded-xl transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-plus"></i> ยืนยันบันทึกเข้าประวัติการเงินจริง
+                <button onclick="addManualTransaction()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 rounded-xl transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-plus"></i> บันทึกรายการ
                 </button>
             </div>
         </section>
@@ -241,82 +290,77 @@
     </footer>
 
     <script>
-        // App Price Database
+        // Full App Database with Group Categories
         const APP_PRESETS = [
             // 🎬 ความบันเทิง
-            { keywords: ['netflix'], merchant: 'Netflix', price: 349.00, category: 'Subscription' },
-            { keywords: ['disney', 'hotstar'], merchant: 'Disney+ Hotstar', price: 289.00, category: 'Subscription' },
-            { keywords: ['hbo', 'hbo max', 'hbo go'], merchant: 'HBO GO / Max', price: 199.00, category: 'Subscription' },
-            { keywords: ['prime', 'amazon prime'], merchant: 'Prime Video', price: 149.00, category: 'Subscription' },
-            { keywords: ['viu'], merchant: 'Viu Premium', price: 149.00, category: 'Subscription' },
-            { keywords: ['iqiyi'], merchant: 'iQiyi VIP', price: 119.00, category: 'Subscription' },
-            { keywords: ['wetv'], merchant: 'WeTV VIP', price: 119.00, category: 'Subscription' },
-            { keywords: ['bilibili'], merchant: 'Bilibili VIP', price: 99.00, category: 'Subscription' },
-            { keywords: ['crunchyroll'], merchant: 'Crunchyroll', price: 129.00, category: 'Subscription' },
-            { keywords: ['apple tv'], merchant: 'Apple TV+', price: 229.00, category: 'Subscription' },
-            { keywords: ['youtube premium', 'youtube'], merchant: 'YouTube Premium', price: 199.00, category: 'Subscription' },
+            { group: '🎬 ความบันเทิง', keywords: ['netflix'], merchant: 'Netflix', price: 349.00, category: 'Subscription' },
+            { group: '🎬 ความบันเทิง', keywords: ['disney', 'hotstar'], merchant: 'Disney+ Hotstar', price: 289.00, category: 'Subscription' },
+            { group: '🎬 ความบันเทิง', keywords: ['hbo'], merchant: 'HBO GO / Max', price: 199.00, category: 'Subscription' },
+            { group: '🎬 ความบันเทิง', keywords: ['prime'], merchant: 'Prime Video', price: 149.00, category: 'Subscription' },
+            { group: '🎬 ความบันเทิง', keywords: ['viu'], merchant: 'Viu Premium', price: 149.00, category: 'Subscription' },
+            { group: '🎬 ความบันเทิง', keywords: ['iqiyi'], merchant: 'iQiyi VIP', price: 119.00, category: 'Subscription' },
+            { group: '🎬 ความบันเทิง', keywords: ['wetv'], merchant: 'WeTV VIP', price: 119.00, category: 'Subscription' },
+            { group: '🎬 ความบันเทิง', keywords: ['bilibili'], merchant: 'Bilibili VIP', price: 99.00, category: 'Subscription' },
+            { group: '🎬 ความบันเทิง', keywords: ['crunchyroll'], merchant: 'Crunchyroll', price: 129.00, category: 'Subscription' },
+            { group: '🎬 ความบันเทิง', keywords: ['apple tv'], merchant: 'Apple TV+', price: 229.00, category: 'Subscription' },
+            { group: '🎬 ความบันเทิง', keywords: ['youtube premium'], merchant: 'YouTube Premium', price: 199.00, category: 'Subscription' },
 
-            // 🎵 ฟังเพลง / พอดแคสต์
-            { keywords: ['spotify'], merchant: 'Spotify Premium', price: 149.00, category: 'Subscription' },
-            { keywords: ['apple music'], merchant: 'Apple Music', price: 139.00, category: 'Subscription' },
-            { keywords: ['youtube music'], merchant: 'YouTube Music', price: 129.00, category: 'Subscription' },
-            { keywords: ['joox'], merchant: 'JOOX VIP', price: 129.00, category: 'Subscription' },
-            { keywords: ['tidal'], merchant: 'Tidal HiFi', price: 179.00, category: 'Subscription' },
-            { keywords: ['deezer'], merchant: 'Deezer Premium', price: 149.00, category: 'Subscription' },
-            { keywords: ['audible'], merchant: 'Audible', price: 530.00, category: 'Subscription' },
+            // 🎵 ฟังเพลง
+            { group: '🎵 ฟังเพลง', keywords: ['spotify'], merchant: 'Spotify Premium', price: 149.00, category: 'Subscription' },
+            { group: '🎵 ฟังเพลง', keywords: ['apple music'], merchant: 'Apple Music', price: 139.00, category: 'Subscription' },
+            { group: '🎵 ฟังเพลง', keywords: ['youtube music'], merchant: 'YouTube Music', price: 129.00, category: 'Subscription' },
+            { group: '🎵 ฟังเพลง', keywords: ['joox'], merchant: 'JOOX VIP', price: 129.00, category: 'Subscription' },
+            { group: '🎵 ฟังเพลง', keywords: ['tidal'], merchant: 'Tidal HiFi', price: 179.00, category: 'Subscription' },
+            { group: '🎵 ฟังเพลง', keywords: ['deezer'], merchant: 'Deezer Premium', price: 149.00, category: 'Subscription' },
+            { group: '🎵 ฟังเพลง', keywords: ['audible'], merchant: 'Audible', price: 530.00, category: 'Subscription' },
 
             // 💻 การทำงาน / AI
-            { keywords: ['microsoft 365', 'office 365', 'microsoft'], merchant: 'Microsoft 365', price: 289.00, category: 'Subscription' },
-            { keywords: ['google one', 'google drive'], merchant: 'Google One', price: 70.00, category: 'Subscription' },
-            { keywords: ['icloud', 'apple icloud'], merchant: 'Apple iCloud+', price: 35.00, category: 'Subscription' },
-            { keywords: ['chatgpt', 'openai'], merchant: 'ChatGPT Plus', price: 700.00, category: 'Subscription' },
-            { keywords: ['claude', 'anthropic'], merchant: 'Claude Pro', price: 700.00, category: 'Subscription' },
-            { keywords: ['notion'], merchant: 'Notion Plus / AI', price: 350.00, category: 'Subscription' },
-            { keywords: ['goodnotes'], merchant: 'Goodnotes 6', price: 349.00, category: 'Subscription' },
-            { keywords: ['evernote'], merchant: 'Evernote Personal', price: 350.00, category: 'Subscription' },
-            { keywords: ['zoom'], merchant: 'Zoom Pro', price: 530.00, category: 'Subscription' },
+            { group: '💻 การทำงาน / AI', keywords: ['microsoft 365'], merchant: 'Microsoft 365', price: 289.00, category: 'Subscription' },
+            { group: '💻 การทำงาน / AI', keywords: ['google one'], merchant: 'Google One', price: 70.00, category: 'Subscription' },
+            { group: '💻 การทำงาน / AI', keywords: ['icloud'], merchant: 'Apple iCloud+', price: 35.00, category: 'Subscription' },
+            { group: '💻 การทำงาน / AI', keywords: ['chatgpt'], merchant: 'ChatGPT Plus', price: 700.00, category: 'Subscription' },
+            { group: '💻 การทำงาน / AI', keywords: ['claude'], merchant: 'Claude Pro', price: 700.00, category: 'Subscription' },
+            { group: '💻 การทำงาน / AI', keywords: ['notion'], merchant: 'Notion Plus / AI', price: 350.00, category: 'Subscription' },
+            { group: '💻 การทำงาน / AI', keywords: ['goodnotes'], merchant: 'Goodnotes 6', price: 349.00, category: 'Subscription' },
+            { group: '💻 การทำงาน / AI', keywords: ['evernote'], merchant: 'Evernote Personal', price: 350.00, category: 'Subscription' },
+            { group: '💻 การทำงาน / AI', keywords: ['zoom'], merchant: 'Zoom Pro', price: 530.00, category: 'Subscription' },
 
             // 🎨 ออกแบบ / แต่งภาพ
-            { keywords: ['adobe', 'creative cloud', 'photoshop'], merchant: 'Adobe Creative Cloud', price: 1900.00, category: 'Subscription' },
-            { keywords: ['canva'], merchant: 'Canva Pro', price: 229.00, category: 'Subscription' },
-            { keywords: ['capcut'], merchant: 'CapCut Pro', price: 209.00, category: 'Subscription' },
-            { keywords: ['procreate'], merchant: 'Procreate Dreams', price: 699.00, category: 'Subscription' },
-            { keywords: ['picsart'], merchant: 'Picsart Gold', price: 129.00, category: 'Subscription' },
-            { keywords: ['vsco'], merchant: 'VSCO Plus', price: 119.00, category: 'Subscription' },
+            { group: '🎨 ออกแบบ / แต่งภาพ', keywords: ['adobe'], merchant: 'Adobe Creative Cloud', price: 1900.00, category: 'Subscription' },
+            { group: '🎨 ออกแบบ / แต่งภาพ', keywords: ['canva'], merchant: 'Canva Pro', price: 229.00, category: 'Subscription' },
+            { group: '🎨 ออกแบบ / แต่งภาพ', keywords: ['capcut'], merchant: 'CapCut Pro', price: 209.00, category: 'Subscription' },
+            { group: '🎨 ออกแบบ / แต่งภาพ', keywords: ['procreate'], merchant: 'Procreate Dreams', price: 699.00, category: 'Subscription' },
+            { group: '🎨 ออกแบบ / แต่งภาพ', keywords: ['picsart'], merchant: 'Picsart Gold', price: 129.00, category: 'Subscription' },
+            { group: '🎨 ออกแบบ / แต่งภาพ', keywords: ['vsco'], merchant: 'VSCO Plus', price: 119.00, category: 'Subscription' },
 
             // 🎮 เกม
-            { keywords: ['playstation', 'ps plus'], merchant: 'PlayStation Plus', price: 210.00, category: 'Subscription' },
-            { keywords: ['xbox', 'game pass'], merchant: 'Xbox Game Pass', price: 320.00, category: 'Subscription' },
-            { keywords: ['nintendo', 'switch online'], merchant: 'Nintendo Switch Online', price: 150.00, category: 'Subscription' },
-            { keywords: ['apple arcade'], merchant: 'Apple Arcade', price: 179.00, category: 'Subscription' },
-            { keywords: ['play pass', 'google play pass'], merchant: 'Google Play Pass', price: 99.00, category: 'Subscription' },
-            { keywords: ['discord', 'nitro'], merchant: 'Discord Nitro', price: 300.00, category: 'Subscription' },
+            { group: '🎮 เกม', keywords: ['playstation'], merchant: 'PlayStation Plus', price: 210.00, category: 'Subscription' },
+            { group: '🎮 เกม', keywords: ['xbox'], merchant: 'Xbox Game Pass', price: 320.00, category: 'Subscription' },
+            { group: '🎮 เกม', keywords: ['nintendo'], merchant: 'Nintendo Switch Online', price: 150.00, category: 'Subscription' },
+            { group: '🎮 เกม', keywords: ['apple arcade'], merchant: 'Apple Arcade', price: 179.00, category: 'Subscription' },
+            { group: '🎮 เกม', keywords: ['google play pass'], merchant: 'Google Play Pass', price: 99.00, category: 'Subscription' },
+            { group: '🎮 เกม', keywords: ['discord'], merchant: 'Discord Nitro', price: 300.00, category: 'Subscription' },
 
             // 🧘 สุขภาพ / พัฒนาตนเอง
-            { keywords: ['strava'], merchant: 'Strava Subscription', price: 229.00, category: 'Subscription' },
-            { keywords: ['calm'], merchant: 'Calm Premium', price: 280.00, category: 'Subscription' },
-            { keywords: ['headspace'], merchant: 'Headspace', price: 350.00, category: 'Subscription' },
-            { keywords: ['myfitnesspal'], merchant: 'MyFitnessPal Premium', price: 350.00, category: 'Subscription' },
-            { keywords: ['duolingo'], merchant: 'Duolingo Super', price: 249.00, category: 'Subscription' },
+            { group: '🧘 สุขภาพ', keywords: ['strava'], merchant: 'Strava Subscription', price: 229.00, category: 'Subscription' },
+            { group: '🧘 สุขภาพ', keywords: ['calm'], merchant: 'Calm Premium', price: 280.00, category: 'Subscription' },
+            { group: '🧘 สุขภาพ', keywords: ['headspace'], merchant: 'Headspace', price: 350.00, category: 'Subscription' },
+            { group: '🧘 สุขภาพ', keywords: ['myfitnesspal'], merchant: 'MyFitnessPal', price: 350.00, category: 'Subscription' },
+            { group: '🧘 สุขภาพ', keywords: ['duolingo'], merchant: 'Duolingo Super', price: 249.00, category: 'Subscription' },
 
             // 🔒 VPN & Security
-            { keywords: ['nordvpn'], merchant: 'NordVPN', price: 450.00, category: 'Subscription' },
-            { keywords: ['expressvpn'], merchant: 'ExpressVPN', price: 450.00, category: 'Subscription' },
-            { keywords: ['surfshark'], merchant: 'Surfshark VPN', price: 350.00, category: 'Subscription' },
-            { keywords: ['cyberghost'], merchant: 'CyberGhost VPN', price: 350.00, category: 'Subscription' },
-            { keywords: ['bullvpn'], merchant: 'BullVPN', price: 200.00, category: 'Subscription' },
-
-            // อื่นๆ
-            { keywords: ['grab'], merchant: 'Grab Food/Transport', price: 285.00, category: 'Transportation' },
-            { keywords: ['7-eleven', '7-11'], merchant: '7-Eleven', price: 142.00, category: 'Food & Beverage' }
+            { group: '🔒 ความปลอดภัย / VPN', keywords: ['nordvpn'], merchant: 'NordVPN', price: 450.00, category: 'Subscription' },
+            { group: '🔒 ความปลอดภัย / VPN', keywords: ['expressvpn'], merchant: 'ExpressVPN', price: 450.00, category: 'Subscription' },
+            { group: '🔒 ความปลอดภัย / VPN', keywords: ['surfshark'], merchant: 'Surfshark VPN', price: 350.00, category: 'Subscription' },
+            { group: '🔒 ความปลอดภัย / VPN', keywords: ['cyberghost'], merchant: 'CyberGhost VPN', price: 350.00, category: 'Subscription' },
+            { group: '🔒 ความปลอดภัย / VPN', keywords: ['bullvpn'], merchant: 'BullVPN', price: 200.00, category: 'Subscription' }
         ];
 
         // State Management
         let transactions = JSON.parse(localStorage.getItem('ai_manager_txs')) || [
             { id: 1, merchant: 'Netflix', amount: 349.00, category: 'Subscription', recurrence: 'ตัดซ้ำรายเดือน' },
             { id: 2, merchant: 'YouTube Premium', amount: 199.00, category: 'Subscription', recurrence: 'ตัดซ้ำรายเดือน' },
-            { id: 3, merchant: 'ChatGPT Plus', amount: 700.00, category: 'Subscription', recurrence: 'ตัดซ้ำรายเดือน' },
-            { id: 4, merchant: '7-Eleven', amount: 142.00, category: 'Food & Beverage', recurrence: 'รายการทั่วไป' }
+            { id: 3, merchant: 'ChatGPT Plus', amount: 700.00, category: 'Subscription', recurrence: 'ตัดซ้ำรายเดือน' }
         ];
 
         let emailSettings = JSON.parse(localStorage.getItem('ai_manager_email')) || {
@@ -326,7 +370,108 @@
             unusedOpt: true
         };
 
+        let activePresetGroup = 'ทั้งหมด';
         let expenseChartInstance = null;
+
+        // Switch Modes
+        function switchAddMode(mode) {
+            document.getElementById('mode-scan').classList.add('hidden');
+            document.getElementById('mode-preset').classList.add('hidden');
+            document.getElementById('mode-manual').classList.add('hidden');
+
+            document.getElementById('tab-btn-scan').className = "px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all";
+            document.getElementById('tab-btn-preset').className = "px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all";
+            document.getElementById('tab-btn-manual').className = "px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all";
+
+            if(mode === 'scan') {
+                document.getElementById('mode-scan').classList.remove('hidden');
+                document.getElementById('tab-btn-scan').className = "px-4 py-2 rounded-xl text-xs font-semibold bg-emerald-500 text-slate-950 transition-all";
+            } else if(mode === 'preset') {
+                document.getElementById('mode-preset').classList.remove('hidden');
+                document.getElementById('tab-btn-preset').className = "px-4 py-2 rounded-xl text-xs font-semibold bg-emerald-500 text-slate-950 transition-all";
+                renderPresetUI();
+            } else if(mode === 'manual') {
+                document.getElementById('mode-manual').classList.remove('hidden');
+                document.getElementById('tab-btn-manual').className = "px-4 py-2 rounded-xl text-xs font-semibold bg-emerald-500 text-slate-950 transition-all";
+            }
+        }
+
+        // Render Preset App Buttons
+        function renderPresetUI() {
+            const groups = ['ทั้งหมด', ...new Set(APP_PRESETS.map(item => item.group))];
+            const filterBar = document.getElementById('category-filter-bar');
+            filterBar.innerHTML = '';
+
+            groups.forEach(grp => {
+                const btn = document.createElement('button');
+                btn.className = `px-3 py-1 rounded-lg text-xs font-medium transition-all ${grp === activePresetGroup ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40' : 'bg-slate-950 text-slate-400 hover:text-slate-200'}`;
+                btn.innerText = grp;
+                btn.onclick = () => { activePresetGroup = grp; renderPresetUI(); };
+                filterBar.appendChild(btn);
+            });
+
+            const grid = document.getElementById('preset-grid');
+            grid.innerHTML = '';
+
+            const filteredPresets = activePresetGroup === 'ทั้งหมด' 
+                ? APP_PRESETS 
+                : APP_PRESETS.filter(item => item.group === activePresetGroup);
+
+            filteredPresets.forEach(app => {
+                const card = document.createElement('div');
+                card.className = "bg-slate-950 border border-slate-800 hover:border-emerald-500/50 p-3 rounded-xl flex flex-col justify-between transition-all group cursor-pointer";
+                card.onclick = () => addQuickPreset(app.merchant, app.price, app.category);
+                card.innerHTML = `
+                    <div>
+                        <div class="text-xs text-slate-400 text-[10px]">${app.group}</div>
+                        <div class="font-semibold text-slate-100 text-sm mt-0.5 group-hover:text-emerald-400 transition-colors">${app.merchant}</div>
+                    </div>
+                    <div class="flex justify-between items-center mt-3 pt-2 border-t border-slate-900">
+                        <span class="text-xs font-bold text-emerald-400">฿${app.price.toLocaleString()}</span>
+                        <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded-full">+ เพิ่ม</span>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Add Quick Preset
+        function addQuickPreset(merchant, price, category) {
+            transactions.unshift({
+                id: Date.now(),
+                merchant,
+                amount: price,
+                category,
+                recurrence: 'ตัดซ้ำรายเดือน (Preset)'
+            });
+            updateDashboard();
+            alert(`เพิ่ม ${merchant} (฿${price}) เข้าประวัติเรียบร้อยแล้ว!`);
+        }
+
+        // Add Manual Input
+        function addManualTransaction() {
+            const merchant = document.getElementById('manual-merchant').value.trim();
+            const amount = parseFloat(document.getElementById('manual-amount').value);
+            const category = document.getElementById('manual-category').value;
+
+            if(!merchant || isNaN(amount) || amount <= 0) {
+                alert('กรุณากรอกชื่อแอปและจำนวนเงินให้ถูกต้อง');
+                return;
+            }
+
+            transactions.unshift({
+                id: Date.now(),
+                merchant,
+                amount,
+                category,
+                recurrence: category === 'Subscription' ? 'ตัดซ้ำรายเดือน' : 'รายการทั่วไป'
+            });
+
+            document.getElementById('manual-merchant').value = '';
+            document.getElementById('manual-amount').value = '';
+            updateDashboard();
+            alert(`บันทึกรายการ ${merchant} เรียบร้อยแล้ว!`);
+        }
 
         function saveToStorage() {
             localStorage.setItem('ai_manager_txs', JSON.stringify(transactions));
@@ -374,7 +519,7 @@
             document.getElementById('metric-ghost').innerText = `฿${ghostTotal.toLocaleString('th-TH', {minimumFractionDigits: 2})}`;
             
             document.getElementById('metric-savings').innerText = `฿${potentialSavingsYearly.toLocaleString('th-TH', {minimumFractionDigits: 2})}`;
-            document.getElementById('metric-roi').innerText = `ประมาณการณ์ประหยัดหากยกเลิกแอปที่ไม่ใช้`;
+            document.getElementById('metric-roi').innerText = `คำนวณจาก Sub & Ghost Expense`;
 
             renderChart(categoryTotals);
             renderTable();
@@ -386,7 +531,7 @@
             tbody.innerHTML = '';
 
             if (transactions.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-slate-500">ไม่มีรายการบันทึก กรุณาสแกนสลิปเพื่อเพิ่มรายการใหม่</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-slate-500">ไม่มีรายการบันทึก กรุณาเลือกหรือสแกนเพื่อเพิ่มรายการใหม่</td></tr>`;
                 return;
             }
 
@@ -450,7 +595,7 @@
             });
         }
 
-        // Tesseract.js Real File Reader
+        // OCR Scanner Handler
         async function handleFileUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -463,20 +608,18 @@
             loadingBox.classList.remove('hidden');
             resultBox.classList.add('hidden');
             progressBar.style.width = '15%';
-            statusText.innerText = "กำลังดาวน์โหลด AI Engine และสแกนข้อความภาษาไทย/อังกฤษ...";
+            statusText.innerText = "กำลังดาวน์โหลด AI Engine และสแกนข้อความ...";
 
             try {
                 const worker = await Tesseract.createWorker('tha+eng');
-                
                 progressBar.style.width = '50%';
-                statusText.innerText = "กำลังวิเคราะห์โครงสร้างข้อมูลในสลิป...";
+                statusText.innerText = "กำลังวิเคราะห์โครงสร้างข้อมูล...";
 
                 const ret = await worker.recognize(file);
                 await worker.terminate();
 
                 progressBar.style.width = '100%';
                 const text = ret.data.text;
-                
                 document.getElementById('raw-ocr-text').innerText = text || "(อ่านข้อความในรูปภาพไม่พบ)";
 
                 const parsed = parseSlipText(text);
@@ -503,7 +646,6 @@
             }
         }
 
-        // Smart Slip & Preset Matching Parser
         function parseSlipText(text) {
             const lowerText = text.toLowerCase();
             let merchant = "สลิปโอนเงิน / ใบเสร็จ";
@@ -511,7 +653,6 @@
             let category = "Ghost Expense";
             let recurrence = "รายการทั่วไป";
 
-            // Match Database Presets
             for (const item of APP_PRESETS) {
                 if (item.keywords.some(kw => lowerText.includes(kw))) {
                     merchant = item.merchant;
@@ -522,7 +663,6 @@
                 }
             }
 
-            // Extract Amount if not found in preset or if slip has specific price
             const amountMatches = text.match(/(?:บาท|baht|thb|จำนวนเงิน|ยอดเงิน|฿)\s*[:\.]?\s*([\d,]+\.\d{2}|[\d,]+)/i) 
                                || text.match(/([\d,]+\.\d{2})/);
 
