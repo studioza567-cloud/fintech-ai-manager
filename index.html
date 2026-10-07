@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Subscription & Daily Expense Manager (Production Build)</title>
+    <title>AI Subscription & Daily Expense Manager</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Tesseract.js Real OCR Engine -->
+    <!-- Tesseract.js OCR Engine -->
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap');
@@ -28,12 +28,12 @@
                 </div>
                 <div>
                     <h1 class="text-lg font-bold bg-gradient-to-r from-emerald-400 to-teal-200 bg-clip-text text-transparent">AI Subscription & Expense Manager</h1>
-                    <p class="text-xs text-slate-400">ระบบตรวจจับบริการรายเดือน, OCR สแกนสลิปจริง & แจ้งเตือนล่วงหน้า</p>
+                    <p class="text-xs text-slate-400">ระบบตรวจจับบริการรายเดือน, OCR สแกนสลิปจริง & แจ้งเตือนล่วงหน้าอัตโนมัติ</p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
                 <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs px-3 py-1.5 rounded-full font-medium flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Live Real OCR & Preset Database
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Auto Cron Job Enabled
                 </span>
                 <button onclick="clearAllData()" class="text-xs text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 px-3 py-1.5 rounded-lg border border-rose-500/20 transition-all">
                     <i class="fa-solid fa-trash-can mr-1"></i> รีเซ็ตข้อมูล
@@ -71,7 +71,7 @@
             </div>
         </section>
 
-        <!-- Method Selection Tabs (Choose between Slip Scan, Preset Apps, and Manual Input) -->
+        <!-- Method Selection Tabs -->
         <section class="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl">
             <div class="max-w-3xl mx-auto text-center mb-6">
                 <h2 class="text-2xl font-bold text-slate-100 flex items-center justify-center gap-2">
@@ -105,11 +105,10 @@
                     <p class="text-xs text-slate-500 mt-2">ระบบ AI รองรับสลิปโอนเงิน (KPlus, SCB, Krungthai, TrueMoney ฯลฯ) ภาษาไทยและอังกฤษ</p>
                 </div>
 
-                <!-- Progress & Result Containers for Scan Mode -->
                 <div id="ocr-loading" class="hidden max-w-2xl mx-auto bg-slate-950 p-6 rounded-2xl border border-slate-800 text-center">
                     <div class="flex items-center justify-center gap-3 text-emerald-400 font-medium mb-3">
                         <i class="fa-solid fa-circle-notch animate-spin text-xl"></i>
-                        <span id="ocr-status-text">กำลังโหลด Tesseract AI Engine...</span>
+                        <span id="ocr-status-text">กำลังดาวน์โหลด AI Engine...</span>
                     </div>
                     <div class="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden">
                         <div id="ocr-progress-bar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-2.5 rounded-full w-0 transition-all duration-300"></div>
@@ -156,14 +155,10 @@
                 </div>
             </div>
 
-            <!-- MODE 2: Preset App Selector (Quick Add) -->
+            <!-- MODE 2: Preset App Selector -->
             <div id="mode-preset" class="hidden space-y-6 max-w-4xl mx-auto">
-                <div class="flex flex-wrap gap-2 justify-center border-b border-slate-800 pb-3" id="category-filter-bar">
-                    <!-- Category Filters generated dynamically -->
-                </div>
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-h-96 overflow-y-auto p-1" id="preset-grid">
-                    <!-- Preset App Cards generated dynamically -->
-                </div>
+                <div class="flex flex-wrap gap-2 justify-center border-b border-slate-800 pb-3" id="category-filter-bar"></div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-h-96 overflow-y-auto p-1" id="preset-grid"></div>
             </div>
 
             <!-- MODE 3: Manual Input Form -->
@@ -196,7 +191,7 @@
             </div>
         </section>
 
-        <!-- Charts and Email Alerts -->
+        <!-- Charts and Email Alerts Section -->
         <section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- Chart Card -->
             <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6">
@@ -212,18 +207,18 @@
             <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-3xl p-6 space-y-4">
                 <div class="flex justify-between items-center">
                     <h3 class="font-bold text-lg text-slate-100 flex items-center gap-2">
-                        <i class="fa-solid fa-envelope-open-text text-teal-400"></i> ตั้งเวลาแจ้งเตือนล่วงหน้าทางอีเมล
+                        <i class="fa-solid fa-envelope-open-text text-teal-400"></i> ตั้งเวลาแจ้งเตือนล่วงหน้าทางอีเมล (ผ่าน Google Cloud)
                     </h3>
-                    <button onclick="testSendEmailNotification()" class="text-xs bg-teal-500/10 text-teal-300 hover:bg-teal-500/20 border border-teal-500/30 px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5">
-                        <i class="fa-solid fa-paper-plane"></i> ทดสอบส่งอีเมลเตือน
-                    </button>
+                    <span class="text-xs bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full border border-emerald-500/20">
+                        <i class="fa-solid fa-robot mr-1"></i> ทำงานอัตโนมัติ 24 ชม.
+                    </span>
                 </div>
-                <p class="text-xs text-slate-400">ระบบจะส่งการเตือนก่อนกำหนดตัดเงินของแอปต่างๆ เพื่อป้องกันการโดนตัดเงินโดยไม่รู้ตัว</p>
+                <p class="text-xs text-slate-400">เมื่อบันทึกข้อมูล ระบบ Google Apps Script จะทำการส่งอีเมลเตือนก่อนกำหนดตัดเงินของแอปต่างๆ ทุกวันอัตโนมัติ แม้ไม่ได้เปิดเว็บทิ้งไว้</p>
 
                 <form onsubmit="saveEmailSettings(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="text-xs text-slate-400 block mb-1">อีเมลผู้รับแจ้งเตือน:</label>
-                        <input type="email" id="user-email" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-100 focus:border-emerald-500 outline-none">
+                        <input type="email" id="user-email" required placeholder="เช่น supawadeesomwongyok@gmail.com" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-100 focus:border-emerald-500 outline-none">
                     </div>
                     <div>
                         <label class="text-xs text-slate-400 block mb-1">กำหนดเวลาแจ้งเตือนล่วงหน้า:</label>
@@ -242,14 +237,14 @@
                         </label>
                     </div>
                     <div class="md:col-span-2">
-                        <button type="submit" class="w-full bg-slate-800 hover:bg-slate-700 text-emerald-400 font-semibold py-2.5 rounded-xl text-sm transition-all border border-emerald-500/20">
-                            <i class="fa-solid fa-floppy-disk mr-1"></i> บันทึกการตั้งค่าระบบแจ้งเตือน
+                        <button type="submit" id="save-email-btn" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 rounded-xl transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-floppy-disk"></i> บันทึกการตั้งค่าระบบแจ้งเตือนอัตโนมัติ
                         </button>
                     </div>
                 </form>
 
                 <div id="email-toast" class="hidden text-xs bg-emerald-500/10 text-emerald-400 p-3 rounded-xl border border-emerald-500/20">
-                    <i class="fa-solid fa-circle-check mr-1"></i> บันทึกการตั้งค่าแจ้งเตือนทางอีเมลสำเร็จ!
+                    <i class="fa-solid fa-circle-check mr-1"></i> <span id="toast-msg">บันทึกตั้งค่าเรียบร้อย!</span>
                 </div>
             </div>
         </section>
@@ -261,7 +256,7 @@
                     <h3 class="font-bold text-lg text-slate-100 flex items-center gap-2">
                         <i class="fa-solid fa-list-check text-emerald-400"></i> รายการธุรกรรมทั้งหมด (Transaction History)
                     </h3>
-                    <p class="text-xs text-slate-400">ข้อมูลจะถูกบันทึกไว้ในเบราว์เซอร์ของคุณจริงแบบอัตโนมัติ (LocalStorage)</p>
+                    <p class="text-xs text-slate-400">ข้อมูลจะถูกบันทึกไว้ในเบราว์เซอร์และซิงค์กับระบบส่งอีเมลแจ้งเตือน</p>
                 </div>
             </div>
 
@@ -276,9 +271,7 @@
                             <th class="pb-3 text-right">จัดการ</th>
                         </tr>
                     </thead>
-                    <tbody id="tx-tbody" class="divide-y divide-slate-800/60">
-                        <!-- Populated dynamically via JS -->
-                    </tbody>
+                    <tbody id="tx-tbody" class="divide-y divide-slate-800/60"></tbody>
                 </table>
             </div>
         </section>
@@ -286,74 +279,30 @@
     </main>
 
     <footer class="border-t border-slate-900 bg-slate-950 py-6 text-center text-xs text-slate-500">
-        AI Subscription & Daily Expense Manager &bull; GitHub Pages Edition
+        AI Subscription & Daily Expense Manager &bull; Powered by Google Apps Script & GitHub Pages
     </footer>
 
     <script>
-        // Full App Database with Group Categories
+        // -------------------------------------------------------------
+        // 🚨 สำคัญมาก: นำ Web App URL ที่ได้จาก Google Apps Script มาใส่ตรงนี้
+        // -------------------------------------------------------------
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/YOUR_SCRIPT_ID_HERE/exec";
+
+        // Preset App Database
         const APP_PRESETS = [
-            // 🎬 ความบันเทิง
             { group: '🎬 ความบันเทิง', keywords: ['netflix'], merchant: 'Netflix', price: 349.00, category: 'Subscription' },
             { group: '🎬 ความบันเทิง', keywords: ['disney', 'hotstar'], merchant: 'Disney+ Hotstar', price: 289.00, category: 'Subscription' },
             { group: '🎬 ความบันเทิง', keywords: ['hbo'], merchant: 'HBO GO / Max', price: 199.00, category: 'Subscription' },
             { group: '🎬 ความบันเทิง', keywords: ['prime'], merchant: 'Prime Video', price: 149.00, category: 'Subscription' },
             { group: '🎬 ความบันเทิง', keywords: ['viu'], merchant: 'Viu Premium', price: 149.00, category: 'Subscription' },
-            { group: '🎬 ความบันเทิง', keywords: ['iqiyi'], merchant: 'iQiyi VIP', price: 119.00, category: 'Subscription' },
-            { group: '🎬 ความบันเทิง', keywords: ['wetv'], merchant: 'WeTV VIP', price: 119.00, category: 'Subscription' },
-            { group: '🎬 ความบันเทิง', keywords: ['bilibili'], merchant: 'Bilibili VIP', price: 99.00, category: 'Subscription' },
-            { group: '🎬 ความบันเทิง', keywords: ['crunchyroll'], merchant: 'Crunchyroll', price: 129.00, category: 'Subscription' },
-            { group: '🎬 ความบันเทิง', keywords: ['apple tv'], merchant: 'Apple TV+', price: 229.00, category: 'Subscription' },
             { group: '🎬 ความบันเทิง', keywords: ['youtube premium'], merchant: 'YouTube Premium', price: 199.00, category: 'Subscription' },
-
-            // 🎵 ฟังเพลง
             { group: '🎵 ฟังเพลง', keywords: ['spotify'], merchant: 'Spotify Premium', price: 149.00, category: 'Subscription' },
             { group: '🎵 ฟังเพลง', keywords: ['apple music'], merchant: 'Apple Music', price: 139.00, category: 'Subscription' },
-            { group: '🎵 ฟังเพลง', keywords: ['youtube music'], merchant: 'YouTube Music', price: 129.00, category: 'Subscription' },
-            { group: '🎵 ฟังเพลง', keywords: ['joox'], merchant: 'JOOX VIP', price: 129.00, category: 'Subscription' },
-            { group: '🎵 ฟังเพลง', keywords: ['tidal'], merchant: 'Tidal HiFi', price: 179.00, category: 'Subscription' },
-            { group: '🎵 ฟังเพลง', keywords: ['deezer'], merchant: 'Deezer Premium', price: 149.00, category: 'Subscription' },
-            { group: '🎵 ฟังเพลง', keywords: ['audible'], merchant: 'Audible', price: 530.00, category: 'Subscription' },
-
-            // 💻 การทำงาน / AI
             { group: '💻 การทำงาน / AI', keywords: ['microsoft 365'], merchant: 'Microsoft 365', price: 289.00, category: 'Subscription' },
             { group: '💻 การทำงาน / AI', keywords: ['google one'], merchant: 'Google One', price: 70.00, category: 'Subscription' },
-            { group: '💻 การทำงาน / AI', keywords: ['icloud'], merchant: 'Apple iCloud+', price: 35.00, category: 'Subscription' },
             { group: '💻 การทำงาน / AI', keywords: ['chatgpt'], merchant: 'ChatGPT Plus', price: 700.00, category: 'Subscription' },
-            { group: '💻 การทำงาน / AI', keywords: ['claude'], merchant: 'Claude Pro', price: 700.00, category: 'Subscription' },
-            { group: '💻 การทำงาน / AI', keywords: ['notion'], merchant: 'Notion Plus / AI', price: 350.00, category: 'Subscription' },
-            { group: '💻 การทำงาน / AI', keywords: ['goodnotes'], merchant: 'Goodnotes 6', price: 349.00, category: 'Subscription' },
-            { group: '💻 การทำงาน / AI', keywords: ['evernote'], merchant: 'Evernote Personal', price: 350.00, category: 'Subscription' },
-            { group: '💻 การทำงาน / AI', keywords: ['zoom'], merchant: 'Zoom Pro', price: 530.00, category: 'Subscription' },
-
-            // 🎨 ออกแบบ / แต่งภาพ
-            { group: '🎨 ออกแบบ / แต่งภาพ', keywords: ['adobe'], merchant: 'Adobe Creative Cloud', price: 1900.00, category: 'Subscription' },
             { group: '🎨 ออกแบบ / แต่งภาพ', keywords: ['canva'], merchant: 'Canva Pro', price: 229.00, category: 'Subscription' },
-            { group: '🎨 ออกแบบ / แต่งภาพ', keywords: ['capcut'], merchant: 'CapCut Pro', price: 209.00, category: 'Subscription' },
-            { group: '🎨 ออกแบบ / แต่งภาพ', keywords: ['procreate'], merchant: 'Procreate Dreams', price: 699.00, category: 'Subscription' },
-            { group: '🎨 ออกแบบ / แต่งภาพ', keywords: ['picsart'], merchant: 'Picsart Gold', price: 129.00, category: 'Subscription' },
-            { group: '🎨 ออกแบบ / แต่งภาพ', keywords: ['vsco'], merchant: 'VSCO Plus', price: 119.00, category: 'Subscription' },
-
-            // 🎮 เกม
-            { group: '🎮 เกม', keywords: ['playstation'], merchant: 'PlayStation Plus', price: 210.00, category: 'Subscription' },
-            { group: '🎮 เกม', keywords: ['xbox'], merchant: 'Xbox Game Pass', price: 320.00, category: 'Subscription' },
-            { group: '🎮 เกม', keywords: ['nintendo'], merchant: 'Nintendo Switch Online', price: 150.00, category: 'Subscription' },
-            { group: '🎮 เกม', keywords: ['apple arcade'], merchant: 'Apple Arcade', price: 179.00, category: 'Subscription' },
-            { group: '🎮 เกม', keywords: ['google play pass'], merchant: 'Google Play Pass', price: 99.00, category: 'Subscription' },
-            { group: '🎮 เกม', keywords: ['discord'], merchant: 'Discord Nitro', price: 300.00, category: 'Subscription' },
-
-            // 🧘 สุขภาพ / พัฒนาตนเอง
-            { group: '🧘 สุขภาพ', keywords: ['strava'], merchant: 'Strava Subscription', price: 229.00, category: 'Subscription' },
-            { group: '🧘 สุขภาพ', keywords: ['calm'], merchant: 'Calm Premium', price: 280.00, category: 'Subscription' },
-            { group: '🧘 สุขภาพ', keywords: ['headspace'], merchant: 'Headspace', price: 350.00, category: 'Subscription' },
-            { group: '🧘 สุขภาพ', keywords: ['myfitnesspal'], merchant: 'MyFitnessPal', price: 350.00, category: 'Subscription' },
-            { group: '🧘 สุขภาพ', keywords: ['duolingo'], merchant: 'Duolingo Super', price: 249.00, category: 'Subscription' },
-
-            // 🔒 VPN & Security
-            { group: '🔒 ความปลอดภัย / VPN', keywords: ['nordvpn'], merchant: 'NordVPN', price: 450.00, category: 'Subscription' },
-            { group: '🔒 ความปลอดภัย / VPN', keywords: ['expressvpn'], merchant: 'ExpressVPN', price: 450.00, category: 'Subscription' },
-            { group: '🔒 ความปลอดภัย / VPN', keywords: ['surfshark'], merchant: 'Surfshark VPN', price: 350.00, category: 'Subscription' },
-            { group: '🔒 ความปลอดภัย / VPN', keywords: ['cyberghost'], merchant: 'CyberGhost VPN', price: 350.00, category: 'Subscription' },
-            { group: '🔒 ความปลอดภัย / VPN', keywords: ['bullvpn'], merchant: 'BullVPN', price: 200.00, category: 'Subscription' }
+            { group: '🎨 ออกแบบ / แต่งภาพ', keywords: ['capcut'], merchant: 'CapCut Pro', price: 209.00, category: 'Subscription' }
         ];
 
         // State Management
@@ -364,7 +313,7 @@
         ];
 
         let emailSettings = JSON.parse(localStorage.getItem('ai_manager_email')) || {
-            email: 'user@example.com',
+            email: 'supawadeesomwongyok@gmail.com',
             alertDays: '3',
             monthlyOpt: true,
             unusedOpt: true
@@ -372,6 +321,57 @@
 
         let activePresetGroup = 'ทั้งหมด';
         let expenseChartInstance = null;
+
+        // Save Settings & Sync to Google Apps Script
+        function saveEmailSettings(e) {
+            e.preventDefault();
+            const btn = document.getElementById('save-email-btn');
+            const email = document.getElementById('user-email').value;
+            const alertDays = document.getElementById('alert-days').value;
+
+            emailSettings = {
+                email: email,
+                alertDays: alertDays,
+                monthlyOpt: document.getElementById('email-opt-monthly').checked,
+                unusedOpt: document.getElementById('email-opt-unused').checked
+            };
+            saveToStorage();
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin"></i> กำลังบันทึกลงระบบ Google Cloud...`;
+
+            // ดึงเฉพาะรายการบริการรายเดือน (Subscriptions) เพื่อส่งไปสร้างแจ้งเตือน
+            const subItems = transactions.filter(t => t.category === 'Subscription');
+
+            fetch(https://script.google.com/macros/s/AKfycbxhKo8YpdJtEsO89_CpBnqXu1KDFGygjEYHJrxB8qaqSro1T0L0Y8YCxb7JketIajaKaA/exec, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: email,
+                    alertDays: alertDays,
+                    subscriptions: subItems
+                })
+            })
+            .then(() => {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> บันทึกการตั้งค่าระบบแจ้งเตือนอัตโนมัติ`;
+                showToast("บันทึกข้อมูลเข้าสู่ระบบ Google Cloud & ตั้งเวลาส่งอีเมลอัตโนมัติสำเร็จ!");
+            })
+            .catch(err => {
+                console.error(err);
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> บันทึกการตั้งค่าระบบแจ้งเตือนอัตโนมัติ`;
+                showToast("บันทึกในเบราว์เซอร์เรียบร้อยแล้ว (ไม่สามารถซิงค์ Google Cloud ได้)");
+            });
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('email-toast');
+            document.getElementById('toast-msg').innerText = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 4000);
+        }
 
         // Switch Modes
         function switchAddMode(mode) {
@@ -396,7 +396,6 @@
             }
         }
 
-        // Render Preset App Buttons
         function renderPresetUI() {
             const groups = ['ทั้งหมด', ...new Set(APP_PRESETS.map(item => item.group))];
             const filterBar = document.getElementById('category-filter-bar');
@@ -435,7 +434,6 @@
             });
         }
 
-        // Add Quick Preset
         function addQuickPreset(merchant, price, category) {
             transactions.unshift({
                 id: Date.now(),
@@ -448,7 +446,6 @@
             alert(`เพิ่ม ${merchant} (฿${price}) เข้าประวัติเรียบร้อยแล้ว!`);
         }
 
-        // Add Manual Input
         function addManualTransaction() {
             const merchant = document.getElementById('manual-merchant').value.trim();
             const amount = parseFloat(document.getElementById('manual-amount').value);
@@ -479,47 +476,26 @@
         }
 
         function updateDashboard() {
-            let total = 0;
-            let subTotal = 0;
-            let ghostTotal = 0;
-            let subCount = 0;
-
-            const categoryTotals = {
-                'Subscription': 0,
-                'Food & Beverage': 0,
-                'Transportation': 0,
-                'Ghost Expense': 0
-            };
+            let total = 0, subTotal = 0, ghostTotal = 0, subCount = 0;
+            const categoryTotals = { 'Subscription': 0, 'Food & Beverage': 0, 'Transportation': 0, 'Ghost Expense': 0 };
 
             transactions.forEach(tx => {
                 total += tx.amount;
-                if (categoryTotals[tx.category] !== undefined) {
-                    categoryTotals[tx.category] += tx.amount;
-                } else {
-                    categoryTotals['Ghost Expense'] += tx.amount;
-                }
+                if (categoryTotals[tx.category] !== undefined) categoryTotals[tx.category] += tx.amount;
+                else categoryTotals['Ghost Expense'] += tx.amount;
 
-                if (tx.category === 'Subscription') {
-                    subTotal += tx.amount;
-                    subCount++;
-                }
-                if (tx.category === 'Ghost Expense') {
-                    ghostTotal += tx.amount;
-                }
+                if (tx.category === 'Subscription') { subTotal += tx.amount; subCount++; }
+                if (tx.category === 'Ghost Expense') ghostTotal += tx.amount;
             });
 
             const potentialSavingsYearly = (subTotal * 0.35 + ghostTotal * 0.3) * 12;
 
             document.getElementById('metric-total').innerText = `฿${total.toLocaleString('th-TH', {minimumFractionDigits: 2})}`;
             document.getElementById('metric-count').innerText = `${transactions.length} รายการ`;
-            
             document.getElementById('metric-sub').innerText = `฿${subTotal.toLocaleString('th-TH', {minimumFractionDigits: 2})}`;
             document.getElementById('metric-sub-count').innerText = `${subCount} บริการรายเดือน`;
-
             document.getElementById('metric-ghost').innerText = `฿${ghostTotal.toLocaleString('th-TH', {minimumFractionDigits: 2})}`;
-            
             document.getElementById('metric-savings').innerText = `฿${potentialSavingsYearly.toLocaleString('th-TH', {minimumFractionDigits: 2})}`;
-            document.getElementById('metric-roi').innerText = `คำนวณจาก Sub & Ghost Expense`;
 
             renderChart(categoryTotals);
             renderTable();
@@ -562,21 +538,14 @@
 
         function renderChart(catTotals) {
             const ctx = document.getElementById('expenseChart').getContext('2d');
-            if (expenseChartInstance) {
-                expenseChartInstance.destroy();
-            }
+            if (expenseChartInstance) expenseChartInstance.destroy();
 
             expenseChartInstance = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
                     labels: ['Subscription', 'Food & Beverage', 'Transportation', 'Ghost Expense'],
                     datasets: [{
-                        data: [
-                            catTotals['Subscription'],
-                            catTotals['Food & Beverage'],
-                            catTotals['Transportation'],
-                            catTotals['Ghost Expense']
-                        ],
+                        data: [catTotals['Subscription'], catTotals['Food & Beverage'], catTotals['Transportation'], catTotals['Ghost Expense']],
                         backgroundColor: ['#10b981', '#f59e0b', '#0284c7', '#f43f5e'],
                         borderWidth: 0
                     }]
@@ -584,18 +553,12 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: { color: '#94a3b8', font: { family: 'Kanit' } }
-                        }
-                    },
+                    plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', font: { family: 'Kanit' } } } },
                     cutout: '70%'
                 }
             });
         }
 
-        // OCR Scanner Handler
         async function handleFileUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -608,19 +571,18 @@
             loadingBox.classList.remove('hidden');
             resultBox.classList.add('hidden');
             progressBar.style.width = '15%';
-            statusText.innerText = "กำลังดาวน์โหลด AI Engine และสแกนข้อความ...";
 
             try {
                 const worker = await Tesseract.createWorker('tha+eng');
                 progressBar.style.width = '50%';
-                statusText.innerText = "กำลังวิเคราะห์โครงสร้างข้อมูล...";
+                statusText.innerText = "กำลังสแกนวิเคราะห์สลิป...";
 
                 const ret = await worker.recognize(file);
                 await worker.terminate();
 
                 progressBar.style.width = '100%';
                 const text = ret.data.text;
-                document.getElementById('raw-ocr-text').innerText = text || "(อ่านข้อความในรูปภาพไม่พบ)";
+                document.getElementById('raw-ocr-text').innerText = text || "(ไม่พบข้อความ)";
 
                 const parsed = parseSlipText(text);
 
@@ -632,66 +594,43 @@
 
                 loadingBox.classList.add('hidden');
                 resultBox.classList.remove('hidden');
-
             } catch (err) {
-                console.error(err);
                 loadingBox.classList.add('hidden');
-                alert("อ่านข้อความสลิปไม่สำเร็จ โปรดระบุข้อมูลด้วยตนเอง");
-                
-                document.getElementById('res-merchant').value = "รายการสแกน";
-                document.getElementById('res-amount').value = 100.00;
-                document.getElementById('res-category').value = "Ghost Expense";
-                document.getElementById('res-recurrence').value = "สแกนด้วยตนเอง";
-                resultBox.classList.remove('hidden');
+                alert("อ่านข้อความไม่สำเร็จ โปรดกรอกข้อมูลด้วยตนเอง");
             }
         }
 
         function parseSlipText(text) {
             const lowerText = text.toLowerCase();
-            let merchant = "สลิปโอนเงิน / ใบเสร็จ";
-            let amount = 0;
-            let category = "Ghost Expense";
-            let recurrence = "รายการทั่วไป";
+            let merchant = "สลิปโอนเงิน / ใบเสร็จ", amount = 150.00, category = "Ghost Expense", recurrence = "รายการทั่วไป";
 
             for (const item of APP_PRESETS) {
                 if (item.keywords.some(kw => lowerText.includes(kw))) {
                     merchant = item.merchant;
                     amount = item.price;
                     category = item.category;
-                    recurrence = item.category === 'Subscription' ? 'พบรายการตัดซ้ำรายเดือน' : 'รายการทั่วไป';
+                    recurrence = 'พบรายการตัดซ้ำรายเดือน';
                     break;
                 }
             }
 
-            const amountMatches = text.match(/(?:บาท|baht|thb|จำนวนเงิน|ยอดเงิน|฿)\s*[:\.]?\s*([\d,]+\.\d{2}|[\d,]+)/i) 
-                               || text.match(/([\d,]+\.\d{2})/);
-
+            const amountMatches = text.match(/(?:บาท|baht|thb|จำนวนเงิน|ยอดเงิน|฿)\s*[:\.]?\s*([\d,]+\.\d{2}|[\d,]+)/i) || text.match(/([\d,]+\.\d{2})/);
             if (amountMatches && amountMatches[1]) {
                 const cleaned = parseFloat(amountMatches[1].replace(/,/g, ''));
-                if (!isNaN(cleaned) && cleaned > 0) {
-                    amount = cleaned;
-                }
+                if (!isNaN(cleaned) && cleaned > 0) amount = cleaned;
             }
-
-            if (amount === 0) amount = 150.00;
 
             return { merchant, amount, category, recurrence };
         }
 
         function confirmTransaction() {
-            const merchant = document.getElementById('res-merchant').value || 'รายการสแกน';
-            const amount = parseFloat(document.getElementById('res-amount').value) || 0;
-            const category = document.getElementById('res-category').value;
-            const recurrence = document.getElementById('res-recurrence').value;
-
             transactions.unshift({
                 id: Date.now(),
-                merchant,
-                amount,
-                category,
-                recurrence
+                merchant: document.getElementById('res-merchant').value || 'รายการสแกน',
+                amount: parseFloat(document.getElementById('res-amount').value) || 0,
+                category: document.getElementById('res-category').value,
+                recurrence: document.getElementById('res-recurrence').value
             });
-
             updateDashboard();
             document.getElementById('scan-result').classList.add('hidden');
             document.getElementById('file-input').value = '';
@@ -710,47 +649,7 @@
             }
         }
 
-        function saveEmailSettings(e) {
-            e.preventDefault();
-            emailSettings = {
-                email: document.getElementById('user-email').value,
-                alertDays: document.getElementById('alert-days').value,
-                monthlyOpt: document.getElementById('email-opt-monthly').checked,
-                unusedOpt: document.getElementById('email-opt-unused').checked
-            };
-            saveToStorage();
-
-            const toast = document.getElementById('email-toast');
-            toast.classList.remove('hidden');
-            setTimeout(() => toast.classList.add('hidden'), 3500);
-        }
-
-        function testSendEmailNotification() {
-            const email = document.getElementById('user-email').value || 'user@example.com';
-            const subject = encodeURIComponent("[AI Alert] แจ้งเตือนยอดชำระ Subscription ล่วงหน้า");
-            const body = encodeURIComponent(`สวัสดีครับ,\n\nระบบ AI Expense Manager ตรวจพบว่าคุณมีรายการ Subscription ที่กำลังจะถึงกำหนดตัดเงินในอีก ${emailSettings.alertDays} วัน:\n\n- Netflix (฿349.00)\n- YouTube Premium (฿199.00)\n- ChatGPT Plus (฿700.00)\n\nหากคุณไม่ได้ใช้งานบริการเหล่านี้แล้ว สามารถกดดำเนินการยกเลิกได้ทางหน้า Dashboard ครับ`);
-            
-            window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
-        }
-
-        // Drag & Drop
-        const dropZone = document.getElementById('drop-zone');
-        ['dragenter', 'dragover'].forEach(name => {
-            dropZone.addEventListener(name, (e) => { e.preventDefault(); dropZone.classList.add('border-emerald-500', 'bg-slate-900'); });
-        });
-        ['dragleave', 'drop'].forEach(name => {
-            dropZone.addEventListener(name, (e) => { e.preventDefault(); dropZone.classList.remove('border-emerald-500', 'bg-slate-900'); });
-        });
-        dropZone.addEventListener('drop', (e) => {
-            const dt = e.dataTransfer;
-            const files = dt.files;
-            if (files.length) {
-                document.getElementById('file-input').files = files;
-                handleFileUpload({ target: { files } });
-            }
-        });
-
-        // Load Initial State
+        // Load Saved Settings
         document.getElementById('user-email').value = emailSettings.email || '';
         document.getElementById('alert-days').value = emailSettings.alertDays || '3';
         document.getElementById('email-opt-monthly').checked = emailSettings.monthlyOpt;
