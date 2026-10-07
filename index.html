@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Subscription & Daily Expense Manager (Production)</title>
+    <title>AI Subscription & Daily Expense Manager (Production Build)</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -19,7 +19,7 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-emerald-500 selection:text-slate-950">
 
-    <!-- Top Navigation Header -->
+    <!-- Header Bar -->
     <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50 shadow-md">
         <div class="max-w-7xl mx-auto px-4 py-3.5 flex flex-wrap justify-between items-center gap-4">
             <div class="flex items-center gap-3">
@@ -28,12 +28,12 @@
                 </div>
                 <div>
                     <h1 class="text-lg font-bold bg-gradient-to-r from-emerald-400 to-teal-200 bg-clip-text text-transparent">AI Subscription & Expense Manager</h1>
-                    <p class="text-xs text-slate-400">ระบบ AI วิเคราะห์การเงิน, สแกนสลิปจริง & แจ้งเตือนล่วงหน้า</p>
+                    <p class="text-xs text-slate-400">ระบบตรวจจับบริการรายเดือน, OCR สแกนสลิปจริง & แจ้งเตือนล่วงหน้า</p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
                 <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs px-3 py-1.5 rounded-full font-medium flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Live Real OCR Engine
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Live Real OCR & Preset Database
                 </span>
                 <button onclick="clearAllData()" class="text-xs text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 px-3 py-1.5 rounded-lg border border-rose-500/20 transition-all">
                     <i class="fa-solid fa-trash-can mr-1"></i> รีเซ็ตข้อมูล
@@ -44,9 +44,9 @@
 
     <main class="max-w-7xl mx-auto px-4 py-8 flex-1 w-full space-y-8">
 
-        <!-- Metrics Overview Dashboard -->
+        <!-- Metrics Overview Cards -->
         <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl relative overflow-hidden">
+            <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl">
                 <div class="text-xs text-slate-400 font-medium">รวมรายจ่ายทั้งหมดที่บันทึก</div>
                 <div class="text-2xl font-bold text-slate-100 mt-1" id="metric-total">฿0.00</div>
                 <div class="text-xs text-slate-400 mt-2" id="metric-count">0 รายการ</div>
@@ -67,46 +67,46 @@
             <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl bg-gradient-to-br from-emerald-950/30 to-slate-900">
                 <div class="text-xs text-emerald-400 font-medium">ประหยัดได้ต่อปี (คำนวณจาก AI)</div>
                 <div class="text-2xl font-bold text-teal-300 mt-1" id="metric-savings">฿0.00</div>
-                <div class="text-xs text-slate-400 mt-2" id="metric-roi">ประมาณการณ์ ROI: 0x</div>
+                <div class="text-xs text-slate-400 mt-2" id="metric-roi">คำนวณจาก Sub & Ghost Expense</div>
             </div>
         </section>
 
-        <!-- Real AI OCR Scanner Section -->
+        <!-- OCR Scanning and Quick Add Section -->
         <section class="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl">
             <div class="max-w-2xl mx-auto text-center mb-6">
                 <h2 class="text-2xl font-bold text-slate-100 flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-expand text-emerald-400"></i> สแกนสลิป & ใบเสร็จด้วย AI OCR ตัวจริง
+                    <i class="fa-solid fa-expand text-emerald-400"></i> สแกนสลิปด้วย OCR หรือเพิ่มแอปยอดนิยม
                 </h2>
-                <p class="text-sm text-slate-400 mt-1">อัปโหลดสลิปโอนเงิน (KPlus, SCB, Krungthai, TrueMoney ฯลฯ) AI จะอ่านภาษาไทย/อังกฤษและสกัดข้อมูลอัตโนมัติ</p>
+                <p class="text-sm text-slate-400 mt-1">อัปโหลดสลิปธนาคารจริง หรือเลือกแอป/บริการยอดนิยมเพื่อเพิ่มเข้าประวัติทันที</p>
             </div>
 
-            <!-- Upload Drag Drop Zone -->
+            <!-- Upload Zone -->
             <div id="drop-zone" onclick="document.getElementById('file-input').click()" 
                  class="border-2 border-dashed border-slate-700 hover:border-emerald-500/80 bg-slate-950/60 transition-all rounded-2xl p-8 text-center cursor-pointer max-w-2xl mx-auto relative group">
                 <input type="file" id="file-input" accept="image/*" class="hidden" onchange="handleFileUpload(event)">
                 <div class="w-16 h-16 bg-slate-800 group-hover:bg-emerald-500/10 group-hover:text-emerald-400 text-slate-300 rounded-2xl flex items-center justify-center mx-auto text-2xl mb-4 transition-all">
                     <i class="fa-solid fa-file-invoice-dollar"></i>
                 </div>
-                <p class="font-semibold text-slate-200">วางไฟล์สลิปจริงที่นี่ หรือ <span class="text-emerald-400 underline">คลิกเลือกรูปภาพ</span></p>
-                <p class="text-xs text-slate-500 mt-2">รองรับไฟล์ภาพสลิปธนาคารและ e-Receipt (JPG, PNG, WEBP)</p>
+                <p class="font-semibold text-slate-200">วางไฟล์ภาพสลิปที่นี่ หรือ <span class="text-emerald-400 underline">คลิกเลือกรูปภาพ</span></p>
+                <p class="text-xs text-slate-500 mt-2">ระบบ AI รองรับสลิปโอนเงิน (KPlus, SCB, Krungthai, TrueMoney, ฯลฯ) ภาษาไทยและอังกฤษ</p>
             </div>
 
-            <!-- Scanning Progress Indicator -->
+            <!-- OCR Progress Bar -->
             <div id="ocr-loading" class="hidden max-w-2xl mx-auto mt-6 bg-slate-950 p-6 rounded-2xl border border-slate-800 text-center">
                 <div class="flex items-center justify-center gap-3 text-emerald-400 font-medium mb-3">
                     <i class="fa-solid fa-circle-notch animate-spin text-xl"></i>
-                    <span id="ocr-status-text">กำลังโหลด AI Engine และประมวลผลข้อความ...</span>
+                    <span id="ocr-status-text">กำลังโหลด Tesseract AI Engine...</span>
                 </div>
                 <div class="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden">
                     <div id="ocr-progress-bar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-2.5 rounded-full w-0 transition-all duration-300"></div>
                 </div>
             </div>
 
-            <!-- OCR Result & Confirmation Form -->
+            <!-- OCR Confirmation & Form -->
             <div id="scan-result" class="hidden max-w-2xl mx-auto mt-6 bg-slate-950 border border-emerald-500/40 p-6 rounded-2xl space-y-4">
                 <div class="flex justify-between items-center border-b border-slate-800 pb-3">
                     <span class="text-xs font-semibold text-emerald-400 flex items-center gap-2">
-                        <i class="fa-solid fa-circle-check"></i> ผลการสแกนสลิปสำเร็จ
+                        <i class="fa-solid fa-circle-check"></i> ผลการวิเคราะห์ข้อมูลสำเร็จ
                     </span>
                     <span class="text-xs text-slate-400" id="scan-time"></span>
                 </div>
@@ -135,7 +135,7 @@
                     </div>
                 </div>
 
-                <!-- Raw OCR Text Inspector -->
+                <!-- Raw OCR Inspector -->
                 <details class="text-xs text-slate-400 bg-slate-900/50 p-3 rounded-xl border border-slate-800/80">
                     <summary class="cursor-pointer font-medium hover:text-slate-200">ตรวจสอบข้อความตัวจริงที่แกะได้จากสลิป (Raw OCR Text)</summary>
                     <p id="raw-ocr-text" class="mt-2 font-mono text-slate-400 whitespace-pre-wrap text-[11px] bg-slate-900 p-2.5 rounded border border-slate-800 max-h-36 overflow-y-auto"></p>
@@ -147,9 +147,9 @@
             </div>
         </section>
 
-        <!-- Charts & Analysis Section -->
+        <!-- Charts and Email Alerts -->
         <section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Chart Container -->
+            <!-- Chart Card -->
             <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6">
                 <h3 class="font-bold text-lg text-slate-100 flex items-center gap-2 mb-4">
                     <i class="fa-solid fa-chart-pie text-emerald-400"></i> สัดส่วนค่าใช้จ่ายจริง
@@ -159,17 +159,17 @@
                 </div>
             </div>
 
-            <!-- Email Notification & Alert Config -->
+            <!-- Email Notification Card -->
             <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-3xl p-6 space-y-4">
                 <div class="flex justify-between items-center">
                     <h3 class="font-bold text-lg text-slate-100 flex items-center gap-2">
-                        <i class="fa-solid fa-envelope-open-text text-teal-400"></i> ระบบตั้งเวลาแจ้งเตือนล่วงหน้าทางอีเมล
+                        <i class="fa-solid fa-envelope-open-text text-teal-400"></i> ตั้งเวลาแจ้งเตือนล่วงหน้าทางอีเมล
                     </h3>
                     <button onclick="testSendEmailNotification()" class="text-xs bg-teal-500/10 text-teal-300 hover:bg-teal-500/20 border border-teal-500/30 px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5">
                         <i class="fa-solid fa-paper-plane"></i> ทดสอบส่งอีเมลเตือน
                     </button>
                 </div>
-                <p class="text-xs text-slate-400">ระบบจะทำการแจ้งเตือนกำหนดชำระค่า Subscription ล่วงหน้าเข้าอีเมลที่คุณระบุเพื่อป้องกันการถูกตัดเงินซ้ำแบบไม่ทันตั้งตัว</p>
+                <p class="text-xs text-slate-400">ระบบจะส่งการเตือนก่อนกำหนดตัดเงินของแอปต่างๆ เพื่อป้องกันการโดนตัดเงินโดยไม่รู้ตัว</p>
 
                 <form onsubmit="saveEmailSettings(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
@@ -212,7 +212,7 @@
                     <h3 class="font-bold text-lg text-slate-100 flex items-center gap-2">
                         <i class="fa-solid fa-list-check text-emerald-400"></i> รายการธุรกรรมทั้งหมด (Transaction History)
                     </h3>
-                    <p class="text-xs text-slate-400">ข้อมูลจะถูกบันทึกไว้ในเบราว์เซอร์ของคุณจริงแบบอัตโนมัติ</p>
+                    <p class="text-xs text-slate-400">ข้อมูลจะถูกบันทึกไว้ในเบราว์เซอร์ของคุณจริงแบบอัตโนมัติ (LocalStorage)</p>
                 </div>
             </div>
 
@@ -236,19 +236,87 @@
 
     </main>
 
-    <!-- Footer -->
     <footer class="border-t border-slate-900 bg-slate-950 py-6 text-center text-xs text-slate-500">
-        AI Subscription & Daily Expense Manager &bull; Production Ready GitHub Pages Edition
+        AI Subscription & Daily Expense Manager &bull; GitHub Pages Edition
     </footer>
 
-    <!-- Logic JavaScript -->
     <script>
-        // Real Data State in LocalStorage
+        // App Price Database
+        const APP_PRESETS = [
+            // 🎬 ความบันเทิง
+            { keywords: ['netflix'], merchant: 'Netflix', price: 349.00, category: 'Subscription' },
+            { keywords: ['disney', 'hotstar'], merchant: 'Disney+ Hotstar', price: 289.00, category: 'Subscription' },
+            { keywords: ['hbo', 'hbo max', 'hbo go'], merchant: 'HBO GO / Max', price: 199.00, category: 'Subscription' },
+            { keywords: ['prime', 'amazon prime'], merchant: 'Prime Video', price: 149.00, category: 'Subscription' },
+            { keywords: ['viu'], merchant: 'Viu Premium', price: 149.00, category: 'Subscription' },
+            { keywords: ['iqiyi'], merchant: 'iQiyi VIP', price: 119.00, category: 'Subscription' },
+            { keywords: ['wetv'], merchant: 'WeTV VIP', price: 119.00, category: 'Subscription' },
+            { keywords: ['bilibili'], merchant: 'Bilibili VIP', price: 99.00, category: 'Subscription' },
+            { keywords: ['crunchyroll'], merchant: 'Crunchyroll', price: 129.00, category: 'Subscription' },
+            { keywords: ['apple tv'], merchant: 'Apple TV+', price: 229.00, category: 'Subscription' },
+            { keywords: ['youtube premium', 'youtube'], merchant: 'YouTube Premium', price: 199.00, category: 'Subscription' },
+
+            // 🎵 ฟังเพลง / พอดแคสต์
+            { keywords: ['spotify'], merchant: 'Spotify Premium', price: 149.00, category: 'Subscription' },
+            { keywords: ['apple music'], merchant: 'Apple Music', price: 139.00, category: 'Subscription' },
+            { keywords: ['youtube music'], merchant: 'YouTube Music', price: 129.00, category: 'Subscription' },
+            { keywords: ['joox'], merchant: 'JOOX VIP', price: 129.00, category: 'Subscription' },
+            { keywords: ['tidal'], merchant: 'Tidal HiFi', price: 179.00, category: 'Subscription' },
+            { keywords: ['deezer'], merchant: 'Deezer Premium', price: 149.00, category: 'Subscription' },
+            { keywords: ['audible'], merchant: 'Audible', price: 530.00, category: 'Subscription' },
+
+            // 💻 การทำงาน / AI
+            { keywords: ['microsoft 365', 'office 365', 'microsoft'], merchant: 'Microsoft 365', price: 289.00, category: 'Subscription' },
+            { keywords: ['google one', 'google drive'], merchant: 'Google One', price: 70.00, category: 'Subscription' },
+            { keywords: ['icloud', 'apple icloud'], merchant: 'Apple iCloud+', price: 35.00, category: 'Subscription' },
+            { keywords: ['chatgpt', 'openai'], merchant: 'ChatGPT Plus', price: 700.00, category: 'Subscription' },
+            { keywords: ['claude', 'anthropic'], merchant: 'Claude Pro', price: 700.00, category: 'Subscription' },
+            { keywords: ['notion'], merchant: 'Notion Plus / AI', price: 350.00, category: 'Subscription' },
+            { keywords: ['goodnotes'], merchant: 'Goodnotes 6', price: 349.00, category: 'Subscription' },
+            { keywords: ['evernote'], merchant: 'Evernote Personal', price: 350.00, category: 'Subscription' },
+            { keywords: ['zoom'], merchant: 'Zoom Pro', price: 530.00, category: 'Subscription' },
+
+            // 🎨 ออกแบบ / แต่งภาพ
+            { keywords: ['adobe', 'creative cloud', 'photoshop'], merchant: 'Adobe Creative Cloud', price: 1900.00, category: 'Subscription' },
+            { keywords: ['canva'], merchant: 'Canva Pro', price: 229.00, category: 'Subscription' },
+            { keywords: ['capcut'], merchant: 'CapCut Pro', price: 209.00, category: 'Subscription' },
+            { keywords: ['procreate'], merchant: 'Procreate Dreams', price: 699.00, category: 'Subscription' },
+            { keywords: ['picsart'], merchant: 'Picsart Gold', price: 129.00, category: 'Subscription' },
+            { keywords: ['vsco'], merchant: 'VSCO Plus', price: 119.00, category: 'Subscription' },
+
+            // 🎮 เกม
+            { keywords: ['playstation', 'ps plus'], merchant: 'PlayStation Plus', price: 210.00, category: 'Subscription' },
+            { keywords: ['xbox', 'game pass'], merchant: 'Xbox Game Pass', price: 320.00, category: 'Subscription' },
+            { keywords: ['nintendo', 'switch online'], merchant: 'Nintendo Switch Online', price: 150.00, category: 'Subscription' },
+            { keywords: ['apple arcade'], merchant: 'Apple Arcade', price: 179.00, category: 'Subscription' },
+            { keywords: ['play pass', 'google play pass'], merchant: 'Google Play Pass', price: 99.00, category: 'Subscription' },
+            { keywords: ['discord', 'nitro'], merchant: 'Discord Nitro', price: 300.00, category: 'Subscription' },
+
+            // 🧘 สุขภาพ / พัฒนาตนเอง
+            { keywords: ['strava'], merchant: 'Strava Subscription', price: 229.00, category: 'Subscription' },
+            { keywords: ['calm'], merchant: 'Calm Premium', price: 280.00, category: 'Subscription' },
+            { keywords: ['headspace'], merchant: 'Headspace', price: 350.00, category: 'Subscription' },
+            { keywords: ['myfitnesspal'], merchant: 'MyFitnessPal Premium', price: 350.00, category: 'Subscription' },
+            { keywords: ['duolingo'], merchant: 'Duolingo Super', price: 249.00, category: 'Subscription' },
+
+            // 🔒 VPN & Security
+            { keywords: ['nordvpn'], merchant: 'NordVPN', price: 450.00, category: 'Subscription' },
+            { keywords: ['expressvpn'], merchant: 'ExpressVPN', price: 450.00, category: 'Subscription' },
+            { keywords: ['surfshark'], merchant: 'Surfshark VPN', price: 350.00, category: 'Subscription' },
+            { keywords: ['cyberghost'], merchant: 'CyberGhost VPN', price: 350.00, category: 'Subscription' },
+            { keywords: ['bullvpn'], merchant: 'BullVPN', price: 200.00, category: 'Subscription' },
+
+            // อื่นๆ
+            { keywords: ['grab'], merchant: 'Grab Food/Transport', price: 285.00, category: 'Transportation' },
+            { keywords: ['7-eleven', '7-11'], merchant: '7-Eleven', price: 142.00, category: 'Food & Beverage' }
+        ];
+
+        // State Management
         let transactions = JSON.parse(localStorage.getItem('ai_manager_txs')) || [
-            { id: 1, merchant: 'Netflix Thailand', amount: 419.00, category: 'Subscription', recurrence: 'ตัดซ้ำรายเดือน' },
-            { id: 2, merchant: 'Grab Food', amount: 285.00, category: 'Ghost Expense', recurrence: 'รายการจุกจิก' },
-            { id: 3, merchant: '7-Eleven', amount: 142.00, category: 'Food & Beverage', recurrence: 'รายการทั่วไป' },
-            { id: 4, merchant: 'OpenAI ChatGPT', amount: 750.00, category: 'Subscription', recurrence: 'ตัดซ้ำรายเดือน' }
+            { id: 1, merchant: 'Netflix', amount: 349.00, category: 'Subscription', recurrence: 'ตัดซ้ำรายเดือน' },
+            { id: 2, merchant: 'YouTube Premium', amount: 199.00, category: 'Subscription', recurrence: 'ตัดซ้ำรายเดือน' },
+            { id: 3, merchant: 'ChatGPT Plus', amount: 700.00, category: 'Subscription', recurrence: 'ตัดซ้ำรายเดือน' },
+            { id: 4, merchant: '7-Eleven', amount: 142.00, category: 'Food & Beverage', recurrence: 'รายการทั่วไป' }
         ];
 
         let emailSettings = JSON.parse(localStorage.getItem('ai_manager_email')) || {
@@ -260,13 +328,11 @@
 
         let expenseChartInstance = null;
 
-        // Save State
         function saveToStorage() {
             localStorage.setItem('ai_manager_txs', JSON.stringify(transactions));
             localStorage.setItem('ai_manager_email', JSON.stringify(emailSettings));
         }
 
-        // Calculate Metrics and Refresh UI
         function updateDashboard() {
             let total = 0;
             let subTotal = 0;
@@ -297,9 +363,7 @@
                 }
             });
 
-            // Potential Annual Savings Calculation
-            const potentialSavingsYearly = (subTotal * 0.4 + ghostTotal * 0.3) * 12;
-            const roiVal = potentialSavingsYearly > 0 ? (potentialSavingsYearly / 948).toFixed(1) : 0;
+            const potentialSavingsYearly = (subTotal * 0.35 + ghostTotal * 0.3) * 12;
 
             document.getElementById('metric-total').innerText = `฿${total.toLocaleString('th-TH', {minimumFractionDigits: 2})}`;
             document.getElementById('metric-count').innerText = `${transactions.length} รายการ`;
@@ -310,14 +374,13 @@
             document.getElementById('metric-ghost').innerText = `฿${ghostTotal.toLocaleString('th-TH', {minimumFractionDigits: 2})}`;
             
             document.getElementById('metric-savings').innerText = `฿${potentialSavingsYearly.toLocaleString('th-TH', {minimumFractionDigits: 2})}`;
-            document.getElementById('metric-roi').innerText = `ประมาณการณ์ ROI: ${roiVal}x (เทียบค่าบริการ ฿79/เดือน)`;
+            document.getElementById('metric-roi').innerText = `ประมาณการณ์ประหยัดหากยกเลิกแอปที่ไม่ใช้`;
 
             renderChart(categoryTotals);
             renderTable();
             saveToStorage();
         }
 
-        // Render Transaction Table
         function renderTable() {
             const tbody = document.getElementById('tx-tbody');
             tbody.innerHTML = '';
@@ -352,7 +415,6 @@
             });
         }
 
-        // Chart.js Rendering
         function renderChart(catTotals) {
             const ctx = document.getElementById('expenseChart').getContext('2d');
             if (expenseChartInstance) {
@@ -404,7 +466,6 @@
             statusText.innerText = "กำลังดาวน์โหลด AI Engine และสแกนข้อความภาษาไทย/อังกฤษ...";
 
             try {
-                // Initialize Worker with Thai and English language traineddata
                 const worker = await Tesseract.createWorker('tha+eng');
                 
                 progressBar.style.width = '50%';
@@ -418,7 +479,6 @@
                 
                 document.getElementById('raw-ocr-text').innerText = text || "(อ่านข้อความในรูปภาพไม่พบ)";
 
-                // Extract with Regex Parsing Logic
                 const parsed = parseSlipText(text);
 
                 document.getElementById('res-merchant').value = parsed.merchant;
@@ -433,9 +493,9 @@
             } catch (err) {
                 console.error(err);
                 loadingBox.classList.add('hidden');
-                alert("อ่านข้อความสลิปไม่สำเร็จ โปรดแนบสลิปที่ชัดเจนขึ้น หรือระบุข้อมูลด้วยตนเอง");
+                alert("อ่านข้อความสลิปไม่สำเร็จ โปรดระบุข้อมูลด้วยตนเอง");
                 
-                document.getElementById('res-merchant').value = "รายการจากสลิป";
+                document.getElementById('res-merchant').value = "รายการสแกน";
                 document.getElementById('res-amount').value = 100.00;
                 document.getElementById('res-category').value = "Ghost Expense";
                 document.getElementById('res-recurrence').value = "สแกนด้วยตนเอง";
@@ -443,7 +503,7 @@
             }
         }
 
-        // Regex Smart Slip Parser
+        // Smart Slip & Preset Matching Parser
         function parseSlipText(text) {
             const lowerText = text.toLowerCase();
             let merchant = "สลิปโอนเงิน / ใบเสร็จ";
@@ -451,16 +511,18 @@
             let category = "Ghost Expense";
             let recurrence = "รายการทั่วไป";
 
-            // Merchant / Service Detection
-            if (lowerText.includes('netflix')) { merchant = 'Netflix Thailand'; category = 'Subscription'; recurrence = 'พบรายการตัดซ้ำรายเดือน'; }
-            else if (lowerText.includes('spotify')) { merchant = 'Spotify Music'; category = 'Subscription'; recurrence = 'พบรายการตัดซ้ำรายเดือน'; }
-            else if (lowerText.includes('chatgpt') || lowerText.includes('openai')) { merchant = 'OpenAI ChatGPT'; category = 'Subscription'; recurrence = 'พบรายการตัดซ้ำรายเดือน'; }
-            else if (lowerText.includes('grab')) { merchant = 'Grab Food/Transport'; category = 'Transportation'; recurrence = 'รายการจุกจิก'; }
-            else if (lowerText.includes('7-eleven') || lowerText.includes('7-11')) { merchant = '7-Eleven'; category = 'Food & Beverage'; recurrence = 'รายการทั่วไป'; }
-            else if (lowerText.includes('ais') || lowerText.includes('true') || lowerText.includes('dtac')) { merchant = 'ค่าบริการอินเทอร์เน็ต/มือถือ'; category = 'Subscription'; recurrence = 'พบรายการตัดซ้ำรายเดือน'; }
-            else if (lowerText.includes('shopee') || lowerText.includes('lazada')) { merchant = 'Shopee/Lazada Order'; category = 'Ghost Expense'; recurrence = 'ช้อปปิ้งออนไลน์'; }
+            // Match Database Presets
+            for (const item of APP_PRESETS) {
+                if (item.keywords.some(kw => lowerText.includes(kw))) {
+                    merchant = item.merchant;
+                    amount = item.price;
+                    category = item.category;
+                    recurrence = item.category === 'Subscription' ? 'พบรายการตัดซ้ำรายเดือน' : 'รายการทั่วไป';
+                    break;
+                }
+            }
 
-            // Extract Amount (THB, บาท, ฿)
+            // Extract Amount if not found in preset or if slip has specific price
             const amountMatches = text.match(/(?:บาท|baht|thb|จำนวนเงิน|ยอดเงิน|฿)\s*[:\.]?\s*([\d,]+\.\d{2}|[\d,]+)/i) 
                                || text.match(/([\d,]+\.\d{2})/);
 
@@ -476,7 +538,6 @@
             return { merchant, amount, category, recurrence };
         }
 
-        // Save Scanned Transaction
         function confirmTransaction() {
             const merchant = document.getElementById('res-merchant').value || 'รายการสแกน';
             const amount = parseFloat(document.getElementById('res-amount').value) || 0;
@@ -497,13 +558,11 @@
             alert('บันทึกข้อมูลเรียบร้อยแล้ว!');
         }
 
-        // Delete Individual Transaction
         function deleteTransaction(id) {
             transactions = transactions.filter(tx => tx.id !== id);
             updateDashboard();
         }
 
-        // Clear All Records
         function clearAllData() {
             if (confirm('คุณต้องการล้างข้อมูลประวัติรายจ่ายทั้งหมดใช่หรือไม่?')) {
                 transactions = [];
@@ -511,7 +570,6 @@
             }
         }
 
-        // Email Settings Handler
         function saveEmailSettings(e) {
             e.preventDefault();
             emailSettings = {
@@ -527,16 +585,15 @@
             setTimeout(() => toast.classList.add('hidden'), 3500);
         }
 
-        // Test Dispatch Notification Email Client
         function testSendEmailNotification() {
             const email = document.getElementById('user-email').value || 'user@example.com';
             const subject = encodeURIComponent("[AI Alert] แจ้งเตือนยอดชำระ Subscription ล่วงหน้า");
-            const body = encodeURIComponent(`สวัสดีครับ,\n\nระบบ AI Expense Manager ตรวจพบว่าคุณมีรายการ Subscription ที่กำลังจะถึงกำหนดตัดเงินในอีก ${emailSettings.alertDays} วัน:\n\n- Netflix Thailand (฿419.00)\n- OpenAI ChatGPT (฿750.00)\n\nหากคุณไม่ได้ใช้งานบริการเหล่านี้แล้ว สามารถกดดำเนินการยกเลิกได้ทางหน้า Dashboard ครับ`);
+            const body = encodeURIComponent(`สวัสดีครับ,\n\nระบบ AI Expense Manager ตรวจพบว่าคุณมีรายการ Subscription ที่กำลังจะถึงกำหนดตัดเงินในอีก ${emailSettings.alertDays} วัน:\n\n- Netflix (฿349.00)\n- YouTube Premium (฿199.00)\n- ChatGPT Plus (฿700.00)\n\nหากคุณไม่ได้ใช้งานบริการเหล่านี้แล้ว สามารถกดดำเนินการยกเลิกได้ทางหน้า Dashboard ครับ`);
             
             window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
         }
 
-        // Drag & Drop Handling
+        // Drag & Drop
         const dropZone = document.getElementById('drop-zone');
         ['dragenter', 'dragover'].forEach(name => {
             dropZone.addEventListener(name, (e) => { e.preventDefault(); dropZone.classList.add('border-emerald-500', 'bg-slate-900'); });
@@ -553,13 +610,12 @@
             }
         });
 
-        // Load Saved Email Settings
+        // Load Initial State
         document.getElementById('user-email').value = emailSettings.email || '';
         document.getElementById('alert-days').value = emailSettings.alertDays || '3';
         document.getElementById('email-opt-monthly').checked = emailSettings.monthlyOpt;
         document.getElementById('email-opt-unused').checked = emailSettings.unusedOpt;
 
-        // Initial Load
         updateDashboard();
     </script>
 </body>
