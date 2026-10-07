@@ -367,11 +367,13 @@
                             <h3 class="font-bold text-lg text-slate-100 flex items-center gap-2">
                                 <i class="fa-solid fa-envelope text-emerald-400"></i> ระบบแจ้งเตือน Gmail อัตโนมัติ (Google Apps Script)
                             </h3>
-                            <span id="gas-status-badge" class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-300 border border-amber-500/30 flex items-center gap-1.5">
-                                <span class="w-2 h-2 rounded-full bg-amber-400"></span> 🟡 ยังไม่ได้เชื่อมต่อ Google Apps Script
+                            <span id="gas-status-badge" class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> 🟢 Gmail Notification Connected
                             </span>
                         </div>
-                        <p class="text-xs text-slate-400 mt-1">ระบบจะส่งการแจ้งเตือนไปยัง Email ที่กำหนดไว้ในแต่ละ Subscription</p>
+                        <p id="gas-status-desc" class="text-xs text-emerald-400 mt-1 flex items-center gap-1.5">
+                            <i class="fa-solid fa-circle-check"></i> ระบบเชื่อมต่อ Google Apps Script อัตโนมัติแล้ว
+                        </p>
                     </div>
                 </div>
 
@@ -390,19 +392,14 @@
                 </div>
 
                 <form onsubmit="saveEmailSettings(event)" class="space-y-4">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="text-xs text-slate-400 block mb-1">Google Apps Script Web App URL:</label>
-                            <input type="url" id="gas-url" placeholder="https://script.google.com/macros/s/.../exec" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-100 focus:border-emerald-500 outline-none">
-                        </div>
-                        <div>
-                            <label class="text-xs text-slate-400 block mb-1">ค่าเริ่มต้นแจ้งเตือนล่วงหน้า (Default Reminder):</label>
-                            <select id="alert-days" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-100 focus:border-emerald-500 outline-none">
-                                <option value="1">ล่วงหน้า 1 วัน (1 day before)</option>
-                                <option value="3">ล่วงหน้า 3 วัน (3 days before)</option>
-                                <option value="7">ล่วงหน้า 7 วัน (7 days before)</option>
-                            </select>
-                        </div>
+                    <input type="hidden" id="gas-url" value="https://script.google.com/macros/s/AKfycbxoZPanZwBJ4zMJEmD5P78psrxMKWgUya34UQDNmbTCiR0cjMLZinGa1tBuCRyqWm5h/exec">
+                    <div class="max-w-md">
+                        <label class="text-xs text-slate-400 block mb-1">ค่าเริ่มต้นแจ้งเตือนล่วงหน้า (Default Reminder):</label>
+                        <select id="alert-days" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-100 focus:border-emerald-500 outline-none">
+                            <option value="1">ล่วงหน้า 1 วัน (1 day before)</option>
+                            <option value="3">ล่วงหน้า 3 วัน (3 days before)</option>
+                            <option value="7">ล่วงหน้า 7 วัน (7 days before)</option>
+                        </select>
                     </div>
                     <div class="flex flex-wrap gap-4 pt-1">
                         <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
@@ -412,11 +409,11 @@
                             <input type="checkbox" id="email-opt-unused" checked class="accent-emerald-500 rounded"> เตือนบริการที่ไม่มีการใช้งานเกิน 60 วัน
                         </label>
                     </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                         <button type="button" onclick="sendRealTestEmail()" id="btn-test-email" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-emerald-400 font-medium py-2.5 rounded-xl text-xs transition-all border border-slate-700 flex items-center justify-center gap-1.5">
                             <i class="fa-solid fa-paper-plane"></i> ส่ง Test Email
                         </button>
-                        <button type="button" onclick="syncWithBackend(true)" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-emerald-400 font-medium py-2.5 rounded-xl text-xs transition-all border border-slate-700 flex items-center justify-center gap-1.5">
+                        <button type="button" onclick="syncWithBackend(true)" id="btn-sync-sheets" class="hidden">
                             <i class="fa-solid fa-arrows-rotate"></i> Sync Google Sheets
                         </button>
                         <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-2.5 rounded-xl text-xs transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2">
@@ -774,10 +771,13 @@
             }
         }
 
+        // Google Apps Script Web App Endpoint (Locked Constant)
+        const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxoZPanZwBJ4zMJEmD5P78psrxMKWgUya34UQDNmbTCiR0cjMLZinGa1tBuCRyqWm5h/exec';
+
         // State Management
         let transactions = [];
         let emailSettings = {
-            gasWebAppUrl: '',
+            gasWebAppUrl: GAS_WEB_APP_URL,
             alertDays: '1',
             monthlyOpt: true,
             unusedOpt: true
@@ -898,13 +898,24 @@
                 try {
                     emailSettings = JSON.parse(storedEmail);
                 } catch (e) {
-                    emailSettings = { gasWebAppUrl: '', alertDays: '1', monthlyOpt: true, unusedOpt: true };
+                    emailSettings = { gasWebAppUrl: GAS_WEB_APP_URL, alertDays: '1', monthlyOpt: true, unusedOpt: true };
                 }
             }
-            document.getElementById('gas-url').value = emailSettings.gasWebAppUrl || '';
-            document.getElementById('alert-days').value = emailSettings.alertDays || '1';
-            document.getElementById('email-opt-monthly').checked = emailSettings.monthlyOpt !== false;
-            document.getElementById('email-opt-unused').checked = emailSettings.unusedOpt !== false;
+            // Always lock to GAS_WEB_APP_URL
+            emailSettings.gasWebAppUrl = GAS_WEB_APP_URL;
+
+            const gasUrlEl = document.getElementById('gas-url');
+            if (gasUrlEl) gasUrlEl.value = GAS_WEB_APP_URL;
+
+            const alertDaysEl = document.getElementById('alert-days');
+            if (alertDaysEl) alertDaysEl.value = emailSettings.alertDays || '1';
+
+            const monthlyOptEl = document.getElementById('email-opt-monthly');
+            if (monthlyOptEl) monthlyOptEl.checked = emailSettings.monthlyOpt !== false;
+
+            const unusedOptEl = document.getElementById('email-opt-unused');
+            if (unusedOptEl) unusedOptEl.checked = emailSettings.unusedOpt !== false;
+
             updateGasStatusBadge();
 
             // Load cached transactions for fast immediate rendering
@@ -926,11 +937,8 @@
             updateDashboard();
 
             // CLOUD SYNC (SOURCE OF TRUTH):
-            // If GAS Web App URL is configured, PULL latest subscriptions from Google Sheets
-            const url = (emailSettings.gasWebAppUrl || '').trim();
-            if (url && url.startsWith('http')) {
-                await pullFromBackend(false, { allowPushIfRemoteEmpty: false });
-            }
+            // Automatic connection to Google Apps Script on app start, PULL latest subscriptions from Google Sheets
+            await pullFromBackend(false, { allowPushIfRemoteEmpty: false });
         }
 
         function setupDragAndDrop() {
@@ -1373,14 +1381,11 @@
             saveToStorage();
             updateDashboard();
 
-            const url = (emailSettings.gasWebAppUrl || '').trim();
-            if (url && url.startsWith('http')) {
-                fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({ action: 'markAsPaid', id: targetId })
-                }).catch(e => console.warn('markAsPaid error:', e));
-            }
+            fetch(GAS_WEB_APP_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ action: 'markAsPaid', id: targetId })
+            }).catch(e => console.warn('markAsPaid error:', e));
             pushToBackend(false);
             showToast(`บันทึกชำระเงิน ${tx.merchant} เรียบร้อย! รอบถัดไปคือ ${formatDateDisplay(tx.nextBillingDate)}`);
         }
@@ -1406,16 +1411,13 @@
                 saveToStorage();
                 updateDashboard();
 
-                const url = (emailSettings.gasWebAppUrl || '').trim();
-                if (url && url.startsWith('http')) {
-                    fetch(url, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                        body: JSON.stringify({ action: 'deleteSubscription', id: targetId })
-                    }).catch(e => console.warn('deleteSubscription error:', e));
-                    if (transactions.length > 0) {
-                        pushToBackend(false);
-                    }
+                fetch(GAS_WEB_APP_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action: 'deleteSubscription', id: targetId })
+                }).catch(e => console.warn('deleteSubscription error:', e));
+                if (transactions.length > 0) {
+                    pushToBackend(false);
                 }
                 showToast(`ลบ "${name}" เรียบร้อยแล้ว`);
             }
@@ -1423,10 +1425,9 @@
 
         async function clearAllData() {
             if (confirm('คุณต้องการรีเซ็ตข้อมูลทั้งหมดใช่หรือไม่?\n(รายการ Subscription และประวัติค่าใช้จ่ายทั้งหมดจะถูกล้าง)')) {
-                const gasUrl = (emailSettings.gasWebAppUrl || '').trim();
                 transactions = [];
                 emailSettings = {
-                    gasWebAppUrl: gasUrl,
+                    gasWebAppUrl: GAS_WEB_APP_URL,
                     alertDays: '1',
                     monthlyOpt: true,
                     unusedOpt: true
@@ -1434,25 +1435,26 @@
                 localStorage.removeItem('ai_manager_txs');
                 localStorage.setItem('ai_manager_email', JSON.stringify(emailSettings));
 
-                document.getElementById('alert-days').value = '1';
-                document.getElementById('email-opt-monthly').checked = true;
-                document.getElementById('email-opt-unused').checked = true;
+                const alertDaysEl = document.getElementById('alert-days');
+                if (alertDaysEl) alertDaysEl.value = '1';
+                const monthlyOptEl = document.getElementById('email-opt-monthly');
+                if (monthlyOptEl) monthlyOptEl.checked = true;
+                const unusedOptEl = document.getElementById('email-opt-unused');
+                if (unusedOptEl) unusedOptEl.checked = true;
                 updateGasStatusBadge();
 
                 updateDashboard();
                 showToast('รีเซ็ตข้อมูลทั้งหมดเรียบร้อยแล้ว');
 
                 // Clear remote Google Sheet if connected
-                if (gasUrl && gasUrl.startsWith('http')) {
-                    try {
-                        await fetch(gasUrl, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                            body: JSON.stringify({ action: 'resetData' })
-                        });
-                    } catch (e) {
-                        console.warn('Failed to clear remote sheet:', e);
-                    }
+                try {
+                    await fetch(GAS_WEB_APP_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({ action: 'resetData' })
+                    });
+                } catch (e) {
+                    console.warn('Failed to clear remote sheet:', e);
                 }
             }
         }
@@ -1803,14 +1805,14 @@
         // Update Google Apps Script Connection Status Badge
         function updateGasStatusBadge() {
             const badge = document.getElementById('gas-status-badge');
-            if (!badge) return;
-            const url = (emailSettings.gasWebAppUrl || '').trim();
-            if (url && url.startsWith('http')) {
+            if (badge) {
                 badge.className = "px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5";
                 badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> 🟢 Gmail Notification Connected`;
-            } else {
-                badge.className = "px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-300 border border-amber-500/30 flex items-center gap-1.5";
-                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400"></span> 🟡 ยังไม่ได้เชื่อมต่อ Google Apps Script`;
+            }
+            const desc = document.getElementById('gas-status-desc');
+            if (desc) {
+                desc.className = "text-xs text-emerald-400 mt-1 flex items-center gap-1.5";
+                desc.innerHTML = `<i class="fa-solid fa-circle-check"></i> ระบบเชื่อมต่อ Google Apps Script อัตโนมัติแล้ว`;
             }
         }
 
@@ -1818,11 +1820,8 @@
         // PULL: Google Sheets (Source of Truth) -> Frontend
         // ==============================================================================
         async function pullFromBackend(isManual = false, options = {}) {
-            const url = (emailSettings.gasWebAppUrl || '').trim();
+            const url = GAS_WEB_APP_URL;
             if (!url || !url.startsWith('http')) {
-                if (isManual) {
-                    alert('กรุณากรอก Google Apps Script Web App URL ก่อนทำการดึงข้อมูล');
-                }
                 return false;
             }
 
@@ -1862,7 +1861,7 @@
                 }
 
                 if (remoteList === null) {
-                    throw new Error('ไม่สามารถเชื่อมต่อหรือดึงข้อมูลจาก Google Apps Script ได้ (โปรดตรวจสอบ Web App URL และสิทธิ์ Anyone)');
+                    throw new Error('ไม่สามารถเชื่อมต่อหรือดึงข้อมูลจาก Google Apps Script ได้ (โปรดตรวจสอบการเชื่อมต่ออินเทอร์เน็ต)');
                 }
 
                 // กรณีที่ 1 & กรณีที่ 2: Google Sheets มีข้อมูล (Cloud เป็น Source of Truth)
@@ -1910,11 +1909,8 @@
         // PUSH: Frontend -> Google Sheets
         // ==============================================================================
         async function pushToBackend(isManual = false) {
-            const url = (emailSettings.gasWebAppUrl || '').trim();
+            const url = GAS_WEB_APP_URL;
             if (!url || !url.startsWith('http')) {
-                if (isManual) {
-                    alert('กรุณากรอก Google Apps Script Web App URL ก่อน');
-                }
                 return false;
             }
 
@@ -1946,13 +1942,13 @@
             } catch (err) {
                 console.warn('PUSH Error:', err);
                 if (isManual) {
-                    showToast('ซิงค์กับ Google Sheets ไม่สำเร็จ โปรดตรวจสอบ Web App URL', false);
+                    showToast('ซิงค์กับ Google Sheets ไม่สำเร็จ', false);
                 }
                 return false;
             }
         }
 
-        // ฟังก์ชันสำหรับปุ่ม [ Sync Google Sheets ]
+        // ฟังก์ชัน syncWithBackend (คงไว้สำหรับระบบภายใน)
         async function syncWithBackend(isManual = false) {
             // เมื่อกด Sync จะทำการ PULL ข้อมูลล่าสุดจาก Google Sheets ก่อนเสมอ (Source of Truth)
             // หากชีตว่างเปล่าและเครื่องมีข้อมูล จะ Push ขึ้นไป (allowPushIfRemoteEmpty: true)
@@ -1969,12 +1965,7 @@
             }
 
             const email = subWithEmail.email.trim();
-            const url = (document.getElementById('gas-url')?.value || emailSettings.gasWebAppUrl || '').trim();
-
-            if (!url || !url.startsWith('http')) {
-                alert('กรุณาระบุ Google Apps Script Web App URL ก่อนทดสอบส่งอีเมลจริง\n(ดูวิธี Deploy ได้ในคู่มือ Code.gs)');
-                return;
-            }
+            const url = GAS_WEB_APP_URL;
 
             const btn = document.getElementById('btn-test-email');
             const originalHtml = btn ? btn.innerHTML : '';
@@ -1995,15 +1986,15 @@
                 });
                 const json = await res.json();
 
-                if (json.status === 'success') {
+                if (json && json.status === 'success') {
                     showToast(`ส่ง Gmail ทดสอบไปยัง ${email} สำเร็จแล้ว!`);
                     alert(`ส่ง Email จริงสำเร็จ!\n\nระบบได้ส่งอีเมลทดสอบจริงไปยัง: ${email} (จากบริการ ${subWithEmail.merchant})\nหัวข้อ: 🧪 Subscription Alert Test\n\nกรุณาตรวจสอบใน Inbox หรือ Spam ของคุณ`);
                 } else {
-                    alert('ส่งไม่สำเร็จ: ' + (json.message || 'Unknown error'));
+                    alert('ส่งไม่สำเร็จ: ' + (json && json.message ? json.message : 'Unknown error'));
                 }
             } catch (err) {
                 console.error(err);
-                alert('เกิดข้อผิดพลาดในการเชื่อมต่อกับ Google Apps Script:\n' + err.message + '\n\nโปรดตรวจสอบสิทธิ์การ Deploy Web App เป็น "Who has access: Anyone"');
+                alert('เกิดข้อผิดพลาดในการเชื่อมต่อกับ Google Apps Script:\n' + err.message);
             } finally {
                 if (btn) {
                     btn.innerHTML = originalHtml;
@@ -2014,27 +2005,26 @@
 
         // Save Email Settings & Connect
         async function saveEmailSettings(e) {
-            e.preventDefault();
-            const newUrl = document.getElementById('gas-url').value.trim();
+            if (e && e.preventDefault) e.preventDefault();
 
             emailSettings = {
-                gasWebAppUrl: newUrl,
-                alertDays: document.getElementById('alert-days').value,
-                monthlyOpt: document.getElementById('email-opt-monthly').checked,
-                unusedOpt: document.getElementById('email-opt-unused').checked
+                gasWebAppUrl: GAS_WEB_APP_URL,
+                alertDays: document.getElementById('alert-days') ? document.getElementById('alert-days').value : '1',
+                monthlyOpt: document.getElementById('email-opt-monthly') ? document.getElementById('email-opt-monthly').checked : true,
+                unusedOpt: document.getElementById('email-opt-unused') ? document.getElementById('email-opt-unused').checked : true
             };
             saveToStorage();
             updateGasStatusBadge();
 
             const toast = document.getElementById('email-toast');
-            toast.classList.remove('hidden');
-            setTimeout(() => toast.classList.add('hidden'), 3500);
-            showToast('บันทึกการตั้งค่าแจ้งเตือน Gmail สำเร็จ!');
-
-            // เมื่อบันทึก URL ให้ทำ PULL จาก Google Sheets ทันที (ห้าม overwrite ด้วย [])
-            if (newUrl && newUrl.startsWith('http')) {
-                await pullFromBackend(true, { allowPushIfRemoteEmpty: true });
+            if (toast) {
+                toast.classList.remove('hidden');
+                setTimeout(() => toast.classList.add('hidden'), 3500);
             }
+            showToast('บันทึกการตั้งค่า Gmail Notification สำเร็จ!');
+
+            // เมื่อบันทึกการตั้งค่า ให้ทำ PULL จาก Google Sheets ทันที (ห้าม overwrite ด้วย [])
+            await pullFromBackend(true, { allowPushIfRemoteEmpty: true });
         }
 
         // Toast Feedback Message
