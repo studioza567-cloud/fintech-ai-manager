@@ -39,8 +39,8 @@
                     <i class="fa-solid fa-bell-ring"></i>
                 </div>
                 <div>
-                    <h1 class="text-lg font-bold bg-gradient-to-r from-emerald-400 to-teal-200 bg-clip-text text-transparent">AI Subscription & Expense Manager</h1>
-                    <p class="text-xs text-slate-400">ระบบบริหารจัดการรอบบิล & แจ้งเตือนก่อนตัดเงินล่วงหน้า (Next Billing Reminder)</p>
+                    <h1 class="text-lg font-bold bg-gradient-to-r from-emerald-400 to-teal-200 bg-clip-text text-transparent" data-i18n="appTitle">AI Subscription & Expense Manager</h1>
+                    <p class="text-xs text-slate-400" id="headerSubtitle" data-i18n="appSubtitle">ระบบบริหารจัดการรอบบิล & แจ้งเตือนก่อนตัดเงินล่วงหน้า (Next Billing Reminder)</p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
@@ -54,7 +54,7 @@
                     <div id="bell-dropdown" class="hidden absolute right-0 mt-2 w-80 sm:w-96 bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-4 z-50 space-y-3">
                         <div class="flex justify-between items-center border-b border-slate-800 pb-2">
                             <h4 class="text-sm font-bold text-slate-100 flex items-center gap-2">
-                                <i class="fa-solid fa-bell text-emerald-400"></i> การแจ้งเตือนรอบบิล
+                                <i class="fa-solid fa-bell text-emerald-400"></i> <span data-i18n="bellDropdownTitle">การแจ้งเตือนรอบบิล</span>
                             </h4>
                             <span id="bell-count-text" class="text-xs text-slate-400">0 รายการ</span>
                         </div>
@@ -64,11 +64,17 @@
                     </div>
                 </div>
 
-                <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs px-3 py-1.5 rounded-full font-medium flex items-center gap-2">
+                <!-- Language Switcher [TH | EN] -->
+                <div class="flex items-center bg-slate-950 border border-slate-700/80 rounded-xl p-0.5 text-xs shadow-inner" id="lang-switcher" title="Change Language / เปลี่ยนภาษา">
+                    <button type="button" onclick="setLanguage('th')" id="lang-btn-th" class="px-2.5 py-1 rounded-lg font-bold transition-all bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 shadow-sm shadow-emerald-500/10">TH</button>
+                    <button type="button" onclick="setLanguage('en')" id="lang-btn-en" class="px-2.5 py-1 rounded-lg font-medium transition-all text-slate-400 hover:text-slate-200 border border-transparent">EN</button>
+                </div>
+
+                <span class="hidden md:flex bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs px-3 py-1.5 rounded-full font-medium items-center gap-2">
                     <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Smart Billing Engine
                 </span>
                 <button onclick="clearAllData()" class="text-xs text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 px-3 py-1.5 rounded-lg border border-rose-500/20 transition-all">
-                    <i class="fa-solid fa-trash-can mr-1"></i> รีเซ็ตข้อมูล
+                    <i class="fa-solid fa-trash-can mr-1"></i> <span data-i18n="resetDataBtn">รีเซ็ตข้อมูล</span>
                 </button>
             </div>
         </div>
@@ -84,12 +90,12 @@
                         <i class="fa-solid fa-triangle-exclamation"></i>
                     </div>
                     <div>
-                        <h3 class="text-sm font-bold text-rose-300" id="banner-title">⚠️ มี Subscription ที่ใกล้ถึงกำหนดชำระเงิน!</h3>
-                        <p class="text-xs text-slate-300 mt-0.5" id="banner-description">โปรดตรวจสอบยอดเงินในบัญชีเพื่อป้องกันการถูกตัดเงินโดยไม่รู้ตัว</p>
+                        <h3 class="text-sm font-bold text-rose-300" id="banner-title" data-i18n="bannerTitle">⚠️ มี Subscription ที่ใกล้ถึงกำหนดชำระเงิน!</h3>
+                        <p class="text-xs text-slate-300 mt-0.5" id="banner-description" data-i18n="bannerDesc">โปรดตรวจสอบยอดเงินในบัญชีเพื่อป้องกันการถูกตัดเงินโดยไม่รู้ตัว</p>
                     </div>
                 </div>
                 <a href="#upcoming-section" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-rose-500 text-white hover:bg-rose-400 transition-all shrink-0">
-                    ดูรายการทั้งหมด <i class="fa-solid fa-arrow-down ml-1"></i>
+                    <span data-i18n="bannerViewAll">ดูรายการทั้งหมด</span> <i class="fa-solid fa-arrow-down ml-1"></i>
                 </a>
             </div>
         </div>
@@ -99,7 +105,7 @@
             <!-- 1. Total Monthly Subscriptions -->
             <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl relative overflow-hidden group hover:border-emerald-500/40 transition-all">
                 <div class="text-xs text-slate-400 font-medium flex items-center justify-between">
-                    <span>ค่า Subscription เฉลี่ยต่อเดือน</span>
+                    <span data-i18n="metricMonthlySubLabel">ค่า Subscription เฉลี่ยต่อเดือน</span>
                     <i class="fa-solid fa-repeat text-emerald-400/60"></i>
                 </div>
                 <div class="text-2xl font-bold text-emerald-400 mt-2" id="metric-monthly-sub">฿0.00</div>
@@ -111,7 +117,7 @@
             <!-- 2. Next Upcoming Payment -->
             <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl relative overflow-hidden group hover:border-amber-500/40 transition-all">
                 <div class="text-xs text-slate-400 font-medium flex items-center justify-between">
-                    <span>รอบชำระที่ใกล้ที่สุด (Next Payment)</span>
+                    <span data-i18n="metricNextPaymentLabel">รอบชำระที่ใกล้ที่สุด (Next Payment)</span>
                     <i class="fa-solid fa-calendar-check text-amber-400/60"></i>
                 </div>
                 <div class="text-xl font-bold text-amber-300 mt-2 truncate" id="metric-next-name">ไม่มีรายการ</div>
@@ -121,7 +127,7 @@
             <!-- 3. Payments Due This Month -->
             <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl relative overflow-hidden group hover:border-sky-500/40 transition-all">
                 <div class="text-xs text-slate-400 font-medium flex items-center justify-between">
-                    <span>ยอดที่ต้องจ่ายในรอบ 30 วันนี้</span>
+                    <span data-i18n="metricMonthDueLabel">ยอดที่ต้องจ่ายในรอบ 30 วันนี้</span>
                     <i class="fa-solid fa-wallet text-sky-400/60"></i>
                 </div>
                 <div class="text-2xl font-bold text-sky-400 mt-2" id="metric-month-due">฿0.00</div>
@@ -133,7 +139,7 @@
             <!-- 4. Total Ghost & Potential Savings -->
             <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl bg-gradient-to-br from-emerald-950/20 to-slate-900 relative overflow-hidden group hover:border-teal-500/40 transition-all">
                 <div class="text-xs text-teal-400 font-medium flex items-center justify-between">
-                    <span>โอกาสประหยัดต่อปี (AI Estimated)</span>
+                    <span data-i18n="metricSavingsLabel">โอกาสประหยัดต่อปี (AI Estimated)</span>
                     <i class="fa-solid fa-piggy-bank text-teal-400/60"></i>
                 </div>
                 <div class="text-2xl font-bold text-teal-300 mt-2" id="metric-savings">฿0.00</div>
@@ -149,15 +155,15 @@
                 <div>
                     <h2 class="text-xl font-bold text-slate-100 flex items-center gap-2.5">
                         <i class="fa-solid fa-clock-rotate-left text-amber-400"></i>
-                        <span>Upcoming Payments (รอบชำระที่ใกล้ถึงกำหนด)</span>
+                        <span data-i18n="upcomingSectionTitle">Upcoming Payments (รอบชำระที่ใกล้ถึงกำหนด)</span>
                     </h2>
-                    <p class="text-xs text-slate-400 mt-1">
-                        เรียงลำดับจาก <strong class="text-slate-200">ใกล้จ่ายที่สุด → ไกลที่สุด</strong> พร้อมปุ่มกดบันทึกจ่ายเงินเพื่อเลื่อนรอบบิลอัตโนมัติ
+                    <p class="text-xs text-slate-400 mt-1" id="upcoming-section-sub">
+                        <span data-i18n="upcomingSortPrefix">เรียงลำดับจาก</span> <strong class="text-slate-200" data-i18n="upcomingSortBold">ใกล้จ่ายที่สุด → ไกลที่สุด</strong> <span data-i18n="upcomingSortSuffix">พร้อมปุ่มกดบันทึกจ่ายเงินเพื่อเลื่อนรอบบิลอัตโนมัติ</span>
                     </p>
                 </div>
                 <div class="flex items-center gap-2">
                     <span class="text-xs px-2.5 py-1 bg-slate-800 text-slate-400 rounded-lg border border-slate-700">
-                        <i class="fa-solid fa-filter mr-1"></i> เฉพาะ Subscription ที่มีรอบบิล
+                        <i class="fa-solid fa-filter mr-1"></i> <span data-i18n="upcomingFilterBadge">เฉพาะ Subscription ที่มีรอบบิล</span>
                     </span>
                 </div>
             </div>
@@ -172,20 +178,20 @@
         <section class="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl">
             <div class="max-w-3xl mx-auto text-center mb-6">
                 <h2 class="text-2xl font-bold text-slate-100 flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-circle-plus text-emerald-400"></i> เพิ่มรายการ Subscription / รายจ่ายใหม่
+                    <i class="fa-solid fa-circle-plus text-emerald-400"></i> <span data-i18n="addSectionTitle">เพิ่มรายการ Subscription / รายจ่ายใหม่</span>
                 </h2>
-                <p class="text-sm text-slate-400 mt-1">กำหนดวันจ่ายล่าสุดและรอบบิล เพื่อให้ระบบคำนวณวันแจ้งเตือนล่วงหน้า</p>
+                <p class="text-sm text-slate-400 mt-1" data-i18n="addSectionSub">กำหนดวันจ่ายล่าสุดและรอบบิล เพื่อให้ระบบคำนวณวันแจ้งเตือนล่วงหน้า</p>
 
                 <!-- Mode Switcher Buttons -->
                 <div class="flex flex-wrap justify-center gap-2 mt-4">
                     <button onclick="switchAddMode('preset')" id="tab-btn-preset" class="px-4 py-2 rounded-xl text-xs font-semibold bg-emerald-500 text-slate-950 transition-all">
-                        <i class="fa-solid fa-icons mr-1"></i> เลือกจากแอปยอดนิยม (Quick Add)
+                        <i class="fa-solid fa-icons mr-1"></i> <span data-i18n="tabPreset">เลือกจากแอปยอดนิยม (Quick Add)</span>
                     </button>
                     <button onclick="switchAddMode('scan')" id="tab-btn-scan" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all">
-                        <i class="fa-solid fa-expand mr-1"></i> สแกนสลิปด้วย AI OCR
+                        <i class="fa-solid fa-expand mr-1"></i> <span data-i18n="tabScan">สแกนสลิปด้วย AI OCR</span>
                     </button>
                     <button onclick="switchAddMode('manual')" id="tab-btn-manual" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all">
-                        <i class="fa-solid fa-keyboard mr-1"></i> พิมพ์กรอกข้อมูลเอง
+                        <i class="fa-solid fa-keyboard mr-1"></i> <span data-i18n="tabManual">พิมพ์กรอกข้อมูลเอง</span>
                     </button>
                 </div>
             </div>
@@ -208,15 +214,15 @@
                     <div class="w-16 h-16 bg-slate-800 group-hover:bg-emerald-500/10 group-hover:text-emerald-400 text-slate-300 rounded-2xl flex items-center justify-center mx-auto text-2xl mb-4 transition-all">
                         <i class="fa-solid fa-file-invoice-dollar"></i>
                     </div>
-                    <p class="font-semibold text-slate-200">ลากไฟล์ภาพสลิปมาวางที่นี่ หรือ <span class="text-emerald-400 underline">คลิกเลือกรูปภาพ</span></p>
-                    <p class="text-xs text-slate-500 mt-2">รองรับสลิปโอนเงินธนาคารไทย (KPlus, SCB, Krungthai ฯลฯ) เพื่อดึงยอดเงินและวันที่จ่าย</p>
+                    <p class="font-semibold text-slate-200" id="ocr-drop-text"><span data-i18n="ocrDropTextPrefix">ลากไฟล์ภาพสลิปมาวางที่นี่ หรือ</span> <span class="text-emerald-400 underline" data-i18n="ocrDropTextClick">คลิกเลือกรูปภาพ</span></p>
+                    <p class="text-xs text-slate-500 mt-2" data-i18n="ocrDropSub">รองรับสลิปโอนเงินธนาคารไทย (KPlus, SCB, Krungthai ฯลฯ) เพื่อดึงยอดเงินและวันที่จ่าย</p>
                 </div>
 
                 <!-- Progress & Result Containers for Scan Mode -->
                 <div id="ocr-loading" class="hidden max-w-2xl mx-auto bg-slate-950 p-6 rounded-2xl border border-slate-800 text-center">
                     <div class="flex items-center justify-center gap-3 text-emerald-400 font-medium mb-3">
                         <i class="fa-solid fa-circle-notch animate-spin text-xl"></i>
-                        <span id="ocr-status-text">กำลังเริ่มต้น Tesseract OCR Engine...</span>
+                        <span id="ocr-status-text" data-i18n="ocrLoadingStart">กำลังเริ่มต้น Tesseract OCR Engine...</span>
                     </div>
                     <div class="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden">
                         <div id="ocr-progress-bar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-2.5 rounded-full w-0 transition-all duration-300"></div>
@@ -226,64 +232,64 @@
                 <div id="scan-result" class="hidden max-w-2xl mx-auto bg-slate-950 border border-emerald-500/40 p-6 rounded-2xl space-y-4">
                     <div class="flex justify-between items-center border-b border-slate-800 pb-3">
                         <span class="text-xs font-semibold text-emerald-400 flex items-center gap-2">
-                            <i class="fa-solid fa-circle-check"></i> ตรวจพบข้อมูลจากสลิป (ตรวจสอบและกำหนดรอบบิล)
+                            <i class="fa-solid fa-circle-check"></i> <span data-i18n="ocrResultTitle">ตรวจพบข้อมูลจากสลิป (ตรวจสอบและกำหนดรอบบิล)</span>
                         </span>
                         <span class="text-xs text-slate-400" id="scan-time"></span>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="text-xs text-slate-400 block mb-1">ชื่อร้านค้า / บริการ:</label>
+                            <label class="text-xs text-slate-400 block mb-1" data-i18n="labelMerchant">ชื่อร้านค้า / บริการ:</label>
                             <input type="text" id="res-merchant" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-100 font-semibold focus:border-emerald-500 outline-none">
                         </div>
                         <div>
-                            <label class="text-xs text-slate-400 block mb-1">จำนวนเงิน (บาท):</label>
+                            <label class="text-xs text-slate-400 block mb-1" data-i18n="labelAmount">จำนวนเงิน (บาท):</label>
                             <input type="number" step="0.01" id="res-amount" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-emerald-400 font-bold focus:border-emerald-500 outline-none">
                         </div>
                         <div>
-                            <label class="text-xs text-slate-400 block mb-1">หมวดหมู่:</label>
+                            <label class="text-xs text-slate-400 block mb-1" data-i18n="labelCategory">หมวดหมู่:</label>
                             <select id="res-category" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-100 focus:border-emerald-500 outline-none">
-                                <option value="Subscription">Subscription (บริการรายเดือน)</option>
-                                <option value="Food & Beverage">Food & Beverage (อาหาร/เครื่องดื่ม)</option>
-                                <option value="Transportation">Transportation (การเดินทาง)</option>
-                                <option value="Ghost Expense">Ghost Expense (รายจ่ายจุกจิก)</option>
+                                <option value="Subscription" data-i18n="catSubscriptionOption">Subscription (บริการรายเดือน)</option>
+                                <option value="Food & Beverage" data-i18n="catFoodOption">Food & Beverage (อาหาร/เครื่องดื่ม)</option>
+                                <option value="Transportation" data-i18n="catTransportOption">Transportation (การเดินทาง)</option>
+                                <option value="Ghost Expense" data-i18n="catGhostOption">Ghost Expense (รายจ่ายจุกจิก)</option>
                             </select>
                         </div>
                         <div>
-                            <label class="text-xs text-slate-400 block mb-1">รอบการจ่าย (Billing Cycle):</label>
+                            <label class="text-xs text-slate-400 block mb-1" data-i18n="labelRecurrence">รอบการจ่าย (Billing Cycle):</label>
                             <select id="res-recurrence" onchange="autoCalcNextBilling('res')" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-amber-400 font-medium focus:border-emerald-500 outline-none">
-                                <option value="monthly">รายเดือน (Monthly)</option>
-                                <option value="yearly">รายปี (Yearly)</option>
-                                <option value="weekly">รายสัปดาห์ (Weekly)</option>
-                                <option value="one-time">จ่ายครั้งเดียว (One-time)</option>
+                                <option value="monthly" data-i18n="cycleOptMonthly">รายเดือน (Monthly)</option>
+                                <option value="yearly" data-i18n="cycleOptYearly">รายปี (Yearly)</option>
+                                <option value="weekly" data-i18n="cycleOptWeekly">รายสัปดาห์ (Weekly)</option>
+                                <option value="one-time" data-i18n="cycleOptOneTime">จ่ายครั้งเดียว (One-time)</option>
                             </select>
                         </div>
                         <div>
-                            <label class="text-xs text-slate-400 block mb-1">วันที่จ่ายล่าสุด (Last Paid Date):</label>
+                            <label class="text-xs text-slate-400 block mb-1" data-i18n="labelLastPaid">วันที่จ่ายล่าสุด (Last Paid Date):</label>
                             <input type="date" id="res-last-paid" onchange="autoCalcNextBilling('res')" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-100 focus:border-emerald-500 outline-none">
                         </div>
                         <div>
-                            <label class="text-xs text-slate-400 block mb-1">วันเรียกเก็บเงินรอบถัดไป (Next Billing Date):</label>
+                            <label class="text-xs text-slate-400 block mb-1" data-i18n="labelNextBilling">วันเรียกเก็บเงินรอบถัดไป (Next Billing Date):</label>
                             <input type="date" id="res-next-billing" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-emerald-400 font-semibold focus:border-emerald-500 outline-none">
                         </div>
                         <div class="sm:col-span-2">
-                            <label class="text-xs text-slate-400 block mb-1">แจ้งเตือนล่วงหน้า (Reminder):</label>
+                            <label class="text-xs text-slate-400 block mb-1" data-i18n="labelReminder">แจ้งเตือนล่วงหน้า (Reminder):</label>
                             <select id="res-reminder-days" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-100 focus:border-emerald-500 outline-none">
-                                <option value="1">ล่วงหน้า 1 วัน (1 day before)</option>
-                                <option value="3" selected>ล่วงหน้า 3 วัน (3 days before - แนะนำ)</option>
-                                <option value="7">ล่วงหน้า 7 วัน (7 days before)</option>
+                                <option value="1" data-i18n="reminder1Day">ล่วงหน้า 1 วัน (1 day before)</option>
+                                <option value="3" selected data-i18n="reminder3DaysRec">ล่วงหน้า 3 วัน (3 days before - แนะนำ)</option>
+                                <option value="7" data-i18n="reminder7Days">ล่วงหน้า 7 วัน (7 days before)</option>
                             </select>
                         </div>
                         <div class="sm:col-span-2">
-                            <label class="text-xs text-slate-400 block mb-1">Email สำหรับรับการแจ้งเตือน: <span class="text-rose-400">*</span></label>
+                            <label class="text-xs text-slate-400 block mb-1"><span data-i18n="labelEmail">Email สำหรับรับการแจ้งเตือน:</span> <span class="text-rose-400">*</span></label>
                             <input type="email" id="res-email" placeholder="user@gmail.com" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-100 placeholder:text-slate-600 focus:border-emerald-500 outline-none">
                         </div>
                     </div>
                     <details class="text-xs text-slate-400 bg-slate-900/50 p-3 rounded-xl border border-slate-800/80">
-                        <summary class="cursor-pointer font-medium hover:text-slate-200">ตรวจสอบข้อความตัวจริงที่แกะได้จากสลิป (Raw OCR Text)</summary>
+                        <summary class="cursor-pointer font-medium hover:text-slate-200" data-i18n="ocrRawSummary">ตรวจสอบข้อความตัวจริงที่แกะได้จากสลิป (Raw OCR Text)</summary>
                         <p id="raw-ocr-text" class="mt-2 font-mono text-slate-400 whitespace-pre-wrap text-[11px] bg-slate-900 p-2.5 rounded border border-slate-800 max-h-36 overflow-y-auto"></p>
                     </details>
                     <button onclick="confirmScanTransaction()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 rounded-xl transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-plus"></i> ยืนยันบันทึก Subscription
+                        <i class="fa-solid fa-plus"></i> <span data-i18n="btnConfirmSaveSub">ยืนยันบันทึก Subscription</span>
                     </button>
                 </div>
             </div>
@@ -291,58 +297,58 @@
             <!-- MODE 3: Manual Input Form -->
             <div id="mode-manual" class="hidden max-w-xl mx-auto bg-slate-950 border border-slate-800 p-6 rounded-2xl space-y-4">
                 <h3 class="text-sm font-semibold text-emerald-400 flex items-center gap-2">
-                    <i class="fa-solid fa-pen-to-square"></i> กรอกข้อมูล Subscription ด้วยตนเอง
+                    <i class="fa-solid fa-pen-to-square"></i> <span data-i18n="manualTitle">กรอกข้อมูล Subscription ด้วยตนเอง</span>
                 </h3>
                 <div>
-                    <label class="text-xs text-slate-400 block mb-1">ชื่อแอป / บริการ / ร้านค้า:</label>
-                    <input type="text" id="manual-merchant" placeholder="เช่น Netflix, Spotify, ค่าเช่าคอนโด ฯลฯ" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-slate-100 focus:border-emerald-500 outline-none">
+                    <label class="text-xs text-slate-400 block mb-1" data-i18n="labelManualMerchant">ชื่อแอป / บริการ / ร้านค้า:</label>
+                    <input type="text" id="manual-merchant" placeholder="เช่น Netflix, Spotify, ค่าเช่าคอนโด ฯลฯ" data-i18n-placeholder="manualPlaceholder" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-slate-100 focus:border-emerald-500 outline-none">
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="text-xs text-slate-400 block mb-1">จำนวนเงิน (บาท):</label>
+                        <label class="text-xs text-slate-400 block mb-1" data-i18n="labelAmount">จำนวนเงิน (บาท):</label>
                         <input type="number" step="0.01" id="manual-amount" placeholder="0.00" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-emerald-400 font-bold focus:border-emerald-500 outline-none">
                     </div>
                     <div>
-                        <label class="text-xs text-slate-400 block mb-1">หมวดหมู่:</label>
+                        <label class="text-xs text-slate-400 block mb-1" data-i18n="labelCategory">หมวดหมู่:</label>
                         <select id="manual-category" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-slate-100 focus:border-emerald-500 outline-none">
-                            <option value="Subscription">Subscription (บริการรายเดือน)</option>
-                            <option value="Food & Beverage">Food & Beverage (อาหาร/เครื่องดื่ม)</option>
-                            <option value="Transportation">Transportation (การเดินทาง)</option>
-                            <option value="Ghost Expense">Ghost Expense (รายจ่ายจุกจิก)</option>
+                            <option value="Subscription" data-i18n="catSubscriptionOption">Subscription (บริการรายเดือน)</option>
+                            <option value="Food & Beverage" data-i18n="catFoodOption">Food & Beverage (อาหาร/เครื่องดื่ม)</option>
+                            <option value="Transportation" data-i18n="catTransportOption">Transportation (การเดินทาง)</option>
+                            <option value="Ghost Expense" data-i18n="catGhostOption">Ghost Expense (รายจ่ายจุกจิก)</option>
                         </select>
                     </div>
                     <div>
-                        <label class="text-xs text-slate-400 block mb-1">รอบการจ่าย (Billing Cycle):</label>
+                        <label class="text-xs text-slate-400 block mb-1" data-i18n="labelRecurrence">รอบการจ่าย (Billing Cycle):</label>
                         <select id="manual-recurrence" onchange="autoCalcNextBilling('manual')" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-amber-400 font-medium focus:border-emerald-500 outline-none">
-                            <option value="monthly">รายเดือน (Monthly)</option>
-                            <option value="yearly">รายปี (Yearly)</option>
-                            <option value="weekly">รายสัปดาห์ (Weekly)</option>
-                            <option value="one-time">จ่ายครั้งเดียว (One-time)</option>
+                            <option value="monthly" data-i18n="cycleOptMonthly">รายเดือน (Monthly)</option>
+                            <option value="yearly" data-i18n="cycleOptYearly">รายปี (Yearly)</option>
+                            <option value="weekly" data-i18n="cycleOptWeekly">รายสัปดาห์ (Weekly)</option>
+                            <option value="one-time" data-i18n="cycleOptOneTime">จ่ายครั้งเดียว (One-time)</option>
                         </select>
                     </div>
                     <div>
-                        <label class="text-xs text-slate-400 block mb-1">วันที่จ่ายล่าสุด (Last Paid Date):</label>
+                        <label class="text-xs text-slate-400 block mb-1" data-i18n="labelLastPaid">วันที่จ่ายล่าสุด (Last Paid Date):</label>
                         <input type="date" id="manual-last-paid" onchange="autoCalcNextBilling('manual')" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-slate-100 focus:border-emerald-500 outline-none">
                     </div>
                     <div>
-                        <label class="text-xs text-slate-400 block mb-1">วันเรียกเก็บเงินรอบถัดไป (Next Billing):</label>
+                        <label class="text-xs text-slate-400 block mb-1" data-i18n="labelNextBilling">วันเรียกเก็บเงินรอบถัดไป (Next Billing):</label>
                         <input type="date" id="manual-next-billing" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-emerald-400 font-semibold focus:border-emerald-500 outline-none">
                     </div>
                     <div>
-                        <label class="text-xs text-slate-400 block mb-1">แจ้งเตือนล่วงหน้า (Remind me):</label>
+                        <label class="text-xs text-slate-400 block mb-1" data-i18n="labelReminder">แจ้งเตือนล่วงหน้า (Remind me):</label>
                         <select id="manual-reminder-days" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-slate-100 focus:border-emerald-500 outline-none">
-                            <option value="1">1 วันก่อน (1 day before)</option>
-                            <option value="3" selected>3 วันก่อน (3 days before)</option>
-                            <option value="7">7 วันก่อน (7 days before)</option>
+                            <option value="1" data-i18n="reminder1Day">1 วันก่อน (1 day before)</option>
+                            <option value="3" selected data-i18n="reminder3Days">3 วันก่อน (3 days before)</option>
+                            <option value="7" data-i18n="reminder7Days">7 วันก่อน (7 days before)</option>
                         </select>
                     </div>
                     <div class="sm:col-span-2">
-                        <label class="text-xs text-slate-400 block mb-1">Email สำหรับรับการแจ้งเตือน: <span class="text-rose-400">*</span></label>
+                        <label class="text-xs text-slate-400 block mb-1"><span data-i18n="labelEmail">Email สำหรับรับการแจ้งเตือน:</span> <span class="text-rose-400">*</span></label>
                         <input type="email" id="manual-email" placeholder="user@gmail.com" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-600 focus:border-emerald-500 outline-none">
                     </div>
                 </div>
                 <button onclick="addManualTransaction()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 rounded-xl transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-plus"></i> บันทึก Subscription
+                    <i class="fa-solid fa-plus"></i> <span data-i18n="btnSaveSub">บันทึก Subscription</span>
                 </button>
             </div>
         </section>
@@ -352,7 +358,7 @@
             <!-- Chart Card -->
             <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6">
                 <h3 class="font-bold text-lg text-slate-100 flex items-center gap-2 mb-4">
-                    <i class="fa-solid fa-chart-pie text-emerald-400"></i> สัดส่วนค่าใช้จ่ายจริง
+                    <i class="fa-solid fa-chart-pie text-emerald-400"></i> <span data-i18n="chartTitle">สัดส่วนค่าใช้จ่ายจริง</span>
                 </h3>
                 <div class="relative flex items-center justify-center h-64">
                     <canvas id="expenseChart"></canvas>
@@ -365,7 +371,7 @@
                     <div>
                         <div class="flex items-center gap-2 flex-wrap">
                             <h3 class="font-bold text-lg text-slate-100 flex items-center gap-2">
-                                <i class="fa-solid fa-envelope text-emerald-400"></i> ระบบแจ้งเตือน Gmail อัตโนมัติ (Google Apps Script)
+                                <i class="fa-solid fa-envelope text-emerald-400"></i> <span data-i18n="gasTitle">ระบบแจ้งเตือน Gmail อัตโนมัติ (Google Apps Script)</span>
                             </h3>
                             <span id="gas-status-badge" class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5">
                                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> 🟢 Gmail Notification Connected
@@ -380,13 +386,13 @@
                 <div class="text-xs bg-slate-950/70 p-3.5 rounded-2xl border border-slate-800 text-slate-300 space-y-2">
                     <div class="flex items-center justify-between flex-wrap gap-2">
                         <div class="flex items-center gap-2 font-semibold text-emerald-400">
-                            <i class="fa-solid fa-shield-halved"></i> ระบบแจ้งเตือนราย Subscription (One Subscription = One Email)
+                            <i class="fa-solid fa-shield-halved"></i> <span data-i18n="gasInfoTitle">ระบบแจ้งเตือนราย Subscription (One Subscription = One Email)</span>
                         </div>
                         <div class="text-[11px] text-slate-400 bg-slate-900 px-2.5 py-1 rounded-lg border border-slate-800">
-                            ผู้ส่ง: <strong class="text-emerald-400">Subscription Manager</strong> &lt;subscription.manager.alert@gmail.com&gt;
+                            <span data-i18n="gasSenderLabel">ผู้ส่ง:</span> <strong class="text-emerald-400">Subscription Manager</strong> &lt;subscription.manager.alert@gmail.com&gt;
                         </div>
                     </div>
-                    <p class="text-slate-400 leading-relaxed text-[11px]">
+                    <p class="text-slate-400 leading-relaxed text-[11px]" id="gas-info-text" data-i18n="gasInfoText">
                         ระบบจะส่งการแจ้งเตือนไปยัง Email ที่กำหนดไว้ในแต่ละ Subscription โดยตรงจาก <strong class="text-emerald-300">Subscription Manager (subscription.manager.alert@gmail.com)</strong> ผ่าน Time-driven Trigger ใน Google Apps Script ทุกวันเวลา 08:00 น.
                     </p>
                 </div>
@@ -394,36 +400,36 @@
                 <form onsubmit="saveEmailSettings(event)" class="space-y-4">
                     <input type="hidden" id="gas-url" value="https://script.google.com/macros/s/AKfycbxoZPanZwBJ4zMJEmD5P78psrxMKWgUya34UQDNmbTCiR0cjMLZinGa1tBuCRyqWm5h/exec">
                     <div class="max-w-md">
-                        <label class="text-xs text-slate-400 block mb-1">ค่าเริ่มต้นแจ้งเตือนล่วงหน้า (Default Reminder):</label>
+                        <label class="text-xs text-slate-400 block mb-1" data-i18n="gasDefaultReminderLabel">ค่าเริ่มต้นแจ้งเตือนล่วงหน้า (Default Reminder):</label>
                         <select id="alert-days" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-100 focus:border-emerald-500 outline-none">
-                            <option value="1">ล่วงหน้า 1 วัน (1 day before)</option>
-                            <option value="3">ล่วงหน้า 3 วัน (3 days before)</option>
-                            <option value="7">ล่วงหน้า 7 วัน (7 days before)</option>
+                            <option value="1" data-i18n="reminder1Day">ล่วงหน้า 1 วัน (1 day before)</option>
+                            <option value="3" data-i18n="reminder3Days">ล่วงหน้า 3 วัน (3 days before)</option>
+                            <option value="7" data-i18n="reminder7Days">ล่วงหน้า 7 วัน (7 days before)</option>
                         </select>
                     </div>
                     <div class="flex flex-wrap gap-4 pt-1">
                         <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
-                            <input type="checkbox" id="email-opt-monthly" checked class="accent-emerald-500 rounded"> ส่งรายงานสรุปประจำเดือน (Monthly Financial Insight)
+                            <input type="checkbox" id="email-opt-monthly" checked class="accent-emerald-500 rounded"> <span data-i18n="gasOptMonthly">ส่งรายงานสรุปประจำเดือน (Monthly Financial Insight)</span>
                         </label>
                         <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
-                            <input type="checkbox" id="email-opt-unused" checked class="accent-emerald-500 rounded"> เตือนบริการที่ไม่มีการใช้งานเกิน 60 วัน
+                            <input type="checkbox" id="email-opt-unused" checked class="accent-emerald-500 rounded"> <span data-i18n="gasOptUnused">เตือนบริการที่ไม่มีการใช้งานเกิน 60 วัน</span>
                         </label>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                         <button type="button" onclick="sendRealTestEmail()" id="btn-test-email" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-emerald-400 font-medium py-2.5 rounded-xl text-xs transition-all border border-slate-700 flex items-center justify-center gap-1.5">
-                            <i class="fa-solid fa-paper-plane"></i> ส่ง Test Email
+                            <i class="fa-solid fa-paper-plane"></i> <span data-i18n="btnTestEmail">ส่ง Test Email</span>
                         </button>
                         <button type="button" onclick="syncWithBackend(true)" id="btn-sync-sheets" class="hidden">
                             <i class="fa-solid fa-arrows-rotate"></i> Sync Google Sheets
                         </button>
                         <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-2.5 rounded-xl text-xs transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-floppy-disk"></i> บันทึกการตั้งค่า Gmail Notification
+                            <i class="fa-solid fa-floppy-disk"></i> <span data-i18n="btnSaveGasSettings">บันทึกการตั้งค่า Gmail Notification</span>
                         </button>
                     </div>
                 </form>
 
                 <div id="email-toast" class="hidden text-xs bg-emerald-500/10 text-emerald-400 p-3 rounded-xl border border-emerald-500/20">
-                    <i class="fa-solid fa-circle-check mr-1"></i> บันทึกการตั้งค่าแจ้งเตือน Gmail สำเร็จ!
+                    <i class="fa-solid fa-circle-check mr-1"></i> <span data-i18n="gasToastSuccess">บันทึกการตั้งค่าแจ้งเตือน Gmail สำเร็จ!</span>
                 </div>
             </div>
         </section>
@@ -433,9 +439,9 @@
             <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 mb-6">
                 <div>
                     <h3 class="font-bold text-lg text-slate-100 flex items-center gap-2">
-                        <i class="fa-solid fa-list-check text-emerald-400"></i> รายการบริการและค่าใช้จ่ายทั้งหมด (All Subscriptions)
+                        <i class="fa-solid fa-list-check text-emerald-400"></i> <span data-i18n="tableSectionTitle">รายการบริการและค่าใช้จ่ายทั้งหมด (All Subscriptions)</span>
                     </h3>
-                    <p class="text-xs text-slate-400">ข้อมูลจัดเก็บปลอดภัยในเบราว์เซอร์ของคุณ (LocalStorage)</p>
+                    <p class="text-xs text-slate-400" data-i18n="tableSectionSub">ข้อมูลจัดเก็บปลอดภัยในเบราว์เซอร์ของคุณ (LocalStorage)</p>
                 </div>
             </div>
 
@@ -443,12 +449,12 @@
                 <table class="w-full text-left text-sm">
                     <thead class="text-xs text-slate-400 border-b border-slate-800 uppercase">
                         <tr>
-                            <th class="pb-3">ร้านค้า / บริการ</th>
-                            <th class="pb-3">หมวดหมู่ & รอบบิล</th>
-                            <th class="pb-3">จำนวนเงิน</th>
-                            <th class="pb-3">วันที่จ่ายล่าสุด</th>
-                            <th class="pb-3">วันเรียกเก็บถัดไป & สถานะ</th>
-                            <th class="pb-3 text-right">จัดการ</th>
+                            <th class="pb-3" data-i18n="thMerchant">ร้านค้า / บริการ</th>
+                            <th class="pb-3" data-i18n="thCategoryCycle">หมวดหมู่ & รอบบิล</th>
+                            <th class="pb-3" data-i18n="thAmount">จำนวนเงิน</th>
+                            <th class="pb-3" data-i18n="thLastPaid">วันที่จ่ายล่าสุด</th>
+                            <th class="pb-3" data-i18n="thNextBillingStatus">วันเรียกเก็บถัดไป & สถานะ</th>
+                            <th class="pb-3 text-right" data-i18n="thActions">จัดการ</th>
                         </tr>
                     </thead>
                     <tbody id="tx-tbody" class="divide-y divide-slate-800/60">
@@ -480,54 +486,54 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                    <label class="text-xs text-slate-400 block mb-1">ชื่อบริการ:</label>
+                    <label class="text-xs text-slate-400 block mb-1" data-i18n="modalLabelService">ชื่อบริการ:</label>
                     <input type="text" id="modal-merchant" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-100 font-semibold focus:border-emerald-500 outline-none">
                 </div>
                 <div>
-                    <label class="text-xs text-slate-400 block mb-1">หมวดหมู่:</label>
+                    <label class="text-xs text-slate-400 block mb-1" data-i18n="labelCategory">หมวดหมู่:</label>
                     <input type="text" id="modal-category" readonly class="w-full bg-slate-950/70 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-300 focus:border-emerald-500 outline-none">
                 </div>
                 <div>
-                    <label class="text-xs text-slate-400 block mb-1">ราคาต่อรอบ (บาท):</label>
+                    <label class="text-xs text-slate-400 block mb-1" data-i18n="modalLabelPrice">ราคาต่อรอบ (บาท):</label>
                     <input type="number" step="0.01" id="modal-amount" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-emerald-400 font-bold focus:border-emerald-500 outline-none">
                 </div>
                 <div>
-                    <label class="text-xs text-slate-400 block mb-1">รอบการจ่าย (Billing Cycle):</label>
+                    <label class="text-xs text-slate-400 block mb-1" data-i18n="labelRecurrence">รอบการจ่าย (Billing Cycle):</label>
                     <select id="modal-recurrence" onchange="autoCalcNextBilling('modal')" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-amber-400 font-medium focus:border-emerald-500 outline-none">
-                        <option value="monthly">รายเดือน (Monthly)</option>
-                        <option value="yearly">รายปี (Yearly)</option>
-                        <option value="weekly">รายสัปดาห์ (Weekly)</option>
+                        <option value="monthly" data-i18n="cycleOptMonthly">รายเดือน (Monthly)</option>
+                        <option value="yearly" data-i18n="cycleOptYearly">รายปี (Yearly)</option>
+                        <option value="weekly" data-i18n="cycleOptWeekly">รายสัปดาห์ (Weekly)</option>
                     </select>
                 </div>
                 <div>
-                    <label class="text-xs text-slate-400 block mb-1">วันที่จ่ายล่าสุด (Last Paid Date):</label>
+                    <label class="text-xs text-slate-400 block mb-1" data-i18n="labelLastPaid">วันที่จ่ายล่าสุด (Last Paid Date):</label>
                     <input type="date" id="modal-last-paid" onchange="autoCalcNextBilling('modal')" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-100 focus:border-emerald-500 outline-none">
                 </div>
                 <div>
-                    <label class="text-xs text-slate-400 block mb-1">วันเรียกเก็บเงินถัดไป (Next Billing):</label>
+                    <label class="text-xs text-slate-400 block mb-1" data-i18n="labelNextBilling">วันเรียกเก็บเงินถัดไป (Next Billing):</label>
                     <input type="date" id="modal-next-billing" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-emerald-400 font-semibold focus:border-emerald-500 outline-none">
                 </div>
                 <div class="sm:col-span-2">
-                    <label class="text-xs text-slate-400 block mb-1">แจ้งเตือนล่วงหน้า (Remind me):</label>
+                    <label class="text-xs text-slate-400 block mb-1" data-i18n="labelReminder">แจ้งเตือนล่วงหน้า (Remind me):</label>
                     <select id="modal-reminder-days" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-100 focus:border-emerald-500 outline-none">
-                        <option value="1">1 วันก่อน (1 day before)</option>
-                        <option value="3" selected>3 วันก่อน (3 days before)</option>
-                        <option value="7">7 วันก่อน (7 days before)</option>
+                        <option value="1" data-i18n="reminder1Day">1 วันก่อน (1 day before)</option>
+                        <option value="3" selected data-i18n="reminder3Days">3 วันก่อน (3 days before)</option>
+                        <option value="7" data-i18n="reminder7Days">7 วันก่อน (7 days before)</option>
                     </select>
                 </div>
                 <div class="sm:col-span-2">
-                    <label class="text-xs text-slate-400 block mb-1">Email สำหรับรับการแจ้งเตือน: <span class="text-rose-400">*</span></label>
+                    <label class="text-xs text-slate-400 block mb-1"><span data-i18n="labelEmail">Email สำหรับรับการแจ้งเตือน:</span> <span class="text-rose-400">*</span></label>
                     <input type="email" id="modal-email" placeholder="user@gmail.com" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-600 focus:border-emerald-500 outline-none">
-                    <p class="text-[11px] text-slate-500 mt-1">กรอก Gmail สำหรับรับการแจ้งเตือนของบริการนี้ (ห้ามเว้นว่าง)</p>
+                    <p class="text-[11px] text-slate-500 mt-1" data-i18n="presetEmailHint">กรอก Gmail สำหรับรับการแจ้งเตือนของบริการนี้ (ห้ามเว้นว่าง)</p>
                 </div>
             </div>
 
             <div class="flex gap-3 pt-2">
-                <button onclick="closePresetModal()" class="w-1/3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium py-2.5 rounded-xl text-sm transition-all">
+                <button onclick="closePresetModal()" class="w-1/3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium py-2.5 rounded-xl text-sm transition-all" data-i18n="btnCancel">
                     ยกเลิก
                 </button>
                 <button onclick="submitPresetModal()" class="w-2/3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-2.5 rounded-xl text-sm transition-all shadow-lg shadow-emerald-500/20">
-                    <i class="fa-solid fa-check mr-1"></i> ยืนยันเพิ่ม Subscription
+                    <i class="fa-solid fa-check mr-1"></i> <span data-i18n="btnConfirmPresetSub">ยืนยันเพิ่ม Subscription</span>
                 </button>
             </div>
         </div>
@@ -539,11 +545,493 @@
         <span class="text-xs font-medium" id="toast-msg">ข้อความ</span>
     </div>
 
-    <footer class="border-t border-slate-900 bg-slate-950 py-6 text-center text-xs text-slate-500">
+    <footer class="border-t border-slate-900 bg-slate-950 py-6 text-center text-xs text-slate-500" data-i18n="footerText">
         AI Subscription & Daily Expense Manager &bull; Production Edition
     </footer>
 
     <script>
+        // Language Dictionary (i18n)
+        const translations = {
+            th: {
+                // Original keys preserved
+                headerSubtitle: "ระบบบริหารจัดการรอบบิล & แจ้งเตือนก่อนตัดเงินล่วงหน้า (Next Billing Reminder)",
+                addBtnText: "เพิ่มรายการ",
+                cardMonthlyTotalLabel: "ค่า Subscription เฉลี่ยต่อเดือน",
+                cardActiveSubsLabel: "รายการที่ใช้งานอยู่",
+                cardGhostSubsLabel: "สงสัยเป็น Ghost Expense",
+                cardNextBillLabel: "บิลถัดไปเร็วๆ นี้",
+                presetSectionTitle: "เลือกจากแอปยอดนิยม (Quick Add)",
+                presetSectionSub: "กำหนดวันจ่ายล่าสุดและรอบบิล เพื่อให้ระบบคำนวณวันแจ้งเตือนล่วงหน้า",
+                presetCategoryVideo: "🎬 ความบันเทิง",
+                presetCategoryDating: "แอปพลิเคชันหาคู่",
+                presetCategoryMusic: "🎵 ฟังเพลง",
+                insightSectionTitle: "ข้อสังเกตจากค่าใช้จ่าย (Expense Insights & AI Analysis)",
+                insightSectionSub: "วิเคราะห์พฤติกรรม สรุป Ghost Expenses และคำแนะนำประหยัดเงิน",
+                refreshInsightsBtn: "รีเฟรชการวิเคราะห์",
+                insightBehaviorTitle: "วิเคราะห์พฤติกรรม",
+                insightGhostTitle: "สรุป Ghost Expenses",
+                insightSavingsTitle: "คำแนะนำประหยัดเงิน",
+                listSectionTitle: "รายการบริการและค่าใช้จ่ายทั้งหมด (All Subscriptions)",
+                chartSectionTitle: "สัดส่วนค่าใช้จ่ายจริง",
+                ocrTitle: "สแกนสลิปด้วย AI OCR",
+                ocrSub: "รองรับสลิปโอนเงินธนาคารไทย เพื่อดึงยอดเงินและวันที่จ่าย",
+                ocrDragText: "คลิกหรือลากไฟล์ภาพสลิปมาวางที่นี่",
+                modalTitleAdd: "เพิ่มรายการสมาชิก",
+                modalTitleEdit: "แก้ไขรายการสมาชิก",
+                labelAppName: "ชื่อบริการ / แอปพลิเคชัน",
+                labelPrice: "ราคา (บาท)",
+                labelCategory: "หมวดหมู่",
+                labelCycle: "รอบการจ่าย",
+                labelNextDate: "วันเรียกเก็บเงินรอบถัดไป",
+                labelIsGhost: "ทำเครื่องหมายเป็น 'รายการไม่ค่อยได้ใช้ (Ghost Expense)'",
+                cancelBtn: "ยกเลิก",
+                saveBtn: "บันทึกรายการ",
+                footerText: "AI Subscription & Daily Expense Manager • Production Edition",
+                catVideo: "🎬 ความบันเทิง",
+                catDating: "แอปพลิเคชันหาคู่",
+                catMusic: "🎵 ฟังเพลง",
+                catGeneral: "ทั่วไป / อื่นๆ",
+                cycleMonthly: "รายเดือน",
+                cycleYearly: "รายปี",
+                noSubsText: "ไม่มีรายการบันทึก กรุณาเพิ่ม Subscription หรือสแกนเพื่อบันทึก",
+                daysLeftText: "อีก {days} วัน",
+                todayText: "ถึงกำหนดชำระวันนี้",
+                overdueText: "เลยกำหนด {days} วัน",
+
+                // Production App Keys
+                appTitle: "AI Subscription & Expense Manager",
+                appSubtitle: "ระบบบริหารจัดการรอบบิล & แจ้งเตือนก่อนตัดเงินล่วงหน้า (Next Billing Reminder)",
+                bellDropdownTitle: "การแจ้งเตือนรอบบิล",
+                resetDataBtn: "รีเซ็ตข้อมูล",
+                bannerTitle: "⚠️ มี Subscription ที่ใกล้ถึงกำหนดชำระเงิน!",
+                bannerDesc: "โปรดตรวจสอบยอดเงินในบัญชีเพื่อป้องกันการถูกตัดเงินโดยไม่รู้ตัว",
+                bannerViewAll: "ดูรายการทั้งหมด",
+                bannerAttention: "รายการที่ต้องดูแล",
+                metricMonthlySubLabel: "ค่า Subscription เฉลี่ยต่อเดือน",
+                metricNextPaymentLabel: "รอบชำระที่ใกล้ที่สุด (Next Payment)",
+                metricMonthDueLabel: "ยอดที่ต้องจ่ายในรอบ 30 วันนี้",
+                metricSavingsLabel: "โอกาสประหยัดต่อปี (AI Estimated)",
+                metricSubCount: "{count} บริการประจำ",
+                metricNoNext: "ไม่มีรายการ",
+                metricNoNextDetail: "ไม่มีรอบชำระเร็วๆ นี้",
+                metricDueCount: "{count} รายการใน 30 วัน",
+                upcomingSectionTitle: "Upcoming Payments (รอบชำระที่ใกล้ถึงกำหนด)",
+                upcomingSortPrefix: "เรียงลำดับจาก",
+                upcomingSortBold: "ใกล้จ่ายที่สุด → ไกลที่สุด",
+                upcomingSortSuffix: "พร้อมปุ่มกดบันทึกจ่ายเงินเพื่อเลื่อนรอบบิลอัตโนมัติ",
+                upcomingFilterBadge: "เฉพาะ Subscription ที่มีรอบบิล",
+                upcomingEmpty: "ไม่มีรายการ Subscription ที่มีรอบบิลในขณะนี้ กรุณาเพิ่มรายการเพื่อเริ่มระบบติดตาม",
+                addSectionTitle: "เพิ่มรายการ Subscription / รายจ่ายใหม่",
+                addSectionSub: "กำหนดวันจ่ายล่าสุดและรอบบิล เพื่อให้ระบบคำนวณวันแจ้งเตือนล่วงหน้า",
+                tabPreset: "เลือกจากแอปยอดนิยม (Quick Add)",
+                tabScan: "สแกนสลิปด้วย AI OCR",
+                tabManual: "พิมพ์กรอกข้อมูลเอง",
+                ocrDropTextPrefix: "ลากไฟล์ภาพสลิปมาวางที่นี่ หรือ",
+                ocrDropTextClick: "คลิกเลือกรูปภาพ",
+                ocrDropSub: "รองรับสลิปโอนเงินธนาคารไทย (KPlus, SCB, Krungthai ฯลฯ) เพื่อดึงยอดเงินและวันที่จ่าย",
+                ocrLoadingStart: "กำลังเริ่มต้น Tesseract OCR Engine...",
+                ocrLoadingDownload: "กำลังดาวน์โหลดโมเดล OCR และประมวลผล...",
+                ocrLoadingExtract: "กำลังสกัดตัวอักษรและวิเคราะห์สลิป...",
+                ocrResultTitle: "ตรวจพบข้อมูลจากสลิป (ตรวจสอบและกำหนดรอบบิล)",
+                ocrRawSummary: "ตรวจสอบข้อความตัวจริงที่แกะได้จากสลิป (Raw OCR Text)",
+                ocrNoText: "(อ่านข้อความในรูปภาพไม่พบ)",
+                labelMerchant: "ชื่อร้านค้า / บริการ:",
+                labelManualMerchant: "ชื่อแอป / บริการ / ร้านค้า:",
+                labelAmount: "จำนวนเงิน (บาท):",
+                labelRecurrence: "รอบการจ่าย (Billing Cycle):",
+                labelLastPaid: "วันที่จ่ายล่าสุด (Last Paid Date):",
+                labelNextBilling: "วันเรียกเก็บเงินรอบถัดไป (Next Billing):",
+                labelReminder: "แจ้งเตือนล่วงหน้า (Reminder):",
+                labelEmail: "Email สำหรับรับการแจ้งเตือน:",
+                btnConfirmSaveSub: "ยืนยันบันทึก Subscription",
+                manualTitle: "กรอกข้อมูล Subscription ด้วยตนเอง",
+                manualPlaceholder: "เช่น Netflix, Spotify, ค่าเช่าคอนโด ฯลฯ",
+                btnSaveSub: "บันทึก Subscription",
+                chartTitle: "สัดส่วนค่าใช้จ่ายจริง",
+                chartEmpty: "ยังไม่มีรายการค่าใช้จ่าย",
+                gasTitle: "ระบบแจ้งเตือน Gmail อัตโนมัติ (Google Apps Script)",
+                gasBadge: "🟢 Gmail Notification Connected",
+                gasDesc: "ระบบเชื่อมต่อ Google Apps Script อัตโนมัติแล้ว",
+                gasInfoTitle: "ระบบแจ้งเตือนราย Subscription (One Subscription = One Email)",
+                gasSenderLabel: "ผู้ส่ง:",
+                gasInfoText: "ระบบจะส่งการแจ้งเตือนไปยัง Email ที่กำหนดไว้ในแต่ละ Subscription โดยตรงจาก Subscription Manager (subscription.manager.alert@gmail.com) ผ่าน Time-driven Trigger ใน Google Apps Script ทุกวันเวลา 08:00 น.",
+                gasDefaultReminderLabel: "ค่าเริ่มต้นแจ้งเตือนล่วงหน้า (Default Reminder):",
+                gasOptMonthly: "ส่งรายงานสรุปประจำเดือน (Monthly Financial Insight)",
+                gasOptUnused: "เตือนบริการที่ไม่มีการใช้งานเกิน 60 วัน",
+                btnTestEmail: "ส่ง Test Email",
+                btnTestEmailSending: "กำลังส่ง Gmail จริง...",
+                btnSaveGasSettings: "บันทึกการตั้งค่า Gmail Notification",
+                gasToastSuccess: "บันทึกการตั้งค่าแจ้งเตือน Gmail สำเร็จ!",
+                tableSectionTitle: "รายการบริการและค่าใช้จ่ายทั้งหมด (All Subscriptions)",
+                tableSectionSub: "ข้อมูลจัดเก็บปลอดภัยในเบราว์เซอร์ของคุณ (LocalStorage)",
+                thMerchant: "ร้านค้า / บริการ",
+                thCategoryCycle: "หมวดหมู่ & รอบบิล",
+                thAmount: "จำนวนเงิน",
+                thLastPaid: "วันที่จ่ายล่าสุด",
+                thNextBillingStatus: "วันเรียกเก็บถัดไป & สถานะ",
+                thActions: "จัดการ",
+                tableEmpty: "ไม่มีรายการบันทึก กรุณาเพิ่ม Subscription หรือสแกนเพื่อบันทึก",
+                modalPresetTitle: "เพิ่ม {merchant}",
+                modalLabelService: "ชื่อบริการ:",
+                modalLabelPrice: "ราคาต่อรอบ (บาท):",
+                presetEmailHint: "กรอก Gmail สำหรับรับการแจ้งเตือนของบริการนี้ (ห้ามเว้นว่าง)",
+                btnCancel: "ยกเลิก",
+                btnConfirmPresetSub: "ยืนยันเพิ่ม Subscription",
+                catSubscription: "Subscription",
+                catFood: "Food & Beverage",
+                catTransport: "Transportation",
+                catGhost: "Ghost Expense",
+                catSubscriptionOption: "Subscription (บริการรายเดือน)",
+                catFoodOption: "Food & Beverage (อาหาร/เครื่องดื่ม)",
+                catTransportOption: "Transportation (การเดินทาง)",
+                catGhostOption: "Ghost Expense (รายจ่ายจุกจิก)",
+                cycleOptMonthly: "รายเดือน (Monthly)",
+                cycleOptYearly: "รายปี (Yearly)",
+                cycleOptWeekly: "รายสัปดาห์ (Weekly)",
+                cycleOptOneTime: "จ่ายครั้งเดียว (One-time)",
+                reminder1Day: "1 วันก่อน (1 day before)",
+                reminder3Days: "3 วันก่อน (3 days before)",
+                reminder3DaysRec: "3 วันก่อน (3 days before - แนะนำ)",
+                reminder7Days: "7 วันก่อน (7 days before)",
+                cycleMonthlyShort: "เดือน",
+                cycleYearlyShort: "ปี",
+                cycleWeeklyShort: "สัปดาห์",
+                cycleOneTimeShort: "ครั้ง",
+                cardNextBilling: "วันชำระครั้งถัดไป",
+                cardStatus: "สถานะกำหนดชำระ",
+                cardAlertDate: "วันที่แจ้งเตือน",
+                cardLastPaid: "จ่ายล่าสุด",
+                cardAlertEmail: "อีเมลแจ้งเตือน",
+                remindBeforeDays: "แจ้งเตือนล่วงหน้า {days} วัน",
+                btnMarkAsPaid: "Mark as Paid",
+                deleteItemTitle: "ลบรายการ",
+                paidTodayBadge: "ชำระรอบล่าสุดแล้ว",
+                bellCountUrgent: "{count} รายการที่ต้องชำระเร็วๆ นี้",
+                bellNoUrgent: "ไม่มีการแจ้งเตือนด่วน",
+                bellEmpty: "ไม่มีรายการแจ้งเตือน",
+                btnAddPresetCard: "+ เพิ่ม",
+                confirmDelete: "คุณต้องการลบ \"{name}\" ใช่หรือไม่?",
+                confirmResetAll: "คุณต้องการรีเซ็ตข้อมูลทั้งหมดใช่หรือไม่?\n(รายการ Subscription และประวัติค่าใช้จ่ายทั้งหมดจะถูกล้าง)",
+                alertValidService: "กรุณากรอกชื่อบริการและราคาให้ถูกต้อง",
+                alertValidApp: "กรุณากรอกชื่อแอปและจำนวนเงินให้ถูกต้อง",
+                alertValidEmail: "กรุณากรอก Email สำหรับรับการแจ้งเตือน",
+                alertScanFailed: "อ่านข้อความสลิปไม่สำเร็จ กรุณากรอกข้อมูลเพื่อตรวจสอบด้วยตนเอง",
+                alertAddEmailFirst: "กรุณาเพิ่ม Subscription และระบุ Email สำหรับรับการแจ้งเตือนก่อน",
+                alertEmailSentSuccess: "ส่ง Email จริงสำเร็จ!\n\nระบบได้ส่งอีเมลทดสอบจริงไปยัง: {email} (จากบริการ {merchant})\nหัวข้อ: 🧪 Subscription Alert Test\n\nกรุณาตรวจสอบใน Inbox หรือ Spam ของคุณ",
+                alertEmailSentFail: "ส่งไม่สำเร็จ: {error}",
+                alertGasConnError: "เกิดข้อผิดพลาดในการเชื่อมต่อกับ Google Apps Script:\n{error}",
+                alertPullError: "เกิดข้อผิดพลาดในการโหลดข้อมูลจาก Google Sheets:\n{error}",
+                toastPresetAdded: "เพิ่ม {merchant} (฿{amount}) เรียบร้อย! รอบถัดไป: {date}",
+                toastManualSaved: "บันทึกรายการ {merchant} เรียบร้อยแล้ว!",
+                toastScanSaved: "บันทึก Subscription {merchant} สำเร็จ!",
+                toastPaidSuccess: "บันทึกชำระเงิน {merchant} เรียบร้อย! รอบถัดไปคือ {date}",
+                toastDeleted: "ลบ \"{name}\" เรียบร้อยแล้ว",
+                toastResetSuccess: "รีเซ็ตข้อมูลทั้งหมดเรียบร้อยแล้ว",
+                toastDemoLoaded: "โหลดข้อมูลตัวอย่างสำเร็จ (สำหรับ Developer Test)",
+                toastLoadedFromGas: "โหลดข้อมูล {count} รายการจาก Google Sheets สำเร็จ!",
+                toastSyncedToGas: "ซิงค์ข้อมูล {count} รายการไปยัง Google Sheets เรียบร้อย!",
+                toastGasEmpty: "Google Sheets ยังไม่มีข้อมูล Subscription",
+                toastSyncFail: "ซิงค์กับ Google Sheets ไม่สำเร็จ",
+                toastTestEmailSent: "ส่ง Gmail ทดสอบไปยัง {email} สำเร็จแล้ว!",
+                toastGasSettingsSaved: "บันทึกการตั้งค่า Gmail Notification สำเร็จ!",
+                statusNoCycle: "ไม่มีรอบบิล",
+                statusOverdue: "เลยกำหนด {days} วัน",
+                statusDueToday: "ถึงกำหนดชำระวันนี้",
+                statusDueTomorrow: "จะเรียกเก็บเงินพรุ่งนี้",
+                statusDueSoon: "จะเรียกเก็บในอีก {days} วัน",
+                statusUpcoming: "อีก {days} วัน",
+                presetGroups: {
+                    'ทั้งหมด': 'ทั้งหมด',
+                    '🎬 ความบันเทิง': '🎬 ความบันเทิง',
+                    '🎵 ฟังเพลง': '🎵 ฟังเพลง',
+                    '💻 การทำงาน / AI': '💻 การทำงาน / AI',
+                    '🎨 ออกแบบ / แต่งภาพ': '🎨 ออกแบบ / แต่งภาพ',
+                    '🎮 เกม': '🎮 เกม',
+                    '🧘 สุขภาพ': '🧘 สุขภาพ',
+                    '🔒 ความปลอดภัย / VPN': '🔒 ความปลอดภัย / VPN'
+                },
+                defaultSlipMerchant: "สลิปโอนเงิน / ใบเสร็จ",
+                thisItem: "รายการนี้",
+                markAsPaidTitle: "บันทึกว่าจ่ายเงินแล้วและเลื่อนรอบบิล",
+                recurrenceMonthly: "รายเดือน",
+                recurrenceYearly: "รายปี",
+                recurrenceWeekly: "รายสัปดาห์",
+                recurrenceOneTime: "ครั้งเดียว",
+                tagOverdue: "เลยกำหนด",
+                tagDueToday: "ถึงกำหนดวันนี้",
+                tagDueTomorrow: "พรุ่งนี้",
+                tagInDays: "อีก {days} วัน",
+                toastSyncedLocalToGas: "ซิงค์ข้อมูล {count} รายการจากเครื่องขึ้น Google Sheets เรียบร้อย!"
+            },
+            en: {
+                // Original keys preserved
+                headerSubtitle: "Smart billing schedule & proactive payment alert system",
+                addBtnText: "Add Subscription",
+                cardMonthlyTotalLabel: "Average Monthly Subscriptions",
+                cardActiveSubsLabel: "Active Services",
+                cardGhostSubsLabel: "Suspected Ghost Expenses",
+                cardNextBillLabel: "Upcoming Bill",
+                presetSectionTitle: "Popular Services (Quick Add)",
+                presetSectionSub: "Set last paid date and billing cycle so the system calculates reminder alerts",
+                presetCategoryVideo: "🎬 Entertainment",
+                presetCategoryDating: "Dating Apps",
+                presetCategoryMusic: "🎵 Music",
+                insightSectionTitle: "Expense Insights & AI Analysis",
+                insightSectionSub: "Behavior analysis, ghost subscription detection & smart savings tips",
+                refreshInsightsBtn: "Refresh Insights",
+                insightBehaviorTitle: "Behavior Analysis",
+                insightGhostTitle: "Ghost Expenses Summary",
+                insightSavingsTitle: "Savings Recommendations",
+                listSectionTitle: "All Subscriptions & Expenses",
+                chartSectionTitle: "Actual Expense Breakdown",
+                ocrTitle: "Scan Slip with AI OCR",
+                ocrSub: "Supports bank transfer slips to auto-extract amount and payment date",
+                ocrDragText: "Click or drag receipt image here",
+                modalTitleAdd: "Add New Subscription",
+                modalTitleEdit: "Edit Subscription",
+                labelAppName: "Service / App Name",
+                labelPrice: "Price (THB)",
+                labelCategory: "Category",
+                labelCycle: "Billing Cycle",
+                labelNextDate: "Next Billing Date",
+                labelIsGhost: "Mark as 'Rarely Used (Ghost Expense)'",
+                cancelBtn: "Cancel",
+                saveBtn: "Save Subscription",
+                footerText: "AI Subscription & Daily Expense Manager • Production Edition",
+                catVideo: "🎬 Entertainment",
+                catDating: "Dating Apps",
+                catMusic: "🎵 Music",
+                catGeneral: "General / Others",
+                cycleMonthly: "Monthly",
+                cycleYearly: "Yearly",
+                noSubsText: "No records found. Please add a subscription or scan a receipt.",
+                daysLeftText: "In {days} days",
+                todayText: "Payment due today",
+                overdueText: "{days} days overdue",
+
+                // Production App Keys
+                appTitle: "AI Subscription & Expense Manager",
+                appSubtitle: "Smart billing schedule & proactive payment alert system",
+                bellDropdownTitle: "Billing Notifications",
+                resetDataBtn: "Reset Data",
+                bannerTitle: "⚠️ Subscriptions due soon for payment!",
+                bannerDesc: "Please check your account balance to prevent unexpected charges.",
+                bannerViewAll: "View All",
+                bannerAttention: "Attention required",
+                metricMonthlySubLabel: "Average Monthly Subscriptions",
+                metricNextPaymentLabel: "Upcoming Payment (Next Payment)",
+                metricMonthDueLabel: "Total Due in Next 30 Days",
+                metricSavingsLabel: "Annual Savings Opportunity (AI Est.)",
+                metricSubCount: "{count} recurring services",
+                metricNoNext: "No upcoming bills",
+                metricNoNextDetail: "No payments due soon",
+                metricDueCount: "{count} bills in 30 days",
+                upcomingSectionTitle: "Upcoming Payments (Due Soon)",
+                upcomingSortPrefix: "Sorted from",
+                upcomingSortBold: "closest due date → furthest",
+                upcomingSortSuffix: "with Mark as Paid to auto-advance billing cycle",
+                upcomingFilterBadge: "Subscriptions with billing cycles only",
+                upcomingEmpty: "No active subscriptions with billing cycles yet. Add one to start tracking.",
+                addSectionTitle: "Add New Subscription / Expense",
+                addSectionSub: "Set last paid date and billing cycle so the system calculates reminder alerts",
+                tabPreset: "Popular Services (Quick Add)",
+                tabScan: "Scan Slip with AI OCR",
+                tabManual: "Manual Entry",
+                ocrDropTextPrefix: "Drag receipt/slip image here or",
+                ocrDropTextClick: "click to upload",
+                ocrDropSub: "Supports Thai bank transfer slips (KPlus, SCB, Krungthai, etc.) to extract amount and date",
+                ocrLoadingStart: "Starting Tesseract OCR Engine...",
+                ocrLoadingDownload: "Downloading OCR models and processing...",
+                ocrLoadingExtract: "Extracting text and analyzing slip...",
+                ocrResultTitle: "Detected from Slip (Review & Set Cycle)",
+                ocrRawSummary: "View Raw OCR Extracted Text",
+                ocrNoText: "(No text detected in image)",
+                labelMerchant: "Merchant / Service:",
+                labelManualMerchant: "App / Service / Merchant:",
+                labelAmount: "Amount (THB):",
+                labelRecurrence: "Billing Cycle:",
+                labelLastPaid: "Last Paid Date:",
+                labelNextBilling: "Next Billing Date:",
+                labelReminder: "Reminder Alert:",
+                labelEmail: "Email for Notifications:",
+                btnConfirmSaveSub: "Confirm Save Subscription",
+                manualTitle: "Enter Subscription Details Manually",
+                manualPlaceholder: "e.g., Netflix, Spotify, Condo rent",
+                btnSaveSub: "Save Subscription",
+                chartTitle: "Actual Expense Breakdown",
+                chartEmpty: "No expense records yet",
+                gasTitle: "Automated Gmail Notifications (Google Apps Script)",
+                gasBadge: "🟢 Gmail Notification Connected",
+                gasDesc: "Automatically connected to Google Apps Script",
+                gasInfoTitle: "Per-Subscription Notification (One Subscription = One Email)",
+                gasSenderLabel: "Sender:",
+                gasInfoText: "The system sends reminders directly to the email specified for each subscription via Time-driven Trigger in Google Apps Script daily at 08:00 AM.",
+                gasDefaultReminderLabel: "Default Reminder:",
+                gasOptMonthly: "Send monthly financial insight report",
+                gasOptUnused: "Alert for unused services over 60 days",
+                btnTestEmail: "Send Test Email",
+                btnTestEmailSending: "Sending Gmail...",
+                btnSaveGasSettings: "Save Gmail Notification Settings",
+                gasToastSuccess: "Gmail notification settings saved successfully!",
+                tableSectionTitle: "All Subscriptions & Expenses",
+                tableSectionSub: "Securely stored in your browser (LocalStorage)",
+                thMerchant: "Merchant / Service",
+                thCategoryCycle: "Category & Cycle",
+                thAmount: "Amount",
+                thLastPaid: "Last Paid Date",
+                thNextBillingStatus: "Next Billing & Status",
+                thActions: "Actions",
+                tableEmpty: "No records found. Please add a subscription or scan a receipt.",
+                modalPresetTitle: "Add {merchant}",
+                modalLabelService: "Service Name:",
+                modalLabelPrice: "Price per cycle (THB):",
+                presetEmailHint: "Enter Gmail to receive reminders for this service (Required)",
+                btnCancel: "Cancel",
+                btnConfirmPresetSub: "Confirm Add Subscription",
+                catSubscription: "Subscription",
+                catFood: "Food & Beverage",
+                catTransport: "Transportation",
+                catGhost: "Ghost Expense",
+                catSubscriptionOption: "Subscription",
+                catFoodOption: "Food & Beverage",
+                catTransportOption: "Transportation",
+                catGhostOption: "Ghost Expense",
+                cycleOptMonthly: "Monthly",
+                cycleOptYearly: "Yearly",
+                cycleOptWeekly: "Weekly",
+                cycleOptOneTime: "One-time",
+                reminder1Day: "1 day before",
+                reminder3Days: "3 days before",
+                reminder3DaysRec: "3 days before (Recommended)",
+                reminder7Days: "7 days before",
+                cycleMonthlyShort: "mo",
+                cycleYearlyShort: "yr",
+                cycleWeeklyShort: "wk",
+                cycleOneTimeShort: "time",
+                cardNextBilling: "Next billing date",
+                cardStatus: "Payment status",
+                cardAlertDate: "Alert date",
+                cardLastPaid: "Last paid",
+                cardAlertEmail: "Alert email",
+                remindBeforeDays: "Remind {days} days before",
+                btnMarkAsPaid: "Mark as Paid",
+                deleteItemTitle: "Delete item",
+                paidTodayBadge: "Paid for current cycle",
+                bellCountUrgent: "{count} bills due soon",
+                bellNoUrgent: "No urgent notifications",
+                bellEmpty: "No notifications",
+                btnAddPresetCard: "+ Add",
+                confirmDelete: "Are you sure you want to delete \"{name}\"?",
+                confirmResetAll: "Are you sure you want to reset all data?\n(All subscriptions and expense records will be cleared)",
+                alertValidService: "Please enter a valid service name and amount.",
+                alertValidApp: "Please enter a valid app name and amount.",
+                alertValidEmail: "Please enter an email for notifications.",
+                alertScanFailed: "Failed to read receipt text. Please enter details manually.",
+                alertAddEmailFirst: "Please add a subscription with an email address first.",
+                alertEmailSentSuccess: "Email sent successfully!\n\nA test email was sent to: {email} (for {merchant})\nSubject: 🧪 Subscription Alert Test\n\nPlease check your Inbox or Spam folder.",
+                alertEmailSentFail: "Failed to send: {error}",
+                alertGasConnError: "Error connecting to Google Apps Script:\n{error}",
+                alertPullError: "Error loading data from Google Sheets:\n{error}",
+                toastPresetAdded: "Added {merchant} (฿{amount})! Next billing: {date}",
+                toastManualSaved: "Saved {merchant} successfully!",
+                toastScanSaved: "Subscription {merchant} saved successfully!",
+                toastPaidSuccess: "Payment recorded for {merchant}! Next billing: {date}",
+                toastDeleted: "Deleted \"{name}\" successfully",
+                toastResetSuccess: "All data has been reset",
+                toastDemoLoaded: "Demo data loaded successfully (Developer Test)",
+                toastLoadedFromGas: "Loaded {count} items from Google Sheets successfully!",
+                toastSyncedToGas: "Synced {count} items to Google Sheets successfully!",
+                toastGasEmpty: "Google Sheets has no subscription records yet",
+                toastSyncFail: "Failed to sync with Google Sheets",
+                toastTestEmailSent: "Test Gmail sent to {email} successfully!",
+                toastGasSettingsSaved: "Gmail notification settings saved successfully!",
+                statusNoCycle: "No billing cycle",
+                statusOverdue: "{days} days overdue",
+                statusDueToday: "Payment due today",
+                statusDueTomorrow: "Payment due tomorrow",
+                statusDueSoon: "Due in {days} days",
+                statusUpcoming: "In {days} days",
+                presetGroups: {
+                    'ทั้งหมด': 'All',
+                    '🎬 ความบันเทิง': '🎬 Entertainment',
+                    '🎵 ฟังเพลง': '🎵 Music',
+                    '💻 การทำงาน / AI': '💻 Work & AI',
+                    '🎨 ออกแบบ / แต่งภาพ': '🎨 Design & Photo',
+                    '🎮 เกม': '🎮 Gaming',
+                    '🧘 สุขภาพ': '🧘 Health & Fitness',
+                    '🔒 ความปลอดภัย / VPN': '🔒 Security & VPN'
+                },
+                defaultSlipMerchant: "Bank Transfer / Slip",
+                thisItem: "this item",
+                markAsPaidTitle: "Mark as paid and advance billing cycle",
+                recurrenceMonthly: "Monthly",
+                recurrenceYearly: "Yearly",
+                recurrenceWeekly: "Weekly",
+                recurrenceOneTime: "One-time",
+                tagOverdue: "Overdue",
+                tagDueToday: "Due Today",
+                tagDueTomorrow: "Tomorrow",
+                tagInDays: "In {days}d",
+                toastSyncedLocalToGas: "Synced {count} items from device to Google Sheets!"
+            }
+        };
+
+        let currentLang = localStorage.getItem('subbuddy_language') || 'th';
+        if (currentLang !== 'th' && currentLang !== 'en') currentLang = 'th';
+
+        function t(key, replacements = {}) {
+            let str = (translations[currentLang] && translations[currentLang][key]) ||
+                      (translations['th'] && translations['th'][key]) || key;
+            for (const [k, v] of Object.entries(replacements)) {
+                str = str.replace(new RegExp(`{${k}}`, 'g'), v);
+            }
+            return str;
+        }
+
+        function setLanguage(lang) {
+            if (lang !== 'th' && lang !== 'en') return;
+            currentLang = lang;
+            localStorage.setItem('subbuddy_language', lang);
+            updateLanguageUI();
+            renderPresetUI();
+            updateDashboard();
+        }
+
+        function updateLanguageUI() {
+            // Update HTML lang attribute
+            document.documentElement.lang = currentLang;
+
+            // Update Toggle Button active highlight
+            const btnTh = document.getElementById('lang-btn-th');
+            const btnEn = document.getElementById('lang-btn-en');
+            if (currentLang === 'th') {
+                if (btnTh) btnTh.className = "px-2.5 py-1 rounded-lg font-bold transition-all bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 shadow-sm shadow-emerald-500/10";
+                if (btnEn) btnEn.className = "px-2.5 py-1 rounded-lg font-medium transition-all text-slate-400 hover:text-slate-200 border border-transparent";
+            } else {
+                if (btnTh) btnTh.className = "px-2.5 py-1 rounded-lg font-medium transition-all text-slate-400 hover:text-slate-200 border border-transparent";
+                if (btnEn) btnEn.className = "px-2.5 py-1 rounded-lg font-bold transition-all bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 shadow-sm shadow-emerald-500/10";
+            }
+
+            // Translate all elements with data-i18n
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (key && translations[currentLang] && translations[currentLang][key] !== undefined) {
+                    el.textContent = translations[currentLang][key];
+                }
+            });
+
+            // Translate placeholders
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (key && translations[currentLang] && translations[currentLang][key] !== undefined) {
+                    el.setAttribute('placeholder', translations[currentLang][key]);
+                }
+            });
+
+            // Update GAS status badge & description
+            updateGasStatusBadge();
+        }
+
         // Full App Database with Group Categories
         const APP_PRESETS = [
             // 🎬 ความบันเทิง
@@ -633,7 +1121,9 @@
             const d = parseInt(parts[2], 10);
             const dt = new Date(y, m, d);
             const monthsTh = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
-            return `${d} ${monthsTh[m]} ${y}`;
+            const monthsEn = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const months = currentLang === 'en' ? monthsEn : monthsTh;
+            return `${d} ${months[m]} ${y}`;
         }
 
         function addRecurrence(dateStr, recurrence) {
@@ -687,8 +1177,8 @@
             if (!nextBillingDateStr) {
                 return {
                     status: 'none',
-                    tag: 'ไม่มีรอบบิล',
-                    label: 'ไม่มีรอบบิล',
+                    tag: t('statusNoCycle'),
+                    label: t('statusNoCycle'),
                     daysLeft: null,
                     badgeClass: 'bg-slate-800 text-slate-400 border border-slate-700',
                     borderClass: 'border-slate-800',
@@ -711,8 +1201,8 @@
             if (diffDays < 0) {
                 return {
                     status: 'overdue',
-                    tag: 'Overdue',
-                    label: `เลยกำหนด ${Math.abs(diffDays)} วัน`,
+                    tag: t('tagOverdue'),
+                    label: t('statusOverdue', { days: Math.abs(diffDays) }),
                     daysLeft: diffDays,
                     badgeClass: 'bg-rose-500/20 text-rose-300 border border-rose-500/40',
                     borderClass: 'border-rose-500/50',
@@ -723,8 +1213,8 @@
             } else if (diffDays === 0) {
                 return {
                     status: 'due_today',
-                    tag: 'Payment Due Today',
-                    label: 'ถึงกำหนดชำระวันนี้',
+                    tag: t('tagDueToday'),
+                    label: t('statusDueToday'),
                     daysLeft: 0,
                     badgeClass: 'bg-rose-500/25 text-rose-300 border border-rose-500/50 animate-pulse',
                     borderClass: 'border-rose-500/60 urgent-glow',
@@ -735,8 +1225,8 @@
             } else if (diffDays === 1) {
                 return {
                     status: 'due_tomorrow',
-                    tag: 'Payment Tomorrow',
-                    label: 'จะเรียกเก็บเงินพรุ่งนี้',
+                    tag: t('tagDueTomorrow'),
+                    label: t('statusDueTomorrow'),
                     daysLeft: 1,
                     badgeClass: 'bg-amber-500/20 text-amber-300 border border-amber-500/40',
                     borderClass: 'border-amber-500/50',
@@ -747,8 +1237,8 @@
             } else if (diffDays <= reminderDays) {
                 return {
                     status: 'due_soon',
-                    tag: `In ${diffDays} days`,
-                    label: `จะเรียกเก็บในอีก ${diffDays} วัน`,
+                    tag: t('tagInDays', { days: diffDays }),
+                    label: t('statusDueSoon', { days: diffDays }),
                     daysLeft: diffDays,
                     badgeClass: 'bg-amber-500/15 text-amber-300 border border-amber-500/30',
                     borderClass: 'border-amber-500/40',
@@ -759,8 +1249,8 @@
             } else {
                 return {
                     status: 'upcoming',
-                    tag: `In ${diffDays} days`,
-                    label: `อีก ${diffDays} วัน`,
+                    tag: t('tagInDays', { days: diffDays }),
+                    label: t('statusUpcoming', { days: diffDays }),
                     daysLeft: diffDays,
                     badgeClass: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20',
                     borderClass: 'border-slate-800',
@@ -852,7 +1342,7 @@
             saveToStorage();
             updateDashboard();
             pushToBackend(false);
-            showToast('โหลดข้อมูลตัวอย่างสำเร็จ (สำหรับ Developer Test)');
+            showToast(t('toastDemoLoaded'));
             console.log('Demo data loaded successfully via loadDemoData()');
         };
 
@@ -932,7 +1422,8 @@
             // Setup Drag & Drop listeners
             setupDragAndDrop();
 
-            // Render UI with cached state
+            // Render UI with preferred language and cached state
+            updateLanguageUI();
             renderPresetUI();
             updateDashboard();
 
@@ -1029,10 +1520,12 @@
             const filterBar = document.getElementById('category-filter-bar');
             filterBar.innerHTML = '';
 
+            const presetGroupsMap = translations[currentLang]?.presetGroups || {};
+
             groups.forEach(grp => {
                 const btn = document.createElement('button');
                 btn.className = `px-3 py-1 rounded-lg text-xs font-medium transition-all ${grp === activePresetGroup ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40' : 'bg-slate-950 text-slate-400 hover:text-slate-200'}`;
-                btn.innerText = grp;
+                btn.innerText = presetGroupsMap[grp] || grp;
                 btn.onclick = () => { activePresetGroup = grp; renderPresetUI(); };
                 filterBar.appendChild(btn);
             });
@@ -1048,14 +1541,16 @@
                 const card = document.createElement('div');
                 card.className = "bg-slate-950 border border-slate-800 hover:border-emerald-500/50 p-3.5 rounded-2xl flex flex-col justify-between transition-all group cursor-pointer shadow-sm hover:shadow-emerald-500/10";
                 card.onclick = () => openPresetModal(app);
+                const displayGroup = presetGroupsMap[app.group] || app.group;
+                const addBtnText = t('btnAddPresetCard');
                 card.innerHTML = `
                     <div>
-                        <div class="text-[10px] text-slate-400">${app.group}</div>
+                        <div class="text-[10px] text-slate-400">${displayGroup}</div>
                         <div class="font-semibold text-slate-100 text-sm mt-0.5 group-hover:text-emerald-400 transition-colors">${app.merchant}</div>
                     </div>
                     <div class="flex justify-between items-center mt-3 pt-2 border-t border-slate-900">
                         <span class="text-xs font-bold text-emerald-400">฿${app.price.toLocaleString()}</span>
-                        <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-2.5 py-0.5 rounded-full font-medium group-hover:bg-emerald-500 group-hover:text-slate-950 transition-all">+ เพิ่ม</span>
+                        <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-2.5 py-0.5 rounded-full font-medium group-hover:bg-emerald-500 group-hover:text-slate-950 transition-all">${addBtnText}</span>
                     </div>
                 `;
                 grid.appendChild(card);
@@ -1066,9 +1561,11 @@
         function openPresetModal(app) {
             selectedPresetApp = app;
             const categoryName = (app.group || '').replace(/^[^\s]+\s+/, '') || app.category || 'Subscription';
+            const presetGroupsMap = translations[currentLang]?.presetGroups || {};
+            const displayGroup = presetGroupsMap[app.group] || app.group || categoryName;
 
-            document.getElementById('modal-preset-title').innerText = `เพิ่ม ${app.merchant}`;
-            document.getElementById('modal-preset-group').innerText = app.group || categoryName;
+            document.getElementById('modal-preset-title').innerText = t('modalPresetTitle', { merchant: app.merchant });
+            document.getElementById('modal-preset-group').innerText = displayGroup;
             document.getElementById('modal-merchant').value = app.merchant;
             if (document.getElementById('modal-category')) {
                 document.getElementById('modal-category').value = categoryName;
@@ -1107,13 +1604,13 @@
             const email = (document.getElementById('modal-email')?.value || '').trim();
 
             if (!merchant || isNaN(amount) || amount <= 0) {
-                alert('กรุณากรอกชื่อบริการและราคาให้ถูกต้อง');
+                alert(t('alertValidService'));
                 return;
             }
 
             // User must provide an email for this subscription
             if (!email || email.indexOf('@') === -1) {
-                alert('กรุณากรอก Email สำหรับรับการแจ้งเตือน');
+                alert(t('alertValidEmail'));
                 return;
             }
 
@@ -1142,7 +1639,7 @@
             saveToStorage();
             updateDashboard();
             pushToBackend(false);
-            showToast(`เพิ่ม ${merchant} (฿${amount}) เรียบร้อย! รอบถัดไป: ${formatDateDisplay(nextBillingDate)}`);
+            showToast(t('toastPresetAdded', { merchant, amount: amount.toLocaleString(), date: formatDateDisplay(nextBillingDate) }));
         }
 
         // Add Manual Input
@@ -1157,12 +1654,12 @@
             const email = (document.getElementById('manual-email')?.value || '').trim();
 
             if (!merchant || isNaN(amount) || amount <= 0) {
-                alert('กรุณากรอกชื่อแอปและจำนวนเงินให้ถูกต้อง');
+                alert(t('alertValidApp'));
                 return;
             }
 
             if (category === 'Subscription' && (!email || email.indexOf('@') === -1)) {
-                alert('กรุณากรอก Email สำหรับรับการแจ้งเตือน');
+                alert(t('alertValidEmail'));
                 return;
             }
 
@@ -1193,7 +1690,7 @@
             saveToStorage();
             updateDashboard();
             pushToBackend(false);
-            showToast(`บันทึกรายการ ${merchant} เรียบร้อยแล้ว!`);
+            showToast(t('toastManualSaved', { merchant }));
         }
 
         // OCR Scanner Functions
@@ -1211,19 +1708,19 @@
             loadingBox.classList.remove('hidden');
             resultBox.classList.add('hidden');
             progressBar.style.width = '20%';
-            statusText.innerText = "กำลังดาวน์โหลดโมเดล OCR และประมวลผล...";
+            statusText.innerText = t('ocrLoadingDownload');
 
             try {
                 const worker = await Tesseract.createWorker('tha+eng');
                 progressBar.style.width = '60%';
-                statusText.innerText = "กำลังสกัดตัวอักษรและวิเคราะห์สลิป...";
+                statusText.innerText = t('ocrLoadingExtract');
 
                 const ret = await worker.recognize(file);
                 await worker.terminate();
 
                 progressBar.style.width = '100%';
                 const text = ret.data.text;
-                document.getElementById('raw-ocr-text').innerText = text || "(อ่านข้อความในรูปภาพไม่พบ)";
+                document.getElementById('raw-ocr-text').innerText = text || t('ocrNoText');
 
                 const parsed = parseSlipText(text);
 
@@ -1241,9 +1738,9 @@
             } catch (err) {
                 console.error(err);
                 loadingBox.classList.add('hidden');
-                alert("อ่านข้อความสลิปไม่สำเร็จ กรุณากรอกข้อมูลเพื่อตรวจสอบด้วยตนเอง");
+                alert(t('alertScanFailed'));
 
-                document.getElementById('res-merchant').value = "สลิปโอนเงิน / ใบเสร็จ";
+                document.getElementById('res-merchant').value = t('defaultSlipMerchant');
                 document.getElementById('res-amount').value = 199.00;
                 document.getElementById('res-category').value = "Subscription";
                 document.getElementById('res-recurrence').value = "monthly";
@@ -1255,7 +1752,7 @@
 
         function parseSlipText(text) {
             const lowerText = text.toLowerCase();
-            let merchant = "สลิปโอนเงิน / ใบเสร็จ";
+            let merchant = t('defaultSlipMerchant');
             let amount = 0;
             let category = "Subscription";
             let recurrence = "monthly";
@@ -1302,7 +1799,7 @@
         }
 
         function confirmScanTransaction() {
-            const merchant = document.getElementById('res-merchant').value || 'รายการสแกน';
+            const merchant = document.getElementById('res-merchant').value || t('defaultSlipMerchant');
             const amount = parseFloat(document.getElementById('res-amount').value) || 0;
             const category = document.getElementById('res-category').value;
             const recurrence = document.getElementById('res-recurrence').value;
@@ -1312,7 +1809,7 @@
             const email = (document.getElementById('res-email')?.value || '').trim();
 
             if (category === 'Subscription' && (!email || email.indexOf('@') === -1)) {
-                alert('กรุณากรอก Email สำหรับรับการแจ้งเตือน');
+                alert(t('alertValidEmail'));
                 return;
             }
 
@@ -1339,7 +1836,7 @@
             document.getElementById('scan-result').classList.add('hidden');
             document.getElementById('file-input').value = '';
             if (document.getElementById('res-email')) document.getElementById('res-email').value = '';
-            showToast(`บันทึก Subscription ${merchant} สำเร็จ!`);
+            showToast(t('toastScanSaved', { merchant }));
         }
 
         // ==========================================
@@ -1387,7 +1884,7 @@
                 body: JSON.stringify({ action: 'markAsPaid', id: targetId })
             }).catch(e => console.warn('markAsPaid error:', e));
             pushToBackend(false);
-            showToast(`บันทึกชำระเงิน ${tx.merchant} เรียบร้อย! รอบถัดไปคือ ${formatDateDisplay(tx.nextBillingDate)}`);
+            showToast(t('toastPaidSuccess', { merchant: tx.merchant, date: formatDateDisplay(tx.nextBillingDate) }));
         }
 
         // ==========================================
@@ -1403,9 +1900,9 @@
 
             // Strict lookup by unique ID - NEVER by merchant name
             const tx = transactions.find(t => String(t.id).trim() === targetId);
-            const name = tx ? tx.merchant : 'รายการนี้';
+            const name = tx ? tx.merchant : t('thisItem');
 
-            if (confirm(`คุณต้องการลบ "${name}" ใช่หรือไม่?`)) {
+            if (confirm(t('confirmDelete', { name }))) {
                 // Filter out strictly by unique ID
                 transactions = transactions.filter(t => String(t.id).trim() !== targetId);
                 saveToStorage();
@@ -1419,12 +1916,12 @@
                 if (transactions.length > 0) {
                     pushToBackend(false);
                 }
-                showToast(`ลบ "${name}" เรียบร้อยแล้ว`);
+                showToast(t('toastDeleted', { name }));
             }
         }
 
         async function clearAllData() {
-            if (confirm('คุณต้องการรีเซ็ตข้อมูลทั้งหมดใช่หรือไม่?\n(รายการ Subscription และประวัติค่าใช้จ่ายทั้งหมดจะถูกล้าง)')) {
+            if (confirm(t('confirmResetAll'))) {
                 transactions = [];
                 emailSettings = {
                     gasWebAppUrl: GAS_WEB_APP_URL,
@@ -1444,7 +1941,7 @@
                 updateGasStatusBadge();
 
                 updateDashboard();
-                showToast('รีเซ็ตข้อมูลทั้งหมดเรียบร้อยแล้ว');
+                showToast(t('toastResetSuccess'));
 
                 // Clear remote Google Sheet if connected
                 try {
@@ -1538,7 +2035,7 @@
 
             // 1. Metric: Total Monthly Subscription
             document.getElementById('metric-monthly-sub').innerText = `฿${totalMonthlySub.toLocaleString('th-TH', {minimumFractionDigits: 2})}`;
-            document.getElementById('metric-sub-count').innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> ${subCount} บริการประจำ`;
+            document.getElementById('metric-sub-count').innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> ${t('metricSubCount', { count: subCount })}`;
 
             // 2. Metric: Next Upcoming Payment
             if (subsList.length > 0) {
@@ -1546,13 +2043,13 @@
                 document.getElementById('metric-next-name').innerText = `${nextSub.merchant} (฿${nextSub.amount.toLocaleString()})`;
                 document.getElementById('metric-next-detail').innerHTML = `<span class="font-medium text-amber-300">${nextSub.statusObj.label}</span> • ${formatDateDisplay(nextSub.nextBillingDate)}`;
             } else {
-                document.getElementById('metric-next-name').innerText = 'ไม่มีรายการ';
-                document.getElementById('metric-next-detail').innerText = 'ไม่มีรอบชำระเร็วๆ นี้';
+                document.getElementById('metric-next-name').innerText = t('metricNoNext');
+                document.getElementById('metric-next-detail').innerText = t('metricNoNextDetail');
             }
 
             // 3. Metric: Payments Due in 30 Days
             document.getElementById('metric-month-due').innerText = `฿${monthDueTotal.toLocaleString('th-TH', {minimumFractionDigits: 2})}`;
-            document.getElementById('metric-month-due-count').innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span> ${monthDueCount} รายการใน 30 วัน`;
+            document.getElementById('metric-month-due-count').innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span> ${t('metricDueCount', { count: monthDueCount })}`;
 
             // 4. Metric: Savings
             document.getElementById('metric-savings').innerText = `฿${potentialSavingsYearly.toLocaleString('th-TH', {minimumFractionDigits: 2})}`;
@@ -1576,7 +2073,7 @@
                 grid.innerHTML = `
                     <div class="col-span-full py-8 text-center bg-slate-950/60 rounded-2xl border border-slate-800 text-slate-500 text-sm">
                         <i class="fa-solid fa-calendar-xmark text-2xl mb-2 text-slate-600 block"></i>
-                        ไม่มีรายการ Subscription ที่มีรอบบิลในขณะนี้ กรุณาเพิ่มรายการเพื่อเริ่มระบบติดตาม
+                        ${t('upcomingEmpty')}
                     </div>
                 `;
                 return;
@@ -1586,7 +2083,13 @@
                 const card = document.createElement('div');
                 card.className = `bg-slate-950 border ${sub.statusObj.borderClass} p-5 rounded-2xl flex flex-col justify-between transition-all hover:shadow-lg space-y-4 relative overflow-hidden`;
 
-                const cycleText = sub.recurrence === 'monthly' ? 'เดือน' : sub.recurrence === 'yearly' ? 'ปี' : sub.recurrence === 'weekly' ? 'สัปดาห์' : 'ครั้ง';
+                const cycleShortMap = {
+                    monthly: t('cycleMonthlyShort'),
+                    yearly: t('cycleYearlyShort'),
+                    weekly: t('cycleWeeklyShort'),
+                    'one-time': t('cycleOneTimeShort')
+                };
+                const cycleText = cycleShortMap[sub.recurrence] || t('cycleMonthlyShort');
                 const reminderDateStr = calculateReminderDate(sub.nextBillingDate, sub.reminderDays);
 
                 card.innerHTML = `
@@ -1597,7 +2100,7 @@
                                 ${sub.statusObj.tag}
                             </span>
                             <span class="text-xs text-slate-400 bg-slate-900 px-2 py-0.5 rounded-md border border-slate-800">
-                                แจ้งเตือนล่วงหน้า ${sub.reminderDays} วัน
+                                ${t('remindBeforeDays', { days: sub.reminderDays })}
                             </span>
                         </div>
 
@@ -1611,24 +2114,24 @@
 
                         <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 space-y-1.5 text-xs">
                             <div class="flex justify-between text-slate-300">
-                                <span class="text-slate-400">วันชำระครั้งถัดไป:</span>
+                                <span class="text-slate-400">${t('cardNextBilling')}:</span>
                                 <span class="font-semibold text-slate-100">${formatDateDisplay(sub.nextBillingDate)}</span>
                             </div>
                             <div class="flex justify-between text-slate-300">
-                                <span class="text-slate-400">สถานะกำหนดชำระ:</span>
+                                <span class="text-slate-400">${t('cardStatus')}:</span>
                                 <span class="font-medium ${sub.statusObj.indicatorColor}">${sub.statusObj.label}</span>
                             </div>
                             <div class="flex justify-between text-slate-400 text-[11px] pt-1 border-t border-slate-800/80">
-                                <span>วันที่แจ้งเตือน:</span>
+                                <span>${t('cardAlertDate')}:</span>
                                 <span>${formatDateDisplay(reminderDateStr)}</span>
                             </div>
                             <div class="flex justify-between text-slate-400 text-[11px]">
-                                <span>จ่ายล่าสุด:</span>
+                                <span>${t('cardLastPaid')}:</span>
                                 <span>${formatDateDisplay(sub.lastPaidDate)}</span>
                             </div>
                             ${sub.email ? `
                             <div class="flex justify-between text-slate-400 text-[11px] pt-1 border-t border-slate-800/80">
-                                <span>อีเมลแจ้งเตือน:</span>
+                                <span>${t('cardAlertEmail')}:</span>
                                 <span class="font-medium text-slate-300 truncate max-w-[140px]" title="${sub.email}">${sub.email}</span>
                             </div>
                             ` : ''}
@@ -1637,9 +2140,9 @@
 
                     <div class="pt-2 border-t border-slate-900 flex items-center gap-2">
                         <button data-id="${sub.id}" onclick="markAsPaid('${sub.id}')" class="flex-1 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-2 rounded-xl text-xs transition-all flex items-center justify-center gap-1.5 shadow-md shadow-emerald-500/20">
-                            <i class="fa-solid fa-check"></i> Mark as Paid
+                            <i class="fa-solid fa-check"></i> ${t('btnMarkAsPaid')}
                         </button>
-                        <button data-id="${sub.id}" onclick="deleteTransaction('${sub.id}')" class="text-slate-500 hover:text-rose-400 p-2 rounded-xl hover:bg-slate-900 transition-colors" title="ลบรายการ">
+                        <button data-id="${sub.id}" onclick="deleteTransaction('${sub.id}')" class="text-slate-500 hover:text-rose-400 p-2 rounded-xl hover:bg-slate-900 transition-colors" title="${t('deleteItemTitle')}">
                             <i class="fa-solid fa-trash-can text-xs"></i>
                         </button>
                     </div>
@@ -1656,7 +2159,7 @@
             if (urgentSubs.length > 0) {
                 urgentBanner.classList.remove('hidden');
                 const titles = urgentSubs.map(s => `<strong>${s.merchant}</strong> (฿${s.amount.toLocaleString()} • ${s.statusObj.label})`).join(', ');
-                document.getElementById('banner-description').innerHTML = `รายการที่ต้องดูแล: ${titles}`;
+                document.getElementById('banner-description').innerHTML = `${t('bannerAttention')}: ${titles}`;
             } else {
                 urgentBanner.classList.add('hidden');
             }
@@ -1672,15 +2175,15 @@
             if (urgentSubs.length > 0) {
                 badge.innerText = urgentSubs.length;
                 badge.classList.remove('hidden');
-                countText.innerText = `${urgentSubs.length} รายการที่ต้องชำระเร็วๆ นี้`;
+                countText.innerText = t('bellCountUrgent', { count: urgentSubs.length });
             } else {
                 badge.classList.add('hidden');
-                countText.innerText = 'ไม่มีการแจ้งเตือนด่วน';
+                countText.innerText = t('bellNoUrgent');
             }
 
             list.innerHTML = '';
             if (subsList.length === 0) {
-                list.innerHTML = `<div class="text-xs text-slate-500 text-center py-4">ไม่มีรายการแจ้งเตือน</div>`;
+                list.innerHTML = `<div class="text-xs text-slate-500 text-center py-4">${t('bellEmpty')}</div>`;
                 return;
             }
 
@@ -1693,7 +2196,7 @@
                         <div class="${s.statusObj.indicatorColor} text-[11px]">${s.statusObj.label} • ฿${s.amount.toLocaleString()}</div>
                     </div>
                     <button data-id="${s.id}" onclick="markAsPaid('${s.id}')" class="px-2 py-1 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500 hover:text-slate-950 rounded-lg text-[10px] font-bold transition-all">
-                        Mark as Paid
+                        ${t('btnMarkAsPaid')}
                     </button>
                 `;
                 list.appendChild(item);
@@ -1711,9 +2214,23 @@
             tbody.innerHTML = '';
 
             if (transactions.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-500">ไม่มีรายการบันทึก กรุณาเพิ่ม Subscription หรือสแกนเพื่อบันทึก</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-500">${t('tableEmpty')}</td></tr>`;
                 return;
             }
+
+            const cycleLabels = {
+                monthly: t('recurrenceMonthly'),
+                yearly: t('recurrenceYearly'),
+                weekly: t('recurrenceWeekly'),
+                'one-time': t('recurrenceOneTime')
+            };
+
+            const catDisplayMap = {
+                'Subscription': t('catSubscription'),
+                'Ghost Expense': t('catGhost'),
+                'Food & Beverage': t('catFood'),
+                'Transportation': t('catTransport')
+            };
 
             transactions.forEach(tx => {
                 const tr = document.createElement('tr');
@@ -1725,7 +2242,8 @@
                 if (tx.category === 'Food & Beverage') catBadge = 'bg-amber-500/10 text-amber-400 border border-amber-500/20';
                 if (tx.category === 'Transportation') catBadge = 'bg-sky-500/10 text-sky-400 border border-sky-500/20';
 
-                const recurrenceLabel = tx.recurrence === 'monthly' ? 'รายเดือน' : tx.recurrence === 'yearly' ? 'รายปี' : tx.recurrence === 'weekly' ? 'รายสัปดาห์' : 'ครั้งเดียว';
+                const displayCat = catDisplayMap[tx.category] || tx.category;
+                const recurrenceLabel = cycleLabels[tx.recurrence] || tx.recurrence;
                 const statusObj = getPaymentStatus(tx.nextBillingDate, tx.reminderDays);
                 const isPaidToday = tx.lastPaidDate === getTodayString();
 
@@ -1735,7 +2253,7 @@
                         ${tx.email ? `<div class="text-[11px] text-slate-400 font-normal flex items-center gap-1 mt-0.5"><i class="fa-regular fa-envelope text-[10px] text-slate-500"></i> ${tx.email}</div>` : ''}
                     </td>
                     <td class="py-3.5">
-                        <span class="px-2.5 py-1 rounded-full text-xs ${catBadge}">${tx.category}</span>
+                        <span class="px-2.5 py-1 rounded-full text-xs ${catBadge}">${displayCat}</span>
                         <span class="text-[10px] text-slate-400 ml-1">(${recurrenceLabel})</span>
                     </td>
                     <td class="py-3.5 font-bold text-slate-100">฿${tx.amount.toLocaleString('th-TH', {minimumFractionDigits: 2})}</td>
@@ -1744,16 +2262,16 @@
                         ${tx.nextBillingDate ? `
                             <div class="text-xs font-semibold text-slate-200">${formatDateDisplay(tx.nextBillingDate)}</div>
                             <div class="text-[11px] font-medium ${statusObj.indicatorColor}">${statusObj.label}</div>
-                            ${isPaidToday ? '<div class="text-[10px] text-emerald-400 mt-0.5"><i class="fa-solid fa-circle-check mr-1"></i>ชำระรอบล่าสุดแล้ว</div>' : ''}
+                            ${isPaidToday ? `<div class="text-[10px] text-emerald-400 mt-0.5"><i class="fa-solid fa-circle-check mr-1"></i>${t('paidTodayBadge')}</div>` : ''}
                         ` : '<span class="text-xs text-slate-500">-</span>'}
                     </td>
                     <td class="py-3.5 text-right space-x-2">
                         ${tx.nextBillingDate ? `
-                            <button data-id="${tx.id}" onclick="markAsPaid('${tx.id}')" class="px-2.5 py-1 bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-slate-950 border border-emerald-500/30 rounded-lg text-xs font-semibold transition-all inline-flex items-center gap-1" title="บันทึกว่าจ่ายเงินแล้วและเลื่อนรอบบิล">
-                                <i class="fa-solid fa-check"></i> Mark as Paid
+                            <button data-id="${tx.id}" onclick="markAsPaid('${tx.id}')" class="px-2.5 py-1 bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-slate-950 border border-emerald-500/30 rounded-lg text-xs font-semibold transition-all inline-flex items-center gap-1" title="${t('markAsPaidTitle')}">
+                                <i class="fa-solid fa-check"></i> ${t('btnMarkAsPaid')}
                             </button>
                         ` : ''}
-                        <button data-id="${tx.id}" onclick="deleteTransaction('${tx.id}')" class="text-xs text-slate-500 hover:text-rose-400 transition-colors p-1" title="ลบรายการ">
+                        <button data-id="${tx.id}" onclick="deleteTransaction('${tx.id}')" class="text-xs text-slate-500 hover:text-rose-400 transition-colors p-1" title="${t('deleteItemTitle')}">
                             <i class="fa-solid fa-trash"></i>
                         </button>
                     </td>
@@ -1772,11 +2290,15 @@
             }
 
             const totalSum = Object.values(catTotals).reduce((a, b) => a + b, 0);
+            const emptyLabel = t('chartEmpty');
+            const chartLabels = totalSum === 0 
+                ? [emptyLabel] 
+                : [t('catSubscription'), t('catFood'), t('catTransport'), t('catGhost')];
 
             expenseChartInstance = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: totalSum === 0 ? ['ยังไม่มีรายการค่าใช้จ่าย'] : ['Subscription', 'Food & Beverage', 'Transportation', 'Ghost Expense'],
+                    labels: chartLabels,
                     datasets: [{
                         data: totalSum === 0 ? [1] : [
                             catTotals['Subscription'],
@@ -1807,12 +2329,12 @@
             const badge = document.getElementById('gas-status-badge');
             if (badge) {
                 badge.className = "px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5";
-                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> 🟢 Gmail Notification Connected`;
+                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> ${t('gasBadge')}`;
             }
             const desc = document.getElementById('gas-status-desc');
             if (desc) {
                 desc.className = "text-xs text-emerald-400 mt-1 flex items-center gap-1.5";
-                desc.innerHTML = `<i class="fa-solid fa-circle-check"></i> ระบบเชื่อมต่อ Google Apps Script อัตโนมัติแล้ว`;
+                desc.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${t('gasDesc')}`;
             }
         }
 
@@ -1861,7 +2383,7 @@
                 }
 
                 if (remoteList === null) {
-                    throw new Error('ไม่สามารถเชื่อมต่อหรือดึงข้อมูลจาก Google Apps Script ได้ (โปรดตรวจสอบการเชื่อมต่ออินเทอร์เน็ต)');
+                    throw new Error(currentLang === 'en' ? 'Unable to connect to Google Apps Script (Please check your internet connection)' : 'ไม่สามารถเชื่อมต่อหรือดึงข้อมูลจาก Google Apps Script ได้ (โปรดตรวจสอบการเชื่อมต่ออินเทอร์เน็ต)');
                 }
 
                 // กรณีที่ 1 & กรณีที่ 2: Google Sheets มีข้อมูล (Cloud เป็น Source of Truth)
@@ -1870,7 +2392,7 @@
                     saveToStorage(); // Cache ลง LocalStorage
                     updateDashboard();
                     if (isManual) {
-                        showToast(`โหลดข้อมูล ${transactions.length} รายการจาก Google Sheets สำเร็จ!`);
+                        showToast(t('toastLoadedFromGas', { count: transactions.length }));
                     }
                     return true;
                 }
@@ -1881,7 +2403,7 @@
                         // Push LocalStorage ขึ้น Google Sheets แล้วใช้ Google Sheets เป็น Source of Truth
                         await pushToBackend(false);
                         if (isManual) {
-                            showToast(`ซิงค์ข้อมูล ${transactions.length} รายการจากเครื่องขึ้น Google Sheets เรียบร้อย!`);
+                            showToast(t('toastSyncedLocalToGas', { count: transactions.length }));
                         }
                     }
                     return true;
@@ -1892,14 +2414,14 @@
                 saveToStorage();
                 updateDashboard();
                 if (isManual) {
-                    showToast('Google Sheets ยังไม่มีข้อมูล Subscription');
+                    showToast(t('toastGasEmpty'));
                 }
                 return true;
 
             } catch (err) {
                 console.error('PULL Error:', err);
                 if (isManual) {
-                    alert('เกิดข้อผิดพลาดในการโหลดข้อมูลจาก Google Sheets:\n' + err.message);
+                    alert(t('alertPullError', { error: err.message }));
                 }
                 return false;
             }
@@ -1934,7 +2456,7 @@
                 const json = await res.json();
                 if (json && json.status === 'success') {
                     if (isManual) {
-                        showToast(`ซิงค์ข้อมูล ${transactions.length} รายการไปยัง Google Sheets เรียบร้อย!`);
+                        showToast(t('toastSyncedToGas', { count: transactions.length }));
                     }
                     return true;
                 }
@@ -1942,7 +2464,7 @@
             } catch (err) {
                 console.warn('PUSH Error:', err);
                 if (isManual) {
-                    showToast('ซิงค์กับ Google Sheets ไม่สำเร็จ', false);
+                    showToast(t('toastSyncFail'), false);
                 }
                 return false;
             }
@@ -1960,7 +2482,7 @@
             // Find subscription that has an email specified
             const subWithEmail = transactions.find(t => t.email && t.email.trim().indexOf('@') !== -1);
             if (!subWithEmail) {
-                alert('กรุณาเพิ่ม Subscription และระบุ Email สำหรับรับการแจ้งเตือนก่อน');
+                alert(t('alertAddEmailFirst'));
                 return;
             }
 
@@ -1970,7 +2492,7 @@
             const btn = document.getElementById('btn-test-email');
             const originalHtml = btn ? btn.innerHTML : '';
             if (btn) {
-                btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> กำลังส่ง Gmail จริง...`;
+                btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> ${t('btnTestEmailSending')}`;
                 btn.disabled = true;
             }
 
@@ -1987,14 +2509,14 @@
                 const json = await res.json();
 
                 if (json && json.status === 'success') {
-                    showToast(`ส่ง Gmail ทดสอบไปยัง ${email} สำเร็จแล้ว!`);
-                    alert(`ส่ง Email จริงสำเร็จ!\n\nระบบได้ส่งอีเมลทดสอบจริงไปยัง: ${email} (จากบริการ ${subWithEmail.merchant})\nหัวข้อ: 🧪 Subscription Alert Test\n\nกรุณาตรวจสอบใน Inbox หรือ Spam ของคุณ`);
+                    showToast(t('toastTestEmailSent', { email }));
+                    alert(t('alertEmailSentSuccess', { email, merchant: subWithEmail.merchant }));
                 } else {
-                    alert('ส่งไม่สำเร็จ: ' + (json && json.message ? json.message : 'Unknown error'));
+                    alert(t('alertEmailSentFail', { error: (json && json.message ? json.message : 'Unknown error') }));
                 }
             } catch (err) {
                 console.error(err);
-                alert('เกิดข้อผิดพลาดในการเชื่อมต่อกับ Google Apps Script:\n' + err.message);
+                alert(t('alertGasConnError', { error: err.message }));
             } finally {
                 if (btn) {
                     btn.innerHTML = originalHtml;
@@ -2021,7 +2543,7 @@
                 toast.classList.remove('hidden');
                 setTimeout(() => toast.classList.add('hidden'), 3500);
             }
-            showToast('บันทึกการตั้งค่า Gmail Notification สำเร็จ!');
+            showToast(t('toastGasSettingsSaved'));
 
             // เมื่อบันทึกการตั้งค่า ให้ทำ PULL จาก Google Sheets ทันที (ห้าม overwrite ด้วย [])
             await pullFromBackend(true, { allowPushIfRemoteEmpty: true });
