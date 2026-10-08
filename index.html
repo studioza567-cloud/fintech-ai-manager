@@ -3,1758 +3,660 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Subscription & Daily Expense Manager (Production Build)</title>
+    <title>Subscription Tracker & AI Predictor</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Kanit -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Tesseract.js Real OCR Engine -->
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Kanit', sans-serif; }
-        
-        /* Custom scrollbar */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 9999px; }
-        ::-webkit-scrollbar-thumb:hover { background: #10b981; }
-
-        @keyframes pulseGlow {
-            0%, 100% { box-shadow: 0 0 15px rgba(244, 63, 94, 0.4); }
-            50% { box-shadow: 0 0 25px rgba(244, 63, 94, 0.8); }
-        }
-        .urgent-glow { animation: pulseGlow 2s infinite; }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-emerald-500 selection:text-slate-950">
+<body class="bg-slate-950 text-slate-100 min-h-screen pb-12">
 
-    <!-- Header Bar -->
-    <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-40 shadow-md">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-4">
+    <!-- Header Navbar -->
+    <nav class="border-b border-slate-800 bg-slate-900/50 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 font-bold text-xl shadow-lg shadow-emerald-500/20">
-                    <i class="fa-solid fa-bell-ring"></i>
+                <div class="bg-indigo-600 p-2 rounded-xl text-white">
+                    <i class="fa-solid fa-wallet text-xl"></i>
                 </div>
                 <div>
-                    <h1 class="text-lg font-bold bg-gradient-to-r from-emerald-400 to-teal-200 bg-clip-text text-transparent">AI Subscription & Expense Manager</h1>
-                    <p class="text-xs text-slate-400">ระบบบริหารจัดการรอบบิล & แจ้งเตือนก่อนตัดเงินล่วงหน้า (Next Billing Reminder)</p>
+                    <h1 class="text-lg font-bold bg-gradient-to-r from-indigo-400 to-emerald-400 bg-clip-text text-transparent">
+                        SubTracker & AI Analytics
+                    </h1>
+                    <p class="text-xs text-slate-400">ระบบติดตามและคาดการณ์ค่าใช้จ่ายอัตโนมัติ</p>
                 </div>
             </div>
-            <div class="flex items-center gap-3">
-                <!-- Notification Bell Button -->
-                <div class="relative">
-                    <button id="bell-btn" onclick="toggleNotificationDropdown()" class="relative p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-emerald-400 border border-slate-700 transition-all">
-                        <i class="fa-solid fa-bell text-base"></i>
-                        <span id="bell-badge" class="hidden absolute -top-1 -right-1 w-5 h-5 bg-rose-500 text-white rounded-full text-[10px] font-bold flex items-center justify-center animate-bounce">0</span>
-                    </button>
-                    <!-- Bell Dropdown Modal -->
-                    <div id="bell-dropdown" class="hidden absolute right-0 mt-2 w-80 sm:w-96 bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-4 z-50 space-y-3">
-                        <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-                            <h4 class="text-sm font-bold text-slate-100 flex items-center gap-2">
-                                <i class="fa-solid fa-bell text-emerald-400"></i> การแจ้งเตือนรอบบิล
-                            </h4>
-                            <span id="bell-count-text" class="text-xs text-slate-400">0 รายการ</span>
-                        </div>
-                        <div id="bell-list" class="max-h-72 overflow-y-auto space-y-2 pr-1">
-                            <!-- Populated dynamically -->
-                        </div>
-                    </div>
-                </div>
-
-                <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs px-3 py-1.5 rounded-full font-medium flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Smart Billing Engine
-                </span>
-                <button onclick="clearAllData()" class="text-xs text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 px-3 py-1.5 rounded-lg border border-rose-500/20 transition-all">
-                    <i class="fa-solid fa-trash-can mr-1"></i> รีเซ็ตข้อมูล
-                </button>
+            <div id="gas-status-badge" class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-800 text-slate-400 border border-slate-700 flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-slate-500"></span> ⚪ Status Unset
             </div>
         </div>
-    </header>
+    </nav>
 
-    <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full space-y-8">
+    <main class="max-w-7xl mx-auto px-4 py-6 space-y-6">
 
-        <!-- Top In-App Urgent Notification Banner (Shown when items are due today or tomorrow) -->
-        <div id="urgent-alert-banner" class="hidden bg-gradient-to-r from-rose-950/70 via-slate-900 to-amber-950/70 border border-rose-500/40 rounded-2xl p-4 shadow-xl">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                <div class="flex items-start gap-3">
-                    <div class="w-9 h-9 rounded-xl bg-rose-500/20 text-rose-400 flex items-center justify-center text-lg shrink-0 mt-0.5">
-                        <i class="fa-solid fa-triangle-exclamation"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-sm font-bold text-rose-300" id="banner-title">⚠️ มี Subscription ที่ใกล้ถึงกำหนดชำระเงิน!</h3>
-                        <p class="text-xs text-slate-300 mt-0.5" id="banner-description">โปรดตรวจสอบยอดเงินในบัญชีเพื่อป้องกันการถูกตัดเงินโดยไม่รู้ตัว</p>
-                    </div>
-                </div>
-                <a href="#upcoming-section" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-rose-500 text-white hover:bg-rose-400 transition-all shrink-0">
-                    ดูรายการทั้งหมด <i class="fa-solid fa-arrow-down ml-1"></i>
-                </a>
-            </div>
-        </div>
-
-        <!-- Metrics Overview Cards (Focused on Subscriptions & Cash Flow) -->
-        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <!-- 1. Total Monthly Subscriptions -->
-            <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl relative overflow-hidden group hover:border-emerald-500/40 transition-all">
-                <div class="text-xs text-slate-400 font-medium flex items-center justify-between">
-                    <span>ค่า Subscription เฉลี่ยต่อเดือน</span>
-                    <i class="fa-solid fa-repeat text-emerald-400/60"></i>
-                </div>
-                <div class="text-2xl font-bold text-emerald-400 mt-2" id="metric-monthly-sub">฿0.00</div>
-                <div class="text-xs text-slate-400 mt-2 flex items-center gap-1.5" id="metric-sub-count">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> 0 บริการประจำ
-                </div>
-            </div>
-
-            <!-- 2. Next Upcoming Payment -->
-            <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl relative overflow-hidden group hover:border-amber-500/40 transition-all">
-                <div class="text-xs text-slate-400 font-medium flex items-center justify-between">
-                    <span>รอบชำระที่ใกล้ที่สุด (Next Payment)</span>
-                    <i class="fa-solid fa-calendar-check text-amber-400/60"></i>
-                </div>
-                <div class="text-xl font-bold text-amber-300 mt-2 truncate" id="metric-next-name">ไม่มีรายการ</div>
-                <div class="text-xs text-slate-400 mt-2 truncate" id="metric-next-detail">ไม่มีรอบชำระเร็วๆ นี้</div>
-            </div>
-
-            <!-- 3. Payments Due This Month -->
-            <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl relative overflow-hidden group hover:border-sky-500/40 transition-all">
-                <div class="text-xs text-slate-400 font-medium flex items-center justify-between">
-                    <span>ยอดที่ต้องจ่ายในรอบ 30 วันนี้</span>
-                    <i class="fa-solid fa-wallet text-sky-400/60"></i>
-                </div>
-                <div class="text-2xl font-bold text-sky-400 mt-2" id="metric-month-due">฿0.00</div>
-                <div class="text-xs text-slate-400 mt-2 flex items-center gap-1.5" id="metric-month-due-count">
-                    <span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span> 0 รายการใน 30 วัน
-                </div>
-            </div>
-
-            <!-- 4. Total Ghost & Potential Savings -->
-            <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl bg-gradient-to-br from-emerald-950/20 to-slate-900 relative overflow-hidden group hover:border-teal-500/40 transition-all">
-                <div class="text-xs text-teal-400 font-medium flex items-center justify-between">
-                    <span>โอกาสประหยัดต่อปี (AI Estimated)</span>
-                    <i class="fa-solid fa-piggy-bank text-teal-400/60"></i>
-                </div>
-                <div class="text-2xl font-bold text-teal-300 mt-2" id="metric-savings">฿0.00</div>
-                <div class="text-xs text-slate-400 mt-2" id="metric-ghost-detail">Ghost Expenses: ฿0.00</div>
-            </div>
-        </section>
-
-        <!-- ========================================== -->
-        <!-- CORE FEATURE: UPCOMING PAYMENTS SECTION   -->
-        <!-- ========================================== -->
-        <section id="upcoming-section" class="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-6">
-            <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-slate-800 pb-4">
+        <!-- Top Metrics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl flex items-center justify-between">
                 <div>
-                    <h2 class="text-xl font-bold text-slate-100 flex items-center gap-2.5">
-                        <i class="fa-solid fa-clock-rotate-left text-amber-400"></i>
-                        <span>Upcoming Payments (รอบชำระที่ใกล้ถึงกำหนด)</span>
-                    </h2>
-                    <p class="text-xs text-slate-400 mt-1">
-                        เรียงลำดับจาก <strong class="text-slate-200">ใกล้จ่ายที่สุด → ไกลที่สุด</strong> พร้อมปุ่มกดบันทึกจ่ายเงินเพื่อเลื่อนรอบบิลอัตโนมัติ
-                    </p>
+                    <p class="text-xs font-medium text-slate-400">ค่าใช้จ่ายเดือนนี้</p>
+                    <p id="total-monthly" class="text-2xl font-bold text-white mt-1">฿0.00</p>
                 </div>
+                <div class="p-3 bg-indigo-500/10 text-indigo-400 rounded-xl">
+                    <i class="fa-solid fa-calendar-check text-xl"></i>
+                </div>
+            </div>
+
+            <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-medium text-slate-400">ประมาณการทั้งปี</p>
+                    <p id="total-yearly" class="text-2xl font-bold text-emerald-400 mt-1">฿0.00</p>
+                </div>
+                <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl">
+                    <i class="fa-solid fa-chart-line text-xl"></i>
+                </div>
+            </div>
+
+            <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-medium text-slate-400">คาดการณ์ถูกหัก (7 วันนี้)</p>
+                    <p id="forecast-7days" class="text-2xl font-bold text-amber-400 mt-1">฿0.00</p>
+                </div>
+                <div class="p-3 bg-amber-500/10 text-amber-400 rounded-xl">
+                    <i class="fa-solid fa-clock text-xl"></i>
+                </div>
+            </div>
+
+            <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-medium text-slate-400">รายการทั้งหมด</p>
+                    <p id="total-subs" class="text-2xl font-bold text-sky-400 mt-1">0 รายการ</p>
+                </div>
+                <div class="p-3 bg-sky-500/10 text-sky-400 rounded-xl">
+                    <i class="fa-solid fa-layer-group text-xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- FEATURE 1: AI SMART ANALYZER & AUDITOR    -->
+        <!-- ========================================== -->
+        <section class="bg-slate-900 border border-indigo-500/30 rounded-2xl p-5 shadow-lg shadow-indigo-950/20">
+            <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center gap-2">
-                    <span class="text-xs px-2.5 py-1 bg-slate-800 text-slate-400 rounded-lg border border-slate-700">
-                        <i class="fa-solid fa-filter mr-1"></i> เฉพาะ Subscription ที่มีรอบบิล
-                    </span>
-                </div>
-            </div>
-
-            <!-- Cards Grid for Upcoming Payments -->
-            <div id="upcoming-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <!-- Dynamically populated via JS -->
-            </div>
-        </section>
-
-        <!-- Method Selection Tabs (Choose between Preset Apps, Slip Scan, and Manual Input) -->
-        <section class="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl">
-            <div class="max-w-3xl mx-auto text-center mb-6">
-                <h2 class="text-2xl font-bold text-slate-100 flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-circle-plus text-emerald-400"></i> เพิ่มรายการ Subscription / รายจ่ายใหม่
-                </h2>
-                <p class="text-sm text-slate-400 mt-1">กำหนดวันจ่ายล่าสุดและรอบบิล เพื่อให้ระบบคำนวณวันแจ้งเตือนล่วงหน้า</p>
-
-                <!-- Mode Switcher Buttons -->
-                <div class="flex flex-wrap justify-center gap-2 mt-4">
-                    <button onclick="switchAddMode('preset')" id="tab-btn-preset" class="px-4 py-2 rounded-xl text-xs font-semibold bg-emerald-500 text-slate-950 transition-all">
-                        <i class="fa-solid fa-icons mr-1"></i> เลือกจากแอปยอดนิยม (Quick Add)
-                    </button>
-                    <button onclick="switchAddMode('scan')" id="tab-btn-scan" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all">
-                        <i class="fa-solid fa-expand mr-1"></i> สแกนสลิปด้วย AI OCR
-                    </button>
-                    <button onclick="switchAddMode('manual')" id="tab-btn-manual" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all">
-                        <i class="fa-solid fa-keyboard mr-1"></i> พิมพ์กรอกข้อมูลเอง
-                    </button>
-                </div>
-            </div>
-
-            <!-- MODE 1: Preset App Selector (Quick Add) -->
-            <div id="mode-preset" class="space-y-6 max-w-5xl mx-auto">
-                <div class="flex flex-wrap gap-2 justify-center border-b border-slate-800 pb-3" id="category-filter-bar">
-                    <!-- Category Filters generated dynamically -->
-                </div>
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-h-96 overflow-y-auto p-1" id="preset-grid">
-                    <!-- Preset App Cards generated dynamically -->
-                </div>
-            </div>
-
-            <!-- MODE 2: OCR Slip Scanner -->
-            <div id="mode-scan" class="hidden space-y-4">
-                <div id="drop-zone" onclick="document.getElementById('file-input').click()" 
-                     class="border-2 border-dashed border-slate-700 hover:border-emerald-500/80 bg-slate-950/60 transition-all rounded-2xl p-8 text-center cursor-pointer max-w-2xl mx-auto relative group">
-                    <input type="file" id="file-input" accept="image/*" class="hidden" onchange="handleFileUpload(event)">
-                    <div class="w-16 h-16 bg-slate-800 group-hover:bg-emerald-500/10 group-hover:text-emerald-400 text-slate-300 rounded-2xl flex items-center justify-center mx-auto text-2xl mb-4 transition-all">
-                        <i class="fa-solid fa-file-invoice-dollar"></i>
-                    </div>
-                    <p class="font-semibold text-slate-200">ลากไฟล์ภาพสลิปมาวางที่นี่ หรือ <span class="text-emerald-400 underline">คลิกเลือกรูปภาพ</span></p>
-                    <p class="text-xs text-slate-500 mt-2">รองรับสลิปโอนเงินธนาคารไทย (KPlus, SCB, Krungthai ฯลฯ) เพื่อดึงยอดเงินและวันที่จ่าย</p>
-                </div>
-
-                <!-- Progress & Result Containers for Scan Mode -->
-                <div id="ocr-loading" class="hidden max-w-2xl mx-auto bg-slate-950 p-6 rounded-2xl border border-slate-800 text-center">
-                    <div class="flex items-center justify-center gap-3 text-emerald-400 font-medium mb-3">
-                        <i class="fa-solid fa-circle-notch animate-spin text-xl"></i>
-                        <span id="ocr-status-text">กำลังเริ่มต้น Tesseract OCR Engine...</span>
-                    </div>
-                    <div class="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden">
-                        <div id="ocr-progress-bar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-2.5 rounded-full w-0 transition-all duration-300"></div>
-                    </div>
-                </div>
-
-                <div id="scan-result" class="hidden max-w-2xl mx-auto bg-slate-950 border border-emerald-500/40 p-6 rounded-2xl space-y-4">
-                    <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                        <span class="text-xs font-semibold text-emerald-400 flex items-center gap-2">
-                            <i class="fa-solid fa-circle-check"></i> ตรวจพบข้อมูลจากสลิป (ตรวจสอบและกำหนดรอบบิล)
-                        </span>
-                        <span class="text-xs text-slate-400" id="scan-time"></span>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label class="text-xs text-slate-400 block mb-1">ชื่อร้านค้า / บริการ:</label>
-                            <input type="text" id="res-merchant" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-100 font-semibold focus:border-emerald-500 outline-none">
-                        </div>
-                        <div>
-                            <label class="text-xs text-slate-400 block mb-1">จำนวนเงิน (บาท):</label>
-                            <input type="number" step="0.01" id="res-amount" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-emerald-400 font-bold focus:border-emerald-500 outline-none">
-                        </div>
-                        <div>
-                            <label class="text-xs text-slate-400 block mb-1">หมวดหมู่:</label>
-                            <select id="res-category" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-100 focus:border-emerald-500 outline-none">
-                                <option value="Subscription">Subscription (บริการรายเดือน)</option>
-                                <option value="Food & Beverage">Food & Beverage (อาหาร/เครื่องดื่ม)</option>
-                                <option value="Transportation">Transportation (การเดินทาง)</option>
-                                <option value="Ghost Expense">Ghost Expense (รายจ่ายจุกจิก)</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="text-xs text-slate-400 block mb-1">รอบการจ่าย (Billing Cycle):</label>
-                            <select id="res-recurrence" onchange="autoCalcNextBilling('res')" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-amber-400 font-medium focus:border-emerald-500 outline-none">
-                                <option value="monthly">รายเดือน (Monthly)</option>
-                                <option value="yearly">รายปี (Yearly)</option>
-                                <option value="weekly">รายสัปดาห์ (Weekly)</option>
-                                <option value="one-time">จ่ายครั้งเดียว (One-time)</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="text-xs text-slate-400 block mb-1">วันที่จ่ายล่าสุด (Last Paid Date):</label>
-                            <input type="date" id="res-last-paid" onchange="autoCalcNextBilling('res')" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-100 focus:border-emerald-500 outline-none">
-                        </div>
-                        <div>
-                            <label class="text-xs text-slate-400 block mb-1">วันเรียกเก็บเงินรอบถัดไป (Next Billing Date):</label>
-                            <input type="date" id="res-next-billing" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-emerald-400 font-semibold focus:border-emerald-500 outline-none">
-                        </div>
-                        <div class="sm:col-span-2">
-                            <label class="text-xs text-slate-400 block mb-1">แจ้งเตือนล่วงหน้า (Reminder):</label>
-                            <select id="res-reminder-days" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-100 focus:border-emerald-500 outline-none">
-                                <option value="1">ล่วงหน้า 1 วัน (1 day before)</option>
-                                <option value="3" selected>ล่วงหน้า 3 วัน (3 days before - แนะนำ)</option>
-                                <option value="7">ล่วงหน้า 7 วัน (7 days before)</option>
-                            </select>
-                        </div>
-                        <div class="sm:col-span-2">
-                            <label class="text-xs text-slate-400 block mb-1">Email สำหรับรับการแจ้งเตือน: <span class="text-rose-400">*</span></label>
-                            <input type="email" id="res-email" placeholder="user@gmail.com" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-100 placeholder:text-slate-600 focus:border-emerald-500 outline-none">
-                        </div>
-                    </div>
-                    <details class="text-xs text-slate-400 bg-slate-900/50 p-3 rounded-xl border border-slate-800/80">
-                        <summary class="cursor-pointer font-medium hover:text-slate-200">ตรวจสอบข้อความตัวจริงที่แกะได้จากสลิป (Raw OCR Text)</summary>
-                        <p id="raw-ocr-text" class="mt-2 font-mono text-slate-400 whitespace-pre-wrap text-[11px] bg-slate-900 p-2.5 rounded border border-slate-800 max-h-36 overflow-y-auto"></p>
-                    </details>
-                    <button onclick="confirmScanTransaction()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 rounded-xl transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-plus"></i> ยืนยันบันทึก Subscription
-                    </button>
-                </div>
-            </div>
-
-            <!-- MODE 3: Manual Input Form -->
-            <div id="mode-manual" class="hidden max-w-xl mx-auto bg-slate-950 border border-slate-800 p-6 rounded-2xl space-y-4">
-                <h3 class="text-sm font-semibold text-emerald-400 flex items-center gap-2">
-                    <i class="fa-solid fa-pen-to-square"></i> กรอกข้อมูล Subscription ด้วยตนเอง
-                </h3>
-                <div>
-                    <label class="text-xs text-slate-400 block mb-1">ชื่อแอป / บริการ / ร้านค้า:</label>
-                    <input type="text" id="manual-merchant" placeholder="เช่น Netflix, Spotify, ค่าเช่าคอนโด ฯลฯ" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-slate-100 focus:border-emerald-500 outline-none">
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="text-xs text-slate-400 block mb-1">จำนวนเงิน (บาท):</label>
-                        <input type="number" step="0.01" id="manual-amount" placeholder="0.00" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-emerald-400 font-bold focus:border-emerald-500 outline-none">
+                    <div class="p-2 bg-indigo-500/20 text-indigo-400 rounded-lg">
+                        <i class="fa-solid fa-brain text-lg"></i>
                     </div>
                     <div>
-                        <label class="text-xs text-slate-400 block mb-1">หมวดหมู่:</label>
-                        <select id="manual-category" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-slate-100 focus:border-emerald-500 outline-none">
-                            <option value="Subscription">Subscription (บริการรายเดือน)</option>
-                            <option value="Food & Beverage">Food & Beverage (อาหาร/เครื่องดื่ม)</option>
-                            <option value="Transportation">Transportation (การเดินทาง)</option>
-                            <option value="Ghost Expense">Ghost Expense (รายจ่ายจุกจิก)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-xs text-slate-400 block mb-1">รอบการจ่าย (Billing Cycle):</label>
-                        <select id="manual-recurrence" onchange="autoCalcNextBilling('manual')" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-amber-400 font-medium focus:border-emerald-500 outline-none">
-                            <option value="monthly">รายเดือน (Monthly)</option>
-                            <option value="yearly">รายปี (Yearly)</option>
-                            <option value="weekly">รายสัปดาห์ (Weekly)</option>
-                            <option value="one-time">จ่ายครั้งเดียว (One-time)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-xs text-slate-400 block mb-1">วันที่จ่ายล่าสุด (Last Paid Date):</label>
-                        <input type="date" id="manual-last-paid" onchange="autoCalcNextBilling('manual')" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-slate-100 focus:border-emerald-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="text-xs text-slate-400 block mb-1">วันเรียกเก็บเงินรอบถัดไป (Next Billing):</label>
-                        <input type="date" id="manual-next-billing" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-emerald-400 font-semibold focus:border-emerald-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="text-xs text-slate-400 block mb-1">แจ้งเตือนล่วงหน้า (Remind me):</label>
-                        <select id="manual-reminder-days" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-slate-100 focus:border-emerald-500 outline-none">
-                            <option value="1">1 วันก่อน (1 day before)</option>
-                            <option value="3" selected>3 วันก่อน (3 days before)</option>
-                            <option value="7">7 วันก่อน (7 days before)</option>
-                        </select>
-                    </div>
-                    <div class="sm:col-span-2">
-                        <label class="text-xs text-slate-400 block mb-1">Email สำหรับรับการแจ้งเตือน: <span class="text-rose-400">*</span></label>
-                        <input type="email" id="manual-email" placeholder="user@gmail.com" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-600 focus:border-emerald-500 outline-none">
+                        <h2 class="text-base font-bold text-white">AI Smart Analyzer & Insight</h2>
+                        <p class="text-xs text-slate-400">วิเคราะห์ความคุ้มค่า ตรวจจับบริการซ้ำซ้อน แอปสิ้นเปลือง และแนวโน้มราคา</p>
                     </div>
                 </div>
-                <button onclick="addManualTransaction()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 rounded-xl transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-plus"></i> บันทึก Subscription
+                <button onclick="runAiAnalysis()" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-medium transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-rotate-right"></i> สแกนวิเคราะห์ใหม่
                 </button>
             </div>
+
+            <div id="ai-analysis-container" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Javascript will inject insights here -->
+            </div>
         </section>
 
-        <!-- Charts and Email Alerts Section -->
-        <section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Chart Card -->
-            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6">
-                <h3 class="font-bold text-lg text-slate-100 flex items-center gap-2 mb-4">
-                    <i class="fa-solid fa-chart-pie text-emerald-400"></i> สัดส่วนค่าใช้จ่ายจริง
-                </h3>
-                <div class="relative flex items-center justify-center h-64">
-                    <canvas id="expenseChart"></canvas>
-                </div>
-            </div>
-
-            <!-- Email Notification Card: Real Gmail Notification via Google Apps Script -->
-            <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-3xl p-6 space-y-5">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+        <!-- ========================================== -->
+        <!-- FEATURE 2: AI PREDICTOR & FORECAST ENGINE -->
+        <!-- ========================================== -->
+        <section class="bg-slate-900 border border-emerald-500/30 rounded-2xl p-5 shadow-lg shadow-emerald-950/20">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2">
+                    <div class="p-2 bg-emerald-500/20 text-emerald-400 rounded-lg">
+                        <i class="fa-solid fa-crystal-ball text-lg"></i>
+                    </div>
                     <div>
-                        <div class="flex items-center gap-2 flex-wrap">
-                            <h3 class="font-bold text-lg text-slate-100 flex items-center gap-2">
-                                <i class="fa-solid fa-envelope text-emerald-400"></i> ระบบแจ้งเตือน Gmail อัตโนมัติ (Google Apps Script)
-                            </h3>
-                            <span id="gas-status-badge" class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5">
-                                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> 🟢 Gmail Notification Connected
-                            </span>
-                        </div>
-                        <p id="gas-status-desc" class="text-xs text-emerald-400 mt-1 flex items-center gap-1.5">
-                            <i class="fa-solid fa-circle-check"></i> ระบบเชื่อมต่อ Google Apps Script อัตโนมัติแล้ว
-                        </p>
+                        <h2 class="text-base font-bold text-white">AI Financial Predictor</h2>
+                        <p class="text-xs text-slate-400">คาดการณ์ยอดเงินสะสมล่วงหน้า และกำหนดการรอบหักบัญชีที่กำลังจะมาถึง</p>
                     </div>
-                </div>
-
-                <div class="text-xs bg-slate-950/70 p-3.5 rounded-2xl border border-slate-800 text-slate-300 space-y-2">
-                    <div class="flex items-center justify-between flex-wrap gap-2">
-                        <div class="flex items-center gap-2 font-semibold text-emerald-400">
-                            <i class="fa-solid fa-shield-halved"></i> ระบบแจ้งเตือนราย Subscription (One Subscription = One Email)
-                        </div>
-                        <div class="text-[11px] text-slate-400 bg-slate-900 px-2.5 py-1 rounded-lg border border-slate-800">
-                            ผู้ส่ง: <strong class="text-emerald-400">Subscription Manager</strong> &lt;subscription.manager.alert@gmail.com&gt;
-                        </div>
-                    </div>
-                    <p class="text-slate-400 leading-relaxed text-[11px]">
-                        ระบบจะส่งการแจ้งเตือนไปยัง Email ที่กำหนดไว้ในแต่ละ Subscription โดยตรงจาก <strong class="text-emerald-300">Subscription Manager (subscription.manager.alert@gmail.com)</strong> ผ่าน Time-driven Trigger ใน Google Apps Script ทุกวันเวลา 08:00 น.
-                    </p>
-                </div>
-
-                <form onsubmit="saveEmailSettings(event)" class="space-y-4">
-                    <input type="hidden" id="gas-url" value="https://script.google.com/macros/s/AKfycbxoZPanZwBJ4zMJEmD5P78psrxMKWgUya34UQDNmbTCiR0cjMLZinGa1tBuCRyqWm5h/exec">
-                    <div class="max-w-md">
-                        <label class="text-xs text-slate-400 block mb-1">ค่าเริ่มต้นแจ้งเตือนล่วงหน้า (Default Reminder):</label>
-                        <select id="alert-days" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-100 focus:border-emerald-500 outline-none">
-                            <option value="1">ล่วงหน้า 1 วัน (1 day before)</option>
-                            <option value="3">ล่วงหน้า 3 วัน (3 days before)</option>
-                            <option value="7">ล่วงหน้า 7 วัน (7 days before)</option>
-                        </select>
-                    </div>
-                    <div class="flex flex-wrap gap-4 pt-1">
-                        <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
-                            <input type="checkbox" id="email-opt-monthly" checked class="accent-emerald-500 rounded"> ส่งรายงานสรุปประจำเดือน (Monthly Financial Insight)
-                        </label>
-                        <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
-                            <input type="checkbox" id="email-opt-unused" checked class="accent-emerald-500 rounded"> เตือนบริการที่ไม่มีการใช้งานเกิน 60 วัน
-                        </label>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                        <button type="button" onclick="sendRealTestEmail()" id="btn-test-email" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-emerald-400 font-medium py-2.5 rounded-xl text-xs transition-all border border-slate-700 flex items-center justify-center gap-1.5">
-                            <i class="fa-solid fa-paper-plane"></i> ส่ง Test Email
-                        </button>
-                        <button type="button" onclick="syncWithBackend(true)" id="btn-sync-sheets" class="hidden">
-                            <i class="fa-solid fa-arrows-rotate"></i> Sync Google Sheets
-                        </button>
-                        <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-2.5 rounded-xl text-xs transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-floppy-disk"></i> บันทึกการตั้งค่า Gmail Notification
-                        </button>
-                    </div>
-                </form>
-
-                <div id="email-toast" class="hidden text-xs bg-emerald-500/10 text-emerald-400 p-3 rounded-xl border border-emerald-500/20">
-                    <i class="fa-solid fa-circle-check mr-1"></i> บันทึกการตั้งค่าแจ้งเตือน Gmail สำเร็จ!
                 </div>
             </div>
-        </section>
 
-        <!-- Transaction & All Subscriptions Log Table -->
-        <section class="bg-slate-900 border border-slate-800 rounded-3xl p-6">
-            <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 mb-6">
-                <div>
-                    <h3 class="font-bold text-lg text-slate-100 flex items-center gap-2">
-                        <i class="fa-solid fa-list-check text-emerald-400"></i> รายการบริการและค่าใช้จ่ายทั้งหมด (All Subscriptions)
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Forecast Summary & Upcoming List -->
+                <div class="space-y-4">
+                    <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl">
+                        <h3 class="text-xs font-semibold text-slate-400 mb-3 uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-calendar-day text-emerald-400"></i> คาดการณ์รายจ่ายระยะยาว
+                        </h3>
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="text-slate-400">3 เดือนข้างหน้า:</span>
+                                <span id="predict-3m" class="font-bold text-emerald-400">฿0.00</span>
+                            </div>
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="text-slate-400">6 เดือนข้างหน้า:</span>
+                                <span id="predict-6m" class="font-bold text-emerald-400">฿0.00</span>
+                            </div>
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="text-slate-400">12 เดือนข้างหน้า:</span>
+                                <span id="predict-12m" class="font-bold text-emerald-400">฿0.00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl">
+                        <h3 class="text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-bell text-amber-400"></i> Subscription กำลังจะถูกหักเร็วๆ นี้
+                        </h3>
+                        <div id="upcoming-billing-list" class="space-y-2 max-h-48 overflow-y-auto pr-1">
+                            <!-- JS Inject List -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Prediction Chart -->
+                <div class="lg:col-span-2 bg-slate-950 border border-slate-800 p-4 rounded-xl flex flex-col justify-between">
+                    <h3 class="text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-chart-area text-indigo-400"></i> กราฟคาดการณ์แนวโน้มค่าใช้จ่ายสะสม (12 เดือน)
                     </h3>
-                    <p class="text-xs text-slate-400">ข้อมูลจัดเก็บปลอดภัยในเบราว์เซอร์ของคุณ (LocalStorage)</p>
+                    <div class="h-56 w-full">
+                        <canvas id="predictionChart"></canvas>
+                    </div>
                 </div>
-            </div>
-
-            <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm">
-                    <thead class="text-xs text-slate-400 border-b border-slate-800 uppercase">
-                        <tr>
-                            <th class="pb-3">ร้านค้า / บริการ</th>
-                            <th class="pb-3">หมวดหมู่ & รอบบิล</th>
-                            <th class="pb-3">จำนวนเงิน</th>
-                            <th class="pb-3">วันที่จ่ายล่าสุด</th>
-                            <th class="pb-3">วันเรียกเก็บถัดไป & สถานะ</th>
-                            <th class="pb-3 text-right">จัดการ</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tx-tbody" class="divide-y divide-slate-800/60">
-                        <!-- Populated dynamically via JS -->
-                    </tbody>
-                </table>
             </div>
         </section>
 
+        <!-- Main Dashboard Content (Form, Chart & Table) -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- Left Panel: Form & Email Setting -->
+            <div class="space-y-6">
+                <!-- Add Subscription Form -->
+                <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl">
+                    <h2 class="text-base font-bold text-white mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-plus text-indigo-400"></i> เพิ่มรายการ Subscription
+                    </h2>
+                    <form id="subscription-form" onsubmit="handleAddSubscription(event)" class="space-y-3">
+                        <div>
+                            <label class="block text-xs text-slate-400 mb-1">ชื่อแอป / บริการ</label>
+                            <input type="text" id="app-merchant" required placeholder="เช่น Netflix, Spotify, ChatGPT" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs text-slate-400 mb-1">หมวดหมู่</label>
+                                <select id="app-category" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500">
+                                    <option value="Subscription">Subscription</option>
+                                    <option value="Food & Beverage">Food & Beverage</option>
+                                    <option value="Transportation">Transportation</option>
+                                    <option value="Ghost Expense">Ghost Expense</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-400 mb-1">ราคา (บาท)</label>
+                                <input type="number" step="0.01" id="app-amount" required placeholder="0.00" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs text-slate-400 mb-1">รอบจ่ายถัดไป</label>
+                                <input type="date" id="app-date" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-400 mb-1">สถานะการใช้</label>
+                                <select id="app-status" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500">
+                                    <option value="active">ใช้งานบ่อย</option>
+                                    <option value="rarely">นานๆ ใช้ที</option>
+                                    <option value="unused">ไม่ได้ใช้เลย</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2 rounded-xl text-sm transition mt-2 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-plus"></i> บันทึกรายการ
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Expense Chart Panel -->
+                <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl">
+                    <h2 class="text-base font-bold text-white mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-pie text-emerald-400"></i> สัดส่วนค่าใช้จ่ายตามหมวดหมู่
+                    </h2>
+                    <div class="h-48 w-full">
+                        <canvas id="expenseChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Subscription List Table -->
+            <div class="lg:col-span-2 space-y-6">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-base font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-sky-400"></i> รายการ Subscription ทั้งหมด
+                        </h2>
+                        <button onclick="syncWithBackend(true)" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-700 transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-rotate"></i> Sync Cloud
+                        </button>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm text-slate-300">
+                            <thead class="text-xs uppercase bg-slate-950 text-slate-400 border-b border-slate-800">
+                                <tr>
+                                    <th class="p-3">บริการ</th>
+                                    <th class="p-3">หมวดหมู่</th>
+                                    <th class="p-3">ราคา</th>
+                                    <th class="p-3">รอบหักถัดไป</th>
+                                    <th class="p-3">การใช้งาน</th>
+                                    <th class="p-3 text-center">จัดการ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="subscription-tbody" class="divide-y divide-slate-800/50">
+                                <!-- JS Table Rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Google Apps Script Settings Card -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+                    <h2 class="text-base font-bold text-white mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-envelope-circle-check text-indigo-400"></i> ตั้งค่าการแจ้งเตือน Gmail & Apps Script
+                    </h2>
+                    <p id="gas-status-desc" class="text-xs text-slate-400 mb-3">เชื่อมต่อกับ Web App URL เพื่อส่ง Email เตือนสติก่อนโดนหักเงิน</p>
+                    
+                    <form onsubmit="saveEmailSettings(event)" class="space-y-3">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <div class="md:col-span-2">
+                                <label class="block text-xs text-slate-400 mb-1">เตือนล่วงหน้า (วัน)</label>
+                                <input type="number" id="alert-days" min="1" max="15" value="3" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500">
+                            </div>
+                            <div class="flex items-end">
+                                <button type="submit" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-medium py-2 rounded-xl text-sm border border-slate-700 transition">
+                                    บันทึกการตั้งค่า
+                                </button>
+                            </div>
+                        </div>
+                        <div class="flex gap-4 pt-1">
+                            <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
+                                <input type="checkbox" id="email-opt-monthly" checked class="rounded bg-slate-950 border-slate-800 text-indigo-600 focus:ring-0"> ส่งสรุปประจำเดือน
+                            </label>
+                            <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
+                                <input type="checkbox" id="email-opt-unused" checked class="rounded bg-slate-950 border-slate-800 text-indigo-600 focus:ring-0"> แจ้งเตือนแอปไม่ได้ใช้
+                            </label>
+                        </div>
+                    </form>
+                    <div class="mt-3 pt-3 border-t border-slate-800 flex justify-between items-center">
+                        <button id="btn-test-email" onclick="sendRealTestEmail()" class="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1.5">
+                            <i class="fa-solid fa-paper-plane"></i> ทดสอบส่ง Email แจ้งเตือน
+                        </button>
+                        <span id="email-toast" class="text-xs text-emerald-400 hidden">บันทึกเรียบร้อย!</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 
-    <!-- Modal: Quick Add Subscription from Preset -->
-    <div id="preset-modal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-700 w-full max-w-lg rounded-3xl p-6 shadow-2xl space-y-5">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-lg">
-                        <i class="fa-solid fa-plus-circle"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-base text-slate-100" id="modal-preset-title">เพิ่ม Subscription</h3>
-                        <p class="text-xs text-slate-400" id="modal-preset-group">หมวดหมู่</p>
-                    </div>
-                </div>
-                <button onclick="closePresetModal()" class="text-slate-400 hover:text-slate-200 text-lg p-1">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                    <label class="text-xs text-slate-400 block mb-1">ชื่อบริการ:</label>
-                    <input type="text" id="modal-merchant" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-100 font-semibold focus:border-emerald-500 outline-none">
-                </div>
-                <div>
-                    <label class="text-xs text-slate-400 block mb-1">หมวดหมู่:</label>
-                    <input type="text" id="modal-category" readonly class="w-full bg-slate-950/70 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-300 focus:border-emerald-500 outline-none">
-                </div>
-                <div>
-                    <label class="text-xs text-slate-400 block mb-1">ราคาต่อรอบ (บาท):</label>
-                    <input type="number" step="0.01" id="modal-amount" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-emerald-400 font-bold focus:border-emerald-500 outline-none">
-                </div>
-                <div>
-                    <label class="text-xs text-slate-400 block mb-1">รอบการจ่าย (Billing Cycle):</label>
-                    <select id="modal-recurrence" onchange="autoCalcNextBilling('modal')" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-amber-400 font-medium focus:border-emerald-500 outline-none">
-                        <option value="monthly">รายเดือน (Monthly)</option>
-                        <option value="yearly">รายปี (Yearly)</option>
-                        <option value="weekly">รายสัปดาห์ (Weekly)</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="text-xs text-slate-400 block mb-1">วันที่จ่ายล่าสุด (Last Paid Date):</label>
-                    <input type="date" id="modal-last-paid" onchange="autoCalcNextBilling('modal')" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-100 focus:border-emerald-500 outline-none">
-                </div>
-                <div>
-                    <label class="text-xs text-slate-400 block mb-1">วันเรียกเก็บเงินถัดไป (Next Billing):</label>
-                    <input type="date" id="modal-next-billing" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-emerald-400 font-semibold focus:border-emerald-500 outline-none">
-                </div>
-                <div class="sm:col-span-2">
-                    <label class="text-xs text-slate-400 block mb-1">แจ้งเตือนล่วงหน้า (Remind me):</label>
-                    <select id="modal-reminder-days" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-100 focus:border-emerald-500 outline-none">
-                        <option value="1">1 วันก่อน (1 day before)</option>
-                        <option value="3" selected>3 วันก่อน (3 days before)</option>
-                        <option value="7">7 วันก่อน (7 days before)</option>
-                    </select>
-                </div>
-                <div class="sm:col-span-2">
-                    <label class="text-xs text-slate-400 block mb-1">Email สำหรับรับการแจ้งเตือน: <span class="text-rose-400">*</span></label>
-                    <input type="email" id="modal-email" placeholder="user@gmail.com" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-600 focus:border-emerald-500 outline-none">
-                    <p class="text-[11px] text-slate-500 mt-1">กรอก Gmail สำหรับรับการแจ้งเตือนของบริการนี้ (ห้ามเว้นว่าง)</p>
-                </div>
-            </div>
-
-            <div class="flex gap-3 pt-2">
-                <button onclick="closePresetModal()" class="w-1/3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium py-2.5 rounded-xl text-sm transition-all">
-                    ยกเลิก
-                </button>
-                <button onclick="submitPresetModal()" class="w-2/3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-2.5 rounded-xl text-sm transition-all shadow-lg shadow-emerald-500/20">
-                    <i class="fa-solid fa-check mr-1"></i> ยืนยันเพิ่ม Subscription
-                </button>
-            </div>
-        </div>
-    </div>
-
     <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 border border-emerald-500/50 text-slate-100 px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 transition-all transform translate-y-24 opacity-0 z-50">
-        <i class="fa-solid fa-circle-check text-emerald-400 text-lg" id="toast-icon"></i>
-        <span class="text-xs font-medium" id="toast-msg">ข้อความ</span>
+    <div id="toast" class="fixed bottom-5 right-5 bg-indigo-600 text-white px-4 py-3 rounded-xl shadow-xl transition-all duration-300 transform translate-y-24 opacity-0 flex items-center gap-2 z-50">
+        <i class="fa-solid fa-circle-check"></i>
+        <span id="toast-msg" class="text-sm font-medium">บันทึกข้อมูลเรียบร้อย</span>
     </div>
 
-    <footer class="border-t border-slate-900 bg-slate-950 py-6 text-center text-xs text-slate-500">
-        AI Subscription & Daily Expense Manager &bull; Production Edition
-    </footer>
-
+    <!-- Application Script Section -->
     <script>
-        // Full App Database with Group Categories
-        const APP_PRESETS = [
-            // 🎬 ความบันเทิง
-            { group: '🎬 ความบันเทิง', keywords: ['netflix'], merchant: 'Netflix', price: 199.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '🎬 ความบันเทิง', keywords: ['disney', 'hotstar'], merchant: 'Disney+ Hotstar', price: 289.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '🎬 ความบันเทิง', keywords: ['hbo'], merchant: 'HBO GO / Max', price: 199.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '🎬 ความบันเทิง', keywords: ['prime'], merchant: 'Prime Video', price: 149.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '🎬 ความบันเทิง', keywords: ['viu'], merchant: 'Viu Premium', price: 149.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '🎬 ความบันเทิง', keywords: ['iqiyi'], merchant: 'iQiyi VIP', price: 119.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '🎬 ความบันเทิง', keywords: ['wetv'], merchant: 'WeTV VIP', price: 119.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '🎬 ความบันเทิง', keywords: ['bilibili'], merchant: 'Bilibili VIP', price: 99.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '🎬 ความบันเทิง', keywords: ['crunchyroll'], merchant: 'Crunchyroll', price: 129.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '🎬 ความบันเทิง', keywords: ['apple tv'], merchant: 'Apple TV+', price: 229.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '🎬 ความบันเทิง', keywords: ['youtube premium'], merchant: 'YouTube Premium', price: 179.00, category: 'Subscription', defaultCycle: 'monthly' },
-
-            // 🎵 ฟังเพลง
-            { group: '🎵 ฟังเพลง', keywords: ['spotify'], merchant: 'Spotify Premium', price: 129.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '🎵 ฟังเพลง', keywords: ['apple music'], merchant: 'Apple Music', price: 139.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '🎵 ฟังเพลง', keywords: ['youtube music'], merchant: 'YouTube Music', price: 129.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '🎵 ฟังเพลง', keywords: ['joox'], merchant: 'JOOX VIP', price: 129.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '🎵 ฟังเพลง', keywords: ['tidal'], merchant: 'Tidal HiFi', price: 179.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '🎵 ฟังเพลง', keywords: ['deezer'], merchant: 'Deezer Premium', price: 149.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '🎵 ฟังเพลง', keywords: ['audible'], merchant: 'Audible', price: 530.00, category: 'Subscription', defaultCycle: 'monthly' },
-
-            // 💻 การทำงาน / AI
-            { group: '💻 การทำงาน / AI', keywords: ['microsoft 365'], merchant: 'Microsoft 365', price: 289.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '💻 การทำงาน / AI', keywords: ['google one'], merchant: 'Google One', price: 70.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '💻 การทำงาน / AI', keywords: ['icloud'], merchant: 'Apple iCloud+', price: 35.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '💻 การทำงาน / AI', keywords: ['chatgpt'], merchant: 'ChatGPT Plus', price: 700.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '💻 การทำงาน / AI', keywords: ['claude'], merchant: 'Claude Pro', price: 700.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '💻 การทำงาน / AI', keywords: ['notion'], merchant: 'Notion Plus / AI', price: 350.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '💻 การทำงาน / AI', keywords: ['goodnotes'], merchant: 'Goodnotes 6', price: 349.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '💻 การทำงาน / AI', keywords: ['evernote'], merchant: 'Evernote Personal', price: 350.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '💻 การทำงาน / AI', keywords: ['zoom'], merchant: 'Zoom Pro', price: 530.00, category: 'Subscription', defaultCycle: 'monthly' },
-
-            // 🎨 ออกแบบ / แต่งภาพ
-            { group: '🎨 ออกแบบ / แต่งภาพ', keywords: ['adobe'], merchant: 'Adobe Creative Cloud', price: 650.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '🎨 ออกแบบ / แต่งภาพ', keywords: ['canva'], merchant: 'Canva Pro', price: 229.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '🎨 ออกแบบ / แต่งภาพ', keywords: ['capcut'], merchant: 'CapCut Pro', price: 209.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '🎨 ออกแบบ / แต่งภาพ', keywords: ['procreate'], merchant: 'Procreate Dreams', price: 699.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '🎨 ออกแบบ / แต่งภาพ', keywords: ['picsart'], merchant: 'Picsart Gold', price: 129.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '🎨 ออกแบบ / แต่งภาพ', keywords: ['vsco'], merchant: 'VSCO Plus', price: 119.00, category: 'Subscription', defaultCycle: 'monthly' },
-
-            // 🎮 เกม
-            { group: '🎮 เกม', keywords: ['playstation'], merchant: 'PlayStation Plus', price: 210.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '🎮 เกม', keywords: ['xbox'], merchant: 'Xbox Game Pass', price: 320.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '🎮 เกม', keywords: ['nintendo'], merchant: 'Nintendo Switch Online', price: 150.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '🎮 เกม', keywords: ['apple arcade'], merchant: 'Apple Arcade', price: 179.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '🎮 เกม', keywords: ['google play pass'], merchant: 'Google Play Pass', price: 99.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '🎮 เกม', keywords: ['discord'], merchant: 'Discord Nitro', price: 300.00, category: 'Subscription', defaultCycle: 'monthly' },
-
-            // 🧘 สุขภาพ / พัฒนาตนเอง
-            { group: '🧘 สุขภาพ', keywords: ['strava'], merchant: 'Strava Subscription', price: 229.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '🧘 สุขภาพ', keywords: ['calm'], merchant: 'Calm Premium', price: 280.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '🧘 สุขภาพ', keywords: ['headspace'], merchant: 'Headspace', price: 350.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '🧘 สุขภาพ', keywords: ['myfitnesspal'], merchant: 'MyFitnessPal', price: 350.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '🧘 สุขภาพ', keywords: ['duolingo'], merchant: 'Duolingo Super', price: 249.00, category: 'Subscription', defaultCycle: 'monthly' },
-
-            // 🔒 VPN & Security
-            { group: '🔒 ความปลอดภัย / VPN', keywords: ['nordvpn'], merchant: 'NordVPN', price: 450.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '🔒 ความปลอดภัย / VPN', keywords: ['expressvpn'], merchant: 'ExpressVPN', price: 450.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '🔒 ความปลอดภัย / VPN', keywords: ['surfshark'], merchant: 'Surfshark VPN', price: 350.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '🔒 ความปลอดภัย / VPN', keywords: ['cyberghost'], merchant: 'CyberGhost VPN', price: 350.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: '🔒 ความปลอดภัย / VPN', keywords: ['bullvpn'], merchant: 'BullVPN', price: 200.00, category: 'Subscription', defaultCycle: 'monthly' }
-        ];
-
-        // Unique ID Generator
-        function generateUniqueId() {
-            return 'sub_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
-        }
-
-        // Date Utilities
-        function getTodayString() {
-            const now = new Date();
-            const y = now.getFullYear();
-            const m = String(now.getMonth() + 1).padStart(2, '0');
-            const d = String(now.getDate()).padStart(2, '0');
-            return `${y}-${m}-${d}`;
-        }
-
-        function formatDateDisplay(dateStr) {
-            if (!dateStr) return '-';
-            const parts = dateStr.split('-');
-            if (parts.length !== 3) return dateStr;
-            const y = parseInt(parts[0], 10);
-            const m = parseInt(parts[1], 10) - 1;
-            const d = parseInt(parts[2], 10);
-            const dt = new Date(y, m, d);
-            const monthsTh = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
-            return `${d} ${monthsTh[m]} ${y}`;
-        }
-
-        function addRecurrence(dateStr, recurrence) {
-            if (!dateStr) return '';
-            const parts = dateStr.split('-');
-            if (parts.length !== 3) return '';
-            const y = parseInt(parts[0], 10);
-            const m = parseInt(parts[1], 10);
-            const d = parseInt(parts[2], 10);
-            const date = new Date(y, m - 1, d);
-            if (isNaN(date.getTime())) return '';
-
-            if (recurrence === 'weekly') {
-                date.setDate(date.getDate() + 7);
-            } else if (recurrence === 'yearly') {
-                date.setFullYear(date.getFullYear() + 1);
-            } else if (recurrence === 'monthly') {
-                const originalDay = d;
-                date.setMonth(date.getMonth() + 1);
-                // Handle end-of-month rollover (e.g. 31 Jan -> 28 Feb)
-                if (date.getDate() !== originalDay && date.getDate() < 5) {
-                    date.setDate(0);
-                }
-            } else {
-                return dateStr;
-            }
-
-            const ry = date.getFullYear();
-            const rm = String(date.getMonth() + 1).padStart(2, '0');
-            const rd = String(date.getDate()).padStart(2, '0');
-            return `${ry}-${rm}-${rd}`;
-        }
-
-        function calculateReminderDate(nextBillingDateStr, reminderDays) {
-            if (!nextBillingDateStr) return '';
-            const parts = nextBillingDateStr.split('-');
-            if (parts.length !== 3) return '';
-            const y = parseInt(parts[0], 10);
-            const m = parseInt(parts[1], 10) - 1;
-            const d = parseInt(parts[2], 10);
-            const date = new Date(y, m, d);
-            date.setDate(date.getDate() - parseInt(reminderDays || 1, 10));
-
-            const ry = date.getFullYear();
-            const rm = String(date.getMonth() + 1).padStart(2, '0');
-            const rd = String(date.getDate()).padStart(2, '0');
-            return `${ry}-${rm}-${rd}`;
-        }
-
-        function getPaymentStatus(nextBillingDateStr, reminderDays = 1) {
-            if (!nextBillingDateStr) {
-                return {
-                    status: 'none',
-                    tag: 'ไม่มีรอบบิล',
-                    label: 'ไม่มีรอบบิล',
-                    daysLeft: null,
-                    badgeClass: 'bg-slate-800 text-slate-400 border border-slate-700',
-                    borderClass: 'border-slate-800',
-                    indicatorColor: 'text-slate-500',
-                    isUrgent: false,
-                    icon: 'fa-circle-minus'
-                };
-            }
-
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-
-            const parts = nextBillingDateStr.split('-');
-            const target = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
-            target.setHours(0, 0, 0, 0);
-
-            const diffTime = target.getTime() - today.getTime();
-            const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
-
-            if (diffDays < 0) {
-                return {
-                    status: 'overdue',
-                    tag: 'Overdue',
-                    label: `เลยกำหนด ${Math.abs(diffDays)} วัน`,
-                    daysLeft: diffDays,
-                    badgeClass: 'bg-rose-500/20 text-rose-300 border border-rose-500/40',
-                    borderClass: 'border-rose-500/50',
-                    indicatorColor: 'text-rose-400',
-                    isUrgent: true,
-                    icon: 'fa-circle-exclamation'
-                };
-            } else if (diffDays === 0) {
-                return {
-                    status: 'due_today',
-                    tag: 'Payment Due Today',
-                    label: 'ถึงกำหนดชำระวันนี้',
-                    daysLeft: 0,
-                    badgeClass: 'bg-rose-500/25 text-rose-300 border border-rose-500/50 animate-pulse',
-                    borderClass: 'border-rose-500/60 urgent-glow',
-                    indicatorColor: 'text-rose-400',
-                    isUrgent: true,
-                    icon: 'fa-bell'
-                };
-            } else if (diffDays === 1) {
-                return {
-                    status: 'due_tomorrow',
-                    tag: 'Payment Tomorrow',
-                    label: 'จะเรียกเก็บเงินพรุ่งนี้',
-                    daysLeft: 1,
-                    badgeClass: 'bg-amber-500/20 text-amber-300 border border-amber-500/40',
-                    borderClass: 'border-amber-500/50',
-                    indicatorColor: 'text-amber-400',
-                    isUrgent: true,
-                    icon: 'fa-triangle-exclamation'
-                };
-            } else if (diffDays <= reminderDays) {
-                return {
-                    status: 'due_soon',
-                    tag: `In ${diffDays} days`,
-                    label: `จะเรียกเก็บในอีก ${diffDays} วัน`,
-                    daysLeft: diffDays,
-                    badgeClass: 'bg-amber-500/15 text-amber-300 border border-amber-500/30',
-                    borderClass: 'border-amber-500/40',
-                    indicatorColor: 'text-amber-400',
-                    isUrgent: true,
-                    icon: 'fa-clock'
-                };
-            } else {
-                return {
-                    status: 'upcoming',
-                    tag: `In ${diffDays} days`,
-                    label: `อีก ${diffDays} วัน`,
-                    daysLeft: diffDays,
-                    badgeClass: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20',
-                    borderClass: 'border-slate-800',
-                    indicatorColor: 'text-emerald-400',
-                    isUrgent: false,
-                    icon: 'fa-calendar-check'
-                };
-            }
-        }
-
-        // Google Apps Script Web App Endpoint (Locked Constant)
-        const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxoZPanZwBJ4zMJEmD5P78psrxMKWgUya34UQDNmbTCiR0cjMLZinGa1tBuCRyqWm5h/exec';
+        // Default GAS Web App URL
+        const GAS_WEB_APP_URL = ""; // ใส่ URL ของ Google Apps Script ที่นี่ถ้ามี
 
         // State Management
-        let transactions = [];
-        let emailSettings = {
+        let transactions = JSON.parse(localStorage.getItem('app_subscriptions')) || [
+            { id: '1', merchant: 'Netflix', category: 'Subscription', amount: 419, nextBillingDate: getFutureDate(3), status: 'active' },
+            { id: '2', merchant: 'Spotify', category: 'Subscription', amount: 139, nextBillingDate: getFutureDate(12), status: 'active' },
+            { id: '3', merchant: 'ChatGPT Plus', category: 'Subscription', amount: 750, nextBillingDate: getFutureDate(5), status: 'active' },
+            { id: '4', merchant: 'Disney+ Hotstar', category: 'Subscription', amount: 289, nextBillingDate: getFutureDate(20), status: 'rarely' },
+            { id: '5', merchant: 'Fitness Gym', category: 'Ghost Expense', amount: 1500, nextBillingDate: getFutureDate(2), status: 'unused' }
+        ];
+
+        let emailSettings = JSON.parse(localStorage.getItem('app_email_settings')) || {
             gasWebAppUrl: GAS_WEB_APP_URL,
-            alertDays: '1',
+            alertDays: 3,
             monthlyOpt: true,
             unusedOpt: true
         };
-        let activePresetGroup = 'ทั้งหมด';
+
         let expenseChartInstance = null;
-        let selectedPresetApp = null;
+        let predictionChartInstance = null;
 
-        // Developer Testing Utility: Callable only manually via browser console (e.g. loadDemoData())
-        window.loadDemoData = function() {
-            const todayStr = getTodayString();
-            const parts = todayStr.split('-').map(Number);
-            const dt = new Date(parts[0], parts[1] - 1, parts[2]);
+        // Helpers
+        function getTodayString() {
+            return new Date().toISOString().split('T')[0];
+        }
 
-            const dtTomorrow = new Date(dt);
-            dtTomorrow.setDate(dtTomorrow.getDate() + 1);
-            const tomorrowStr = `${dtTomorrow.getFullYear()}-${String(dtTomorrow.getMonth()+1).padStart(2,'0')}-${String(dtTomorrow.getDate()).padStart(2,'0')}`;
+        function getFutureDate(days) {
+            const d = new Date();
+            d.setDate(d.getDate() + days);
+            return d.toISOString().split('T')[0];
+        }
 
-            const dt3 = new Date(dt);
-            dt3.setDate(dt3.getDate() + 3);
-            const in3DaysStr = `${dt3.getFullYear()}-${String(dt3.getMonth()+1).padStart(2,'0')}-${String(dt3.getDate()).padStart(2,'0')}`;
-
-            const dt15 = new Date(dt);
-            dt15.setDate(dt15.getDate() + 15);
-            const in15DaysStr = `${dt15.getFullYear()}-${String(dt15.getMonth()+1).padStart(2,'0')}-${String(dt15.getDate()).padStart(2,'0')}`;
-
-            const dtPast = new Date(dt);
-            dtPast.setDate(dtPast.getDate() - 30);
-            const pastStr = `${dtPast.getFullYear()}-${String(dtPast.getMonth()+1).padStart(2,'0')}-${String(dtPast.getDate()).padStart(2,'0')}`;
-
-            transactions = [
-                {
-                    id: 'sub_demo_1',
-                    merchant: 'Netflix',
-                    amount: 199.00,
-                    category: 'Subscription',
-                    recurrence: 'monthly',
-                    lastPaidDate: pastStr,
-                    nextBillingDate: tomorrowStr,
-                    reminderDays: 1,
-                    email: 'netflix-user@gmail.com',
-                    active: true,
-                    lastReminderSentDate: null
-                },
-                {
-                    id: 'sub_demo_2',
-                    merchant: 'Spotify Premium',
-                    amount: 129.00,
-                    category: 'Subscription',
-                    recurrence: 'monthly',
-                    lastPaidDate: pastStr,
-                    nextBillingDate: in3DaysStr,
-                    reminderDays: 3,
-                    email: 'spotify-user@gmail.com',
-                    active: true,
-                    lastReminderSentDate: null
-                },
-                {
-                    id: 'sub_demo_3',
-                    merchant: 'ChatGPT Plus',
-                    amount: 700.00,
-                    category: 'Subscription',
-                    recurrence: 'monthly',
-                    lastPaidDate: todayStr,
-                    nextBillingDate: in15DaysStr,
-                    reminderDays: 3,
-                    email: 'chatgpt-user@gmail.com',
-                    active: true,
-                    lastReminderSentDate: null
-                }
-            ];
-            saveToStorage();
-            updateDashboard();
-            pushToBackend(false);
-            showToast('โหลดข้อมูลตัวอย่างสำเร็จ (สำหรับ Developer Test)');
-            console.log('Demo data loaded successfully via loadDemoData()');
-        };
-
-        function normalizeSubscription(s) {
+        function normalizeSubscription(sub) {
             return {
-                id: String(s.id || generateUniqueId()),
-                merchant: String(s.merchant || 'Subscription'),
-                amount: parseFloat(s.amount) || 0,
-                category: String(s.category || 'Subscription'),
-                recurrence: String(s.recurrence || 'monthly'),
-                lastPaidDate: String(s.lastPaidDate || getTodayString()),
-                nextBillingDate: String(s.nextBillingDate || ''),
-                reminderDays: parseInt(s.reminderDays, 10) || 1,
-                email: String(s.email || ''),
-                active: s.active !== false && s.active !== 'false' && s.active !== 0,
-                lastReminderSentDate: s.lastReminderSentDate ? String(s.lastReminderSentDate) : null,
-                createdAt: s.createdAt ? String(s.createdAt) : new Date().toISOString(),
-                updatedAt: s.updatedAt ? String(s.updatedAt) : new Date().toISOString()
+                id: sub.id || String(Date.now() + Math.random()),
+                merchant: sub.merchant || 'Unknown',
+                category: sub.category || 'Subscription',
+                amount: parseFloat(sub.amount) || 0,
+                nextBillingDate: sub.nextBillingDate || getTodayString(),
+                status: sub.status || 'active'
             };
         }
 
-        function loadFromStorage() {
-            const storedTxs = localStorage.getItem('ai_manager_txs');
-            if (storedTxs) {
-                try {
-                    const parsed = JSON.parse(storedTxs);
-                    if (Array.isArray(parsed)) {
-                        transactions = parsed.map(normalizeSubscription);
-                        return;
-                    }
-                } catch (e) {
-                    console.warn('Error reading LocalStorage cache:', e);
-                }
-            }
-            transactions = [];
-        }
-
-        // Initialize Application
-        async function initApp() {
-            // Load email settings
-            const storedEmail = localStorage.getItem('ai_manager_email');
-            if (storedEmail) {
-                try {
-                    emailSettings = JSON.parse(storedEmail);
-                } catch (e) {
-                    emailSettings = { gasWebAppUrl: GAS_WEB_APP_URL, alertDays: '1', monthlyOpt: true, unusedOpt: true };
-                }
-            }
-            // Always lock to GAS_WEB_APP_URL
-            emailSettings.gasWebAppUrl = GAS_WEB_APP_URL;
-
-            const gasUrlEl = document.getElementById('gas-url');
-            if (gasUrlEl) gasUrlEl.value = GAS_WEB_APP_URL;
-
-            const alertDaysEl = document.getElementById('alert-days');
-            if (alertDaysEl) alertDaysEl.value = emailSettings.alertDays || '1';
-
-            const monthlyOptEl = document.getElementById('email-opt-monthly');
-            if (monthlyOptEl) monthlyOptEl.checked = emailSettings.monthlyOpt !== false;
-
-            const unusedOptEl = document.getElementById('email-opt-unused');
-            if (unusedOptEl) unusedOptEl.checked = emailSettings.unusedOpt !== false;
-
-            updateGasStatusBadge();
-
-            // Load cached transactions for fast immediate rendering
-            loadFromStorage();
-
-            // Setup default dates for inputs
-            const today = getTodayString();
-            document.getElementById('manual-last-paid').value = today;
-            autoCalcNextBilling('manual');
-
-            document.getElementById('res-last-paid').value = today;
-            autoCalcNextBilling('res');
-
-            // Setup Drag & Drop listeners
-            setupDragAndDrop();
-
-            // Render UI with cached state
-            renderPresetUI();
-            updateDashboard();
-
-            // CLOUD SYNC (SOURCE OF TRUTH):
-            // Automatic connection to Google Apps Script on app start, PULL latest subscriptions from Google Sheets
-            await pullFromBackend(false, { allowPushIfRemoteEmpty: false });
-        }
-
-        function setupDragAndDrop() {
-            const dropZone = document.getElementById('drop-zone');
-            if (!dropZone) return;
-
-            ['dragenter', 'dragover'].forEach(eventName => {
-                dropZone.addEventListener(eventName, (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    dropZone.classList.add('border-emerald-500', 'bg-slate-900/80');
-                }, false);
-            });
-
-            ['dragleave', 'drop'].forEach(eventName => {
-                dropZone.addEventListener(eventName, (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    dropZone.classList.remove('border-emerald-500', 'bg-slate-900/80');
-                }, false);
-            });
-
-            dropZone.addEventListener('drop', (e) => {
-                const dt = e.dataTransfer;
-                const files = dt.files;
-                if (files && files.length > 0) {
-                    handleFileProcess(files[0]);
-                }
-            }, false);
-        }
-
-        function autoCalcNextBilling(prefix) {
-            let lastPaid = '';
-            let recurrence = 'monthly';
-
-            if (prefix === 'manual') {
-                lastPaid = document.getElementById('manual-last-paid').value;
-                recurrence = document.getElementById('manual-recurrence').value;
-                if (recurrence === 'one-time') {
-                    document.getElementById('manual-next-billing').value = '';
-                    return;
-                }
-                const next = addRecurrence(lastPaid, recurrence);
-                document.getElementById('manual-next-billing').value = next;
-            } else if (prefix === 'modal') {
-                lastPaid = document.getElementById('modal-last-paid').value;
-                recurrence = document.getElementById('modal-recurrence').value;
-                const next = addRecurrence(lastPaid, recurrence);
-                document.getElementById('modal-next-billing').value = next;
-            } else if (prefix === 'res') {
-                lastPaid = document.getElementById('res-last-paid').value;
-                recurrence = document.getElementById('res-recurrence').value;
-                if (recurrence === 'one-time') {
-                    document.getElementById('res-next-billing').value = '';
-                    return;
-                }
-                const next = addRecurrence(lastPaid, recurrence);
-                document.getElementById('res-next-billing').value = next;
-            }
-        }
-
-        // Switch Modes
-        function switchAddMode(mode) {
-            document.getElementById('mode-scan').classList.add('hidden');
-            document.getElementById('mode-preset').classList.add('hidden');
-            document.getElementById('mode-manual').classList.add('hidden');
-
-            document.getElementById('tab-btn-scan').className = "px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all";
-            document.getElementById('tab-btn-preset').className = "px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all";
-            document.getElementById('tab-btn-manual').className = "px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all";
-
-            if (mode === 'scan') {
-                document.getElementById('mode-scan').classList.remove('hidden');
-                document.getElementById('tab-btn-scan').className = "px-4 py-2 rounded-xl text-xs font-semibold bg-emerald-500 text-slate-950 transition-all";
-            } else if (mode === 'preset') {
-                document.getElementById('mode-preset').classList.remove('hidden');
-                document.getElementById('tab-btn-preset').className = "px-4 py-2 rounded-xl text-xs font-semibold bg-emerald-500 text-slate-950 transition-all";
-                renderPresetUI();
-            } else if (mode === 'manual') {
-                document.getElementById('mode-manual').classList.remove('hidden');
-                document.getElementById('tab-btn-manual').className = "px-4 py-2 rounded-xl text-xs font-semibold bg-emerald-500 text-slate-950 transition-all";
-            }
-        }
-
-        // Render Preset UI
-        function renderPresetUI() {
-            const groups = ['ทั้งหมด', ...new Set(APP_PRESETS.map(item => item.group))];
-            const filterBar = document.getElementById('category-filter-bar');
-            filterBar.innerHTML = '';
-
-            groups.forEach(grp => {
-                const btn = document.createElement('button');
-                btn.className = `px-3 py-1 rounded-lg text-xs font-medium transition-all ${grp === activePresetGroup ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40' : 'bg-slate-950 text-slate-400 hover:text-slate-200'}`;
-                btn.innerText = grp;
-                btn.onclick = () => { activePresetGroup = grp; renderPresetUI(); };
-                filterBar.appendChild(btn);
-            });
-
-            const grid = document.getElementById('preset-grid');
-            grid.innerHTML = '';
-
-            const filteredPresets = activePresetGroup === 'ทั้งหมด' 
-                ? APP_PRESETS 
-                : APP_PRESETS.filter(item => item.group === activePresetGroup);
-
-            filteredPresets.forEach(app => {
-                const card = document.createElement('div');
-                card.className = "bg-slate-950 border border-slate-800 hover:border-emerald-500/50 p-3.5 rounded-2xl flex flex-col justify-between transition-all group cursor-pointer shadow-sm hover:shadow-emerald-500/10";
-                card.onclick = () => openPresetModal(app);
-                card.innerHTML = `
-                    <div>
-                        <div class="text-[10px] text-slate-400">${app.group}</div>
-                        <div class="font-semibold text-slate-100 text-sm mt-0.5 group-hover:text-emerald-400 transition-colors">${app.merchant}</div>
-                    </div>
-                    <div class="flex justify-between items-center mt-3 pt-2 border-t border-slate-900">
-                        <span class="text-xs font-bold text-emerald-400">฿${app.price.toLocaleString()}</span>
-                        <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-2.5 py-0.5 rounded-full font-medium group-hover:bg-emerald-500 group-hover:text-slate-950 transition-all">+ เพิ่ม</span>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        // Modal for Preset Quick Add
-        function openPresetModal(app) {
-            selectedPresetApp = app;
-            const categoryName = (app.group || '').replace(/^[^\s]+\s+/, '') || app.category || 'Subscription';
-
-            document.getElementById('modal-preset-title').innerText = `เพิ่ม ${app.merchant}`;
-            document.getElementById('modal-preset-group').innerText = app.group || categoryName;
-            document.getElementById('modal-merchant').value = app.merchant;
-            if (document.getElementById('modal-category')) {
-                document.getElementById('modal-category').value = categoryName;
-            }
-            document.getElementById('modal-amount').value = app.price;
-            document.getElementById('modal-recurrence').value = app.defaultCycle || 'monthly';
-
-            const today = getTodayString();
-            document.getElementById('modal-last-paid').value = today;
-            autoCalcNextBilling('modal');
-            document.getElementById('modal-reminder-days').value = '1';
-
-            // IMPORTANT: Clear email field! NEVER prefill from emailSettings.email or any previous input
-            if (document.getElementById('modal-email')) {
-                document.getElementById('modal-email').value = '';
-            }
-
-            document.getElementById('preset-modal').classList.remove('hidden');
-        }
-
-        function closePresetModal() {
-            document.getElementById('preset-modal').classList.add('hidden');
-            if (document.getElementById('modal-email')) {
-                document.getElementById('modal-email').value = '';
-            }
-            selectedPresetApp = null;
-        }
-
-        function submitPresetModal() {
-            const merchant = document.getElementById('modal-merchant').value.trim();
-            const amount = parseFloat(document.getElementById('modal-amount').value);
-            const recurrence = document.getElementById('modal-recurrence').value;
-            const lastPaidDate = document.getElementById('modal-last-paid').value;
-            let nextBillingDate = document.getElementById('modal-next-billing').value;
-            const reminderDays = parseInt(document.getElementById('modal-reminder-days').value, 10);
-            const email = (document.getElementById('modal-email')?.value || '').trim();
-
-            if (!merchant || isNaN(amount) || amount <= 0) {
-                alert('กรุณากรอกชื่อบริการและราคาให้ถูกต้อง');
-                return;
-            }
-
-            // User must provide an email for this subscription
-            if (!email || email.indexOf('@') === -1) {
-                alert('กรุณากรอก Email สำหรับรับการแจ้งเตือน');
-                return;
-            }
-
-            if (!nextBillingDate && lastPaidDate) {
-                nextBillingDate = addRecurrence(lastPaidDate, recurrence);
-            }
-
-            const nowIso = new Date().toISOString();
-            transactions.unshift({
-                id: generateUniqueId(),
-                merchant,
-                amount,
-                category: selectedPresetApp ? selectedPresetApp.category : 'Subscription',
-                recurrence,
-                lastPaidDate,
-                nextBillingDate,
-                reminderDays,
-                email: email, // Dedicated email for this subscription
-                active: true,
-                lastReminderSentDate: null,
-                createdAt: nowIso,
-                updatedAt: nowIso
-            });
-
-            closePresetModal();
-            saveToStorage();
-            updateDashboard();
-            pushToBackend(false);
-            showToast(`เพิ่ม ${merchant} (฿${amount}) เรียบร้อย! รอบถัดไป: ${formatDateDisplay(nextBillingDate)}`);
-        }
-
-        // Add Manual Input
-        function addManualTransaction() {
-            const merchant = document.getElementById('manual-merchant').value.trim();
-            const amount = parseFloat(document.getElementById('manual-amount').value);
-            const category = document.getElementById('manual-category').value;
-            const recurrence = document.getElementById('manual-recurrence').value;
-            const lastPaidDate = document.getElementById('manual-last-paid').value;
-            let nextBillingDate = document.getElementById('manual-next-billing').value;
-            const reminderDays = parseInt(document.getElementById('manual-reminder-days').value, 10);
-            const email = (document.getElementById('manual-email')?.value || '').trim();
-
-            if (!merchant || isNaN(amount) || amount <= 0) {
-                alert('กรุณากรอกชื่อแอปและจำนวนเงินให้ถูกต้อง');
-                return;
-            }
-
-            if (category === 'Subscription' && (!email || email.indexOf('@') === -1)) {
-                alert('กรุณากรอก Email สำหรับรับการแจ้งเตือน');
-                return;
-            }
-
-            if (recurrence !== 'one-time' && !nextBillingDate && lastPaidDate) {
-                nextBillingDate = addRecurrence(lastPaidDate, recurrence);
-            }
-
-            const nowIso = new Date().toISOString();
-            transactions.unshift({
-                id: generateUniqueId(),
-                merchant,
-                amount,
-                category,
-                recurrence,
-                lastPaidDate,
-                nextBillingDate: recurrence === 'one-time' ? '' : nextBillingDate,
-                reminderDays,
-                email: email, // Dedicated email for this transaction
-                active: true,
-                lastReminderSentDate: null,
-                createdAt: nowIso,
-                updatedAt: nowIso
-            });
-
-            document.getElementById('manual-merchant').value = '';
-            document.getElementById('manual-amount').value = '';
-            if (document.getElementById('manual-email')) document.getElementById('manual-email').value = '';
-            saveToStorage();
-            updateDashboard();
-            pushToBackend(false);
-            showToast(`บันทึกรายการ ${merchant} เรียบร้อยแล้ว!`);
-        }
-
-        // OCR Scanner Functions
-        function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (file) handleFileProcess(file);
-        }
-
-        async function handleFileProcess(file) {
-            const loadingBox = document.getElementById('ocr-loading');
-            const resultBox = document.getElementById('scan-result');
-            const statusText = document.getElementById('ocr-status-text');
-            const progressBar = document.getElementById('ocr-progress-bar');
-
-            loadingBox.classList.remove('hidden');
-            resultBox.classList.add('hidden');
-            progressBar.style.width = '20%';
-            statusText.innerText = "กำลังดาวน์โหลดโมเดล OCR และประมวลผล...";
-
-            try {
-                const worker = await Tesseract.createWorker('tha+eng');
-                progressBar.style.width = '60%';
-                statusText.innerText = "กำลังสกัดตัวอักษรและวิเคราะห์สลิป...";
-
-                const ret = await worker.recognize(file);
-                await worker.terminate();
-
-                progressBar.style.width = '100%';
-                const text = ret.data.text;
-                document.getElementById('raw-ocr-text').innerText = text || "(อ่านข้อความในรูปภาพไม่พบ)";
-
-                const parsed = parseSlipText(text);
-
-                document.getElementById('res-merchant').value = parsed.merchant;
-                document.getElementById('res-amount').value = parsed.amount;
-                document.getElementById('res-category').value = parsed.category;
-                document.getElementById('res-recurrence').value = parsed.recurrence;
-                document.getElementById('res-last-paid').value = parsed.lastPaidDate;
-                autoCalcNextBilling('res');
-                document.getElementById('scan-time').innerText = new Date().toLocaleTimeString('th-TH', {hour: '2-digit', minute:'2-digit'});
-
-                loadingBox.classList.add('hidden');
-                resultBox.classList.remove('hidden');
-
-            } catch (err) {
-                console.error(err);
-                loadingBox.classList.add('hidden');
-                alert("อ่านข้อความสลิปไม่สำเร็จ กรุณากรอกข้อมูลเพื่อตรวจสอบด้วยตนเอง");
-
-                document.getElementById('res-merchant').value = "สลิปโอนเงิน / ใบเสร็จ";
-                document.getElementById('res-amount').value = 199.00;
-                document.getElementById('res-category').value = "Subscription";
-                document.getElementById('res-recurrence').value = "monthly";
-                document.getElementById('res-last-paid').value = getTodayString();
-                autoCalcNextBilling('res');
-                resultBox.classList.remove('hidden');
-            }
-        }
-
-        function parseSlipText(text) {
-            const lowerText = text.toLowerCase();
-            let merchant = "สลิปโอนเงิน / ใบเสร็จ";
-            let amount = 0;
-            let category = "Subscription";
-            let recurrence = "monthly";
-            let lastPaidDate = getTodayString();
-
-            // Check against Preset keywords
-            for (const item of APP_PRESETS) {
-                if (item.keywords.some(kw => lowerText.includes(kw))) {
-                    merchant = item.merchant;
-                    amount = item.price;
-                    category = item.category;
-                    recurrence = item.defaultCycle || 'monthly';
-                    break;
-                }
-            }
-
-            // Extract amount with regex
-            const amountMatches = text.match(/(?:บาท|baht|thb|จำนวนเงิน|ยอดเงิน|฿)\s*[:\.]?\s*([\d,]+\.\d{2}|[\d,]+)/i) 
-                               || text.match(/([\d,]+\.\d{2})/);
-
-            if (amountMatches && amountMatches[1]) {
-                const cleaned = parseFloat(amountMatches[1].replace(/,/g, ''));
-                if (!isNaN(cleaned) && cleaned > 0) {
-                    amount = cleaned;
-                }
-            }
-
-            if (amount === 0) amount = 199.00;
-
-            // Extract Date from slip if available (DD/MM/YYYY or DD-MM-YYYY)
-            const dateMatch = text.match(/(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{2,4})/);
-            if (dateMatch) {
-                let d = parseInt(dateMatch[1], 10);
-                let m = parseInt(dateMatch[2], 10);
-                let y = parseInt(dateMatch[3], 10);
-                if (y > 2500) y = y - 543; // Buddhist Era
-                if (y < 100) y = 2000 + y;
-                if (m >= 1 && m <= 12 && d >= 1 && d <= 31) {
-                    lastPaidDate = `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-                }
-            }
-
-            return { merchant, amount, category, recurrence, lastPaidDate };
-        }
-
-        function confirmScanTransaction() {
-            const merchant = document.getElementById('res-merchant').value || 'รายการสแกน';
-            const amount = parseFloat(document.getElementById('res-amount').value) || 0;
-            const category = document.getElementById('res-category').value;
-            const recurrence = document.getElementById('res-recurrence').value;
-            const lastPaidDate = document.getElementById('res-last-paid').value || getTodayString();
-            const nextBillingDate = document.getElementById('res-next-billing').value;
-            const reminderDays = parseInt(document.getElementById('res-reminder-days').value, 10);
-            const email = (document.getElementById('res-email')?.value || '').trim();
-
-            if (category === 'Subscription' && (!email || email.indexOf('@') === -1)) {
-                alert('กรุณากรอก Email สำหรับรับการแจ้งเตือน');
-                return;
-            }
-
-            const nowIso = new Date().toISOString();
-            transactions.unshift({
-                id: generateUniqueId(),
-                merchant,
-                amount,
-                category,
-                recurrence,
-                lastPaidDate,
-                nextBillingDate: recurrence === 'one-time' ? '' : nextBillingDate,
-                reminderDays,
-                email: email, // Dedicated email
-                active: true,
-                lastReminderSentDate: null,
-                createdAt: nowIso,
-                updatedAt: nowIso
-            });
-
-            saveToStorage();
-            updateDashboard();
-            pushToBackend(false);
-            document.getElementById('scan-result').classList.add('hidden');
-            document.getElementById('file-input').value = '';
-            if (document.getElementById('res-email')) document.getElementById('res-email').value = '';
-            showToast(`บันทึก Subscription ${merchant} สำเร็จ!`);
-        }
-
-        // ==========================================
-        // CORE FLOW: MARK AS PAID (บันทึกว่าจ่ายเงินแล้ว)
-        // ==========================================
-        function markAsPaid(id) {
-            if (!id && window.event) {
-                const btn = window.event.target.closest('[data-id]');
-                if (btn) id = btn.getAttribute('data-id');
-            }
-            const targetId = String(id || '').trim();
-            if (!targetId) return;
-
-            const tx = transactions.find(t => String(t.id).trim() === targetId);
-            if (!tx) {
-                console.warn('Subscription not found for markAsPaid:', targetId);
-                return;
-            }
-
-            const todayStr = getTodayString();
-            const baseDate = tx.nextBillingDate || todayStr;
-            let nextDate = addRecurrence(baseDate, tx.recurrence || 'monthly');
-            // If nextDate is still today or past (e.g. overdue item), advance relative to today
-            if (nextDate <= todayStr && (tx.recurrence === 'monthly' || tx.recurrence === 'weekly' || tx.recurrence === 'yearly')) {
-                nextDate = addRecurrence(todayStr, tx.recurrence || 'monthly');
-            }
-
-            // 1. Set lastPaidDate to today
-            tx.lastPaidDate = todayStr;
-
-            // 2. Advance nextBillingDate to the next cycle
-            tx.nextBillingDate = nextDate;
-
-            // 3. Reset lastReminderSentDate = null
-            tx.lastReminderSentDate = null;
-            tx.updatedAt = new Date().toISOString();
-
-            // 4. Update Storage, UI & Sync Backend
-            saveToStorage();
-            updateDashboard();
-
-            fetch(GAS_WEB_APP_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify({ action: 'markAsPaid', id: targetId })
-            }).catch(e => console.warn('markAsPaid error:', e));
-            pushToBackend(false);
-            showToast(`บันทึกชำระเงิน ${tx.merchant} เรียบร้อย! รอบถัดไปคือ ${formatDateDisplay(tx.nextBillingDate)}`);
-        }
-
-        // ==========================================
-        // CORE FLOW: DELETE SUBSCRIPTION (ลบรายการ)
-        // ==========================================
-        function deleteTransaction(id) {
-            if (!id && window.event) {
-                const btn = window.event.target.closest('[data-id]');
-                if (btn) id = btn.getAttribute('data-id');
-            }
-            const targetId = String(id || '').trim();
-            if (!targetId) return;
-
-            // Strict lookup by unique ID - NEVER by merchant name
-            const tx = transactions.find(t => String(t.id).trim() === targetId);
-            const name = tx ? tx.merchant : 'รายการนี้';
-
-            if (confirm(`คุณต้องการลบ "${name}" ใช่หรือไม่?`)) {
-                // Filter out strictly by unique ID
-                transactions = transactions.filter(t => String(t.id).trim() !== targetId);
-                saveToStorage();
-                updateDashboard();
-
-                fetch(GAS_WEB_APP_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({ action: 'deleteSubscription', id: targetId })
-                }).catch(e => console.warn('deleteSubscription error:', e));
-                if (transactions.length > 0) {
-                    pushToBackend(false);
-                }
-                showToast(`ลบ "${name}" เรียบร้อยแล้ว`);
-            }
-        }
-
-        async function clearAllData() {
-            if (confirm('คุณต้องการรีเซ็ตข้อมูลทั้งหมดใช่หรือไม่?\n(รายการ Subscription และประวัติค่าใช้จ่ายทั้งหมดจะถูกล้าง)')) {
-                transactions = [];
-                emailSettings = {
-                    gasWebAppUrl: GAS_WEB_APP_URL,
-                    alertDays: '1',
-                    monthlyOpt: true,
-                    unusedOpt: true
-                };
-                localStorage.removeItem('ai_manager_txs');
-                localStorage.setItem('ai_manager_email', JSON.stringify(emailSettings));
-
-                const alertDaysEl = document.getElementById('alert-days');
-                if (alertDaysEl) alertDaysEl.value = '1';
-                const monthlyOptEl = document.getElementById('email-opt-monthly');
-                if (monthlyOptEl) monthlyOptEl.checked = true;
-                const unusedOptEl = document.getElementById('email-opt-unused');
-                if (unusedOptEl) unusedOptEl.checked = true;
-                updateGasStatusBadge();
-
-                updateDashboard();
-                showToast('รีเซ็ตข้อมูลทั้งหมดเรียบร้อยแล้ว');
-
-                // Clear remote Google Sheet if connected
-                try {
-                    await fetch(GAS_WEB_APP_URL, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                        body: JSON.stringify({ action: 'resetData' })
-                    });
-                } catch (e) {
-                    console.warn('Failed to clear remote sheet:', e);
-                }
-            }
-        }
-
         function saveToStorage() {
-            localStorage.setItem('ai_manager_txs', JSON.stringify(transactions));
-            localStorage.setItem('ai_manager_email', JSON.stringify(emailSettings));
+            localStorage.setItem('app_subscriptions', JSON.stringify(transactions));
+            localStorage.setItem('app_email_settings', JSON.stringify(emailSettings));
         }
 
-        // Dashboard Calculations & Re-rendering
-        function updateDashboard() {
-            let totalMonthlySub = 0;
-            let subCount = 0;
-            let ghostTotal = 0;
-            let monthDueTotal = 0;
-            let monthDueCount = 0;
+        function initApp() {
+            document.getElementById('alert-days').value = emailSettings.alertDays;
+            document.getElementById('email-opt-monthly').checked = emailSettings.monthlyOpt;
+            document.getElementById('email-opt-unused').checked = emailSettings.unusedOpt;
 
-            const categoryTotals = {
+            updateDashboard();
+            updateGasStatusBadge();
+            pullFromBackend(false);
+        }
+
+        function updateDashboard() {
+            renderTable();
+            calculateMetrics();
+            runAiAnalysis();
+            runAiPrediction();
+        }
+
+        function handleAddSubscription(e) {
+            e.preventDefault();
+            const merchant = document.getElementById('app-merchant').value.trim();
+            const category = document.getElementById('app-category').value;
+            const amount = parseFloat(document.getElementById('app-amount').value);
+            const nextBillingDate = document.getElementById('app-date').value;
+            const status = document.getElementById('app-status').value;
+
+            if (!merchant || isNaN(amount) || !nextBillingDate) return;
+
+            const newSub = {
+                id: String(Date.now()),
+                merchant,
+                category,
+                amount,
+                nextBillingDate,
+                status
+            };
+
+            transactions.push(newSub);
+            saveToStorage();
+            updateDashboard();
+
+            document.getElementById('subscription-form').reset();
+            showToast('เพิ่มรายการ Subscription เรียบร้อยแล้ว!');
+            pushToBackend(false);
+        }
+
+        function deleteSubscription(id) {
+            transactions = transactions.filter(item => item.id !== id);
+            saveToStorage();
+            updateDashboard();
+            showToast('ลบรายการเรียบร้อยแล้ว');
+            pushToBackend(false);
+        }
+
+        function calculateMetrics() {
+            let totalMonthly = 0;
+            let categoryTotals = {
                 'Subscription': 0,
                 'Food & Beverage': 0,
                 'Transportation': 0,
                 'Ghost Expense': 0
             };
 
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-
-            // Active subscriptions list for upcoming calculation
-            const subsList = [];
-
-            transactions.forEach(tx => {
-                if (categoryTotals[tx.category] !== undefined) {
-                    categoryTotals[tx.category] += tx.amount;
+            transactions.forEach(sub => {
+                const amt = parseFloat(sub.amount) || 0;
+                totalMonthly += amt;
+                if (categoryTotals.hasOwnProperty(sub.category)) {
+                    categoryTotals[sub.category] += amt;
                 } else {
-                    categoryTotals['Ghost Expense'] += tx.amount;
-                }
-
-                if (tx.category === 'Ghost Expense') {
-                    ghostTotal += tx.amount;
-                }
-
-                if (tx.category === 'Subscription') {
-                    subCount++;
-                    // Calculate normalized monthly subscription cost
-                    if (tx.recurrence === 'monthly') {
-                        totalMonthlySub += tx.amount;
-                    } else if (tx.recurrence === 'yearly') {
-                        totalMonthlySub += (tx.amount / 12);
-                    } else if (tx.recurrence === 'weekly') {
-                        totalMonthlySub += (tx.amount * 4.33);
-                    } else {
-                        totalMonthlySub += tx.amount;
-                    }
-
-                    if (tx.nextBillingDate) {
-                        const parts = tx.nextBillingDate.split('-');
-                        const target = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
-                        target.setHours(0, 0, 0, 0);
-                        const diffDays = Math.round((target - today) / (1000 * 60 * 60 * 24));
-
-                        // If due within next 30 days
-                        if (diffDays >= 0 && diffDays <= 30) {
-                            monthDueTotal += tx.amount;
-                            monthDueCount++;
-                        }
-
-                        subsList.push({
-                            ...tx,
-                            diffDays,
-                            statusObj: getPaymentStatus(tx.nextBillingDate, tx.reminderDays)
-                        });
-                    }
+                    categoryTotals['Subscription'] += amt;
                 }
             });
 
-            // Sort Subscriptions: Near to Far (ใกล้จ่ายที่สุด -> ไกลที่สุด)
-            subsList.sort((a, b) => a.diffDays - b.diffDays);
+            const totalYearly = totalMonthly * 12;
 
-            // Potential yearly savings calculation
-            const potentialSavingsYearly = (totalMonthlySub * 0.3 + ghostTotal * 0.5) * 12;
+            document.getElementById('total-monthly').innerText = `฿${totalMonthly.toLocaleString('th-TH', {minimumFractionDigits: 2})}`;
+            document.getElementById('total-yearly').innerText = `฿${totalYearly.toLocaleString('th-TH', {minimumFractionDigits: 2})}`;
+            document.getElementById('total-subs').innerText = `${transactions.length} รายการ`;
 
-            // 1. Metric: Total Monthly Subscription
-            document.getElementById('metric-monthly-sub').innerText = `฿${totalMonthlySub.toLocaleString('th-TH', {minimumFractionDigits: 2})}`;
-            document.getElementById('metric-sub-count').innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> ${subCount} บริการประจำ`;
-
-            // 2. Metric: Next Upcoming Payment
-            if (subsList.length > 0) {
-                const nextSub = subsList[0];
-                document.getElementById('metric-next-name').innerText = `${nextSub.merchant} (฿${nextSub.amount.toLocaleString()})`;
-                document.getElementById('metric-next-detail').innerHTML = `<span class="font-medium text-amber-300">${nextSub.statusObj.label}</span> • ${formatDateDisplay(nextSub.nextBillingDate)}`;
-            } else {
-                document.getElementById('metric-next-name').innerText = 'ไม่มีรายการ';
-                document.getElementById('metric-next-detail').innerText = 'ไม่มีรอบชำระเร็วๆ นี้';
-            }
-
-            // 3. Metric: Payments Due in 30 Days
-            document.getElementById('metric-month-due').innerText = `฿${monthDueTotal.toLocaleString('th-TH', {minimumFractionDigits: 2})}`;
-            document.getElementById('metric-month-due-count').innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span> ${monthDueCount} รายการใน 30 วัน`;
-
-            // 4. Metric: Savings
-            document.getElementById('metric-savings').innerText = `฿${potentialSavingsYearly.toLocaleString('th-TH', {minimumFractionDigits: 2})}`;
-            document.getElementById('metric-ghost-detail').innerText = `Ghost Expense: ฿${ghostTotal.toLocaleString('th-TH', {minimumFractionDigits: 2})}`;
-
-            // Render Modules
-            renderUpcomingPayments(subsList);
-            renderAlertBanner(subsList);
-            renderBellDropdown(subsList);
-            renderTable();
             renderChart(categoryTotals);
-            saveToStorage();
         }
 
-        // Render Upcoming Payments Cards
-        function renderUpcomingPayments(subsList) {
-            const grid = document.getElementById('upcoming-grid');
-            grid.innerHTML = '';
+        // ==========================================
+        // FEATURE 1 IMPLEMENTATION: AI ANALYZER
+        // ==========================================
+        function runAiAnalysis() {
+            const container = document.getElementById('ai-analysis-container');
+            if (!container) return;
 
-            if (subsList.length === 0) {
-                grid.innerHTML = `
-                    <div class="col-span-full py-8 text-center bg-slate-950/60 rounded-2xl border border-slate-800 text-slate-500 text-sm">
-                        <i class="fa-solid fa-calendar-xmark text-2xl mb-2 text-slate-600 block"></i>
-                        ไม่มีรายการ Subscription ที่มีรอบบิลในขณะนี้ กรุณาเพิ่มรายการเพื่อเริ่มระบบติดตาม
-                    </div>
-                `;
-                return;
+            let insights = [];
+
+            // 1. ตรวจสอบบริการซ้ำซ้อน (Redundancy)
+            const entertainmentKeywords = ['netflix', 'disney', 'prime', 'hbo', 'youtube', 'spotify', 'apple music'];
+            const activeEntertainment = transactions.filter(t => 
+                entertainmentKeywords.some(k => t.merchant.toLowerCase().includes(k))
+            );
+
+            if (activeEntertainment.length >= 2) {
+                const names = activeEntertainment.map(a => a.merchant).join(', ');
+                insights.push({
+                    type: 'warning',
+                    title: 'ตรวจพบบริการความบันเทิงซ้ำซ้อน',
+                    desc: `คุณมีบริการสื่อบันเทิงถึง ${activeEntertainment.length} แอป (${names}) แนะนำให้พิจารณายกเลิกแอปที่ดูน้อยที่สุดเพื่อประหยัดเงิน`
+                });
             }
 
-            subsList.forEach(sub => {
-                const card = document.createElement('div');
-                card.className = `bg-slate-950 border ${sub.statusObj.borderClass} p-5 rounded-2xl flex flex-col justify-between transition-all hover:shadow-lg space-y-4 relative overflow-hidden`;
+            // 2. ตรวจสอบ Ghost Expense / เงินรั่วไหล
+            const unusedSubs = transactions.filter(t => t.status === 'unused' || t.category === 'Ghost Expense');
+            if (unusedSubs.length > 0) {
+                const totalWasted = unusedSubs.reduce((acc, curr) => acc + curr.amount, 0);
+                insights.push({
+                    type: 'danger',
+                    title: 'พบแอปสิ้นเปลือง (Ghost Expense)',
+                    desc: `มี ${unusedSubs.length} รายการที่คุณไม่ได้ใช้งาน สูญเงินเปล่าประมาณ ฿${totalWasted.toLocaleString()}/เดือน (฿${(totalWasted*12).toLocaleString()}/ปี)`
+                });
+            }
 
-                const cycleText = sub.recurrence === 'monthly' ? 'เดือน' : sub.recurrence === 'yearly' ? 'ปี' : sub.recurrence === 'weekly' ? 'สัปดาห์' : 'ครั้ง';
-                const reminderDateStr = calculateReminderDate(sub.nextBillingDate, sub.reminderDays);
+            // 3. ตรวจจับราคาแพงเกินมาตรฐาน (Price Hike Warning)
+            const expensiveSubs = transactions.filter(t => t.amount >= 500);
+            if (expensiveSubs.length > 0) {
+                const names = expensiveSubs.map(a => `${a.merchant} (฿${a.amount})`).join(', ');
+                insights.push({
+                    type: 'info',
+                    title: 'วิเคราะห์ค่าบริการราคาสูง',
+                    desc: `รายการราคาสูงเกินเกณฑ์มาตรฐาน: ${names} ควรประเมินความคุ้มค่าการใช้งานรายเดือน`
+                });
+            }
 
-                card.innerHTML = `
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-start gap-2">
-                            <span class="px-2.5 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5 ${sub.statusObj.badgeClass}">
-                                <i class="fa-solid ${sub.statusObj.icon}"></i>
-                                ${sub.statusObj.tag}
-                            </span>
-                            <span class="text-xs text-slate-400 bg-slate-900 px-2 py-0.5 rounded-md border border-slate-800">
-                                แจ้งเตือนล่วงหน้า ${sub.reminderDays} วัน
-                            </span>
-                        </div>
+            // Fallback กรณีไม่มีคำแนะนำ
+            if (insights.length === 0) {
+                insights.push({
+                    type: 'success',
+                    title: 'สถานะการเงินยอดเยี่ยม!',
+                    desc: 'ยังไม่พบรายการซ้ำซ้อนหรือแอปสิ้นเปลืองในระบบ การบริหารค่าใช้จ่ายของคุณสมบูรณ์แบบแล้ว'
+                });
+            }
 
+            // Render Insight Cards
+            container.innerHTML = insights.map(item => {
+                let badgeClass = "bg-indigo-500/10 text-indigo-400 border-indigo-500/30";
+                let icon = "fa-circle-info";
+                
+                if (item.type === 'danger') {
+                    badgeClass = "bg-rose-500/10 text-rose-400 border-rose-500/30";
+                    icon = "fa-triangle-exclamation";
+                } else if (item.type === 'warning') {
+                    badgeClass = "bg-amber-500/10 text-amber-400 border-amber-500/30";
+                    icon = "fa-lightbulb";
+                } else if (item.type === 'success') {
+                    badgeClass = "bg-emerald-500/10 text-emerald-400 border-emerald-500/30";
+                    icon = "fa-circle-check";
+                }
+
+                return `
+                    <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl flex flex-col justify-between">
                         <div>
-                            <h3 class="font-bold text-lg text-slate-100">${sub.merchant}</h3>
-                            <div class="text-xs text-slate-400 mt-0.5 flex items-center gap-1">
-                                <span class="text-emerald-400 font-bold text-base">฿${sub.amount.toLocaleString()}</span>
-                                <span>/ ${cycleText}</span>
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="px-2 py-0.5 rounded text-xs border ${badgeClass} font-medium flex items-center gap-1">
+                                    <i class="fa-solid ${icon}"></i> ${item.title}
+                                </span>
                             </div>
+                            <p class="text-xs text-slate-300 leading-relaxed">${item.desc}</p>
                         </div>
-
-                        <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 space-y-1.5 text-xs">
-                            <div class="flex justify-between text-slate-300">
-                                <span class="text-slate-400">วันชำระครั้งถัดไป:</span>
-                                <span class="font-semibold text-slate-100">${formatDateDisplay(sub.nextBillingDate)}</span>
-                            </div>
-                            <div class="flex justify-between text-slate-300">
-                                <span class="text-slate-400">สถานะกำหนดชำระ:</span>
-                                <span class="font-medium ${sub.statusObj.indicatorColor}">${sub.statusObj.label}</span>
-                            </div>
-                            <div class="flex justify-between text-slate-400 text-[11px] pt-1 border-t border-slate-800/80">
-                                <span>วันที่แจ้งเตือน:</span>
-                                <span>${formatDateDisplay(reminderDateStr)}</span>
-                            </div>
-                            <div class="flex justify-between text-slate-400 text-[11px]">
-                                <span>จ่ายล่าสุด:</span>
-                                <span>${formatDateDisplay(sub.lastPaidDate)}</span>
-                            </div>
-                            ${sub.email ? `
-                            <div class="flex justify-between text-slate-400 text-[11px] pt-1 border-t border-slate-800/80">
-                                <span>อีเมลแจ้งเตือน:</span>
-                                <span class="font-medium text-slate-300 truncate max-w-[140px]" title="${sub.email}">${sub.email}</span>
-                            </div>
-                            ` : ''}
-                        </div>
-                    </div>
-
-                    <div class="pt-2 border-t border-slate-900 flex items-center gap-2">
-                        <button data-id="${sub.id}" onclick="markAsPaid('${sub.id}')" class="flex-1 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-2 rounded-xl text-xs transition-all flex items-center justify-center gap-1.5 shadow-md shadow-emerald-500/20">
-                            <i class="fa-solid fa-check"></i> Mark as Paid
-                        </button>
-                        <button data-id="${sub.id}" onclick="deleteTransaction('${sub.id}')" class="text-slate-500 hover:text-rose-400 p-2 rounded-xl hover:bg-slate-900 transition-colors" title="ลบรายการ">
-                            <i class="fa-solid fa-trash-can text-xs"></i>
-                        </button>
                     </div>
                 `;
-                grid.appendChild(card);
+            }).join('');
+        }
+
+        // ==========================================
+        // FEATURE 2 IMPLEMENTATION: AI PREDICTOR
+        // ==========================================
+        function runAiPrediction() {
+            const today = new Date();
+            const monthlyTotal = transactions.reduce((sum, item) => sum + item.amount, 0);
+
+            // 1. Calculate projections
+            const pred3m = monthlyTotal * 3;
+            const pred6m = monthlyTotal * 6;
+            const pred12m = monthlyTotal * 12;
+
+            document.getElementById('predict-3m').innerText = `฿${pred3m.toLocaleString('th-TH', {minimumFractionDigits: 2})}`;
+            document.getElementById('predict-6m').innerText = `฿${pred6m.toLocaleString('th-TH', {minimumFractionDigits: 2})}`;
+            document.getElementById('predict-12m').innerText = `฿${pred12m.toLocaleString('th-TH', {minimumFractionDigits: 2})}`;
+
+            // 2. Upcoming billing forecast (Next 7 & 30 days)
+            let forecast7Days = 0;
+            const upcomingList = [];
+
+            transactions.forEach(sub => {
+                const billDate = new Date(sub.nextBillingDate);
+                const diffTime = billDate - today;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                if (diffDays >= 0 && diffDays <= 30) {
+                    upcomingList.push({ ...sub, daysLeft: diffDays });
+                    if (diffDays <= 7) {
+                        forecast7Days += sub.amount;
+                    }
+                }
+            });
+
+            document.getElementById('forecast-7days').innerText = `฿${forecast7Days.toLocaleString('th-TH', {minimumFractionDigits: 2})}`;
+
+            // Sort upcoming list by days left
+            upcomingList.sort((a, b) => a.daysLeft - b.daysLeft);
+
+            const upcomingContainer = document.getElementById('upcoming-billing-list');
+            if (upcomingContainer) {
+                if (upcomingList.length === 0) {
+                    upcomingContainer.innerHTML = `<p class="text-xs text-slate-500 py-2">ไม่มีรอบหักเงินใน 30 วันนี้</p>`;
+                } else {
+                    upcomingContainer.innerHTML = upcomingList.map(item => `
+                        <div class="flex items-center justify-between p-2 bg-slate-900 rounded-lg border border-slate-800 text-xs">
+                            <div>
+                                <span class="font-medium text-white">${item.merchant}</span>
+                                <span class="block text-[10px] text-slate-400">ครบกำหนดใน ${item.daysLeft === 0 ? 'วันนี้' : item.daysLeft + ' วัน'}</span>
+                            </div>
+                            <span class="font-bold text-amber-400">฿${item.amount.toLocaleString()}</span>
+                        </div>
+                    `).join('');
+                }
+            }
+
+            // 3. Render Forecast Trend Chart (12 Months Cumulative)
+            renderPredictionChart(monthlyTotal);
+        }
+
+        function renderPredictionChart(monthlyAmount) {
+            const ctx = document.getElementById('predictionChart');
+            if (!ctx) return;
+
+            if (predictionChartInstance) {
+                predictionChartInstance.destroy();
+            }
+
+            const months = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+            const cumulativeData = Array.from({ length: 12 }, (_, i) => (i + 1) * monthlyAmount);
+
+            predictionChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: months,
+                    datasets: [{
+                        label: 'คาดการณ์รายจ่ายสะสม (บาท)',
+                        data: cumulativeData,
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        fill: true,
+                        tension: 0.3,
+                        pointBackgroundColor: '#10b981'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => ` ยอดสะสม: ฿${ctx.raw.toLocaleString()}`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { grid: { color: '#1e293b' }, ticks: { color: '#64748b', font: { family: 'Kanit', size: 10 } } },
+                        y: { grid: { color: '#1e293b' }, ticks: { color: '#64748b', font: { family: 'Kanit', size: 10 } } }
+                    }
+                }
             });
         }
 
-        // Render In-App Alert Banner
-        function renderAlertBanner(subsList) {
-            const urgentBanner = document.getElementById('urgent-alert-banner');
-            const urgentSubs = subsList.filter(s => s.statusObj.isUrgent);
-
-            if (urgentSubs.length > 0) {
-                urgentBanner.classList.remove('hidden');
-                const titles = urgentSubs.map(s => `<strong>${s.merchant}</strong> (฿${s.amount.toLocaleString()} • ${s.statusObj.label})`).join(', ');
-                document.getElementById('banner-description').innerHTML = `รายการที่ต้องดูแล: ${titles}`;
-            } else {
-                urgentBanner.classList.add('hidden');
-            }
-        }
-
-        // Render Bell Dropdown & Badge
-        function renderBellDropdown(subsList) {
-            const badge = document.getElementById('bell-badge');
-            const list = document.getElementById('bell-list');
-            const countText = document.getElementById('bell-count-text');
-            const urgentSubs = subsList.filter(s => s.statusObj.isUrgent);
-
-            if (urgentSubs.length > 0) {
-                badge.innerText = urgentSubs.length;
-                badge.classList.remove('hidden');
-                countText.innerText = `${urgentSubs.length} รายการที่ต้องชำระเร็วๆ นี้`;
-            } else {
-                badge.classList.add('hidden');
-                countText.innerText = 'ไม่มีการแจ้งเตือนด่วน';
-            }
-
-            list.innerHTML = '';
-            if (subsList.length === 0) {
-                list.innerHTML = `<div class="text-xs text-slate-500 text-center py-4">ไม่มีรายการแจ้งเตือน</div>`;
-                return;
-            }
-
-            subsList.slice(0, 6).forEach(s => {
-                const item = document.createElement('div');
-                item.className = "bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center text-xs";
-                item.innerHTML = `
-                    <div>
-                        <div class="font-semibold text-slate-200">${s.merchant}</div>
-                        <div class="${s.statusObj.indicatorColor} text-[11px]">${s.statusObj.label} • ฿${s.amount.toLocaleString()}</div>
-                    </div>
-                    <button data-id="${s.id}" onclick="markAsPaid('${s.id}')" class="px-2 py-1 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500 hover:text-slate-950 rounded-lg text-[10px] font-bold transition-all">
-                        Mark as Paid
-                    </button>
-                `;
-                list.appendChild(item);
-            });
-        }
-
-        function toggleNotificationDropdown() {
-            const dropdown = document.getElementById('bell-dropdown');
-            dropdown.classList.toggle('hidden');
-        }
-
-        // Render Transaction Table
+        // Render Table Rows
         function renderTable() {
-            const tbody = document.getElementById('tx-tbody');
+            const tbody = document.getElementById('subscription-tbody');
+            if (!tbody) return;
             tbody.innerHTML = '';
 
             if (transactions.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-500">ไม่มีรายการบันทึก กรุณาเพิ่ม Subscription หรือสแกนเพื่อบันทึก</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-500 text-xs">ไม่มีรายการ Subscription ในระบบ</td></tr>`;
                 return;
             }
 
-            transactions.forEach(tx => {
+            transactions.forEach(sub => {
                 const tr = document.createElement('tr');
-                tr.className = 'hover:bg-slate-800/40 transition-colors';
+                tr.className = "hover:bg-slate-800/40 transition";
 
-                let catBadge = 'bg-slate-800 text-slate-300';
-                if (tx.category === 'Subscription') catBadge = 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
-                if (tx.category === 'Ghost Expense') catBadge = 'bg-rose-500/10 text-rose-400 border border-rose-500/20';
-                if (tx.category === 'Food & Beverage') catBadge = 'bg-amber-500/10 text-amber-400 border border-amber-500/20';
-                if (tx.category === 'Transportation') catBadge = 'bg-sky-500/10 text-sky-400 border border-sky-500/20';
-
-                const recurrenceLabel = tx.recurrence === 'monthly' ? 'รายเดือน' : tx.recurrence === 'yearly' ? 'รายปี' : tx.recurrence === 'weekly' ? 'รายสัปดาห์' : 'ครั้งเดียว';
-                const statusObj = getPaymentStatus(tx.nextBillingDate, tx.reminderDays);
-                const isPaidToday = tx.lastPaidDate === getTodayString();
+                let statusBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">ใช้งานบ่อย</span>`;
+                if (sub.status === 'rarely') {
+                    statusBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/30">นานๆ ใช้ที</span>`;
+                } else if (sub.status === 'unused') {
+                    statusBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] bg-rose-500/10 text-rose-400 border border-rose-500/30">ไม่ได้ใช้เลย</span>`;
+                }
 
                 tr.innerHTML = `
-                    <td class="py-3.5 font-medium text-slate-100">
-                        <div>${tx.merchant}</div>
-                        ${tx.email ? `<div class="text-[11px] text-slate-400 font-normal flex items-center gap-1 mt-0.5"><i class="fa-regular fa-envelope text-[10px] text-slate-500"></i> ${tx.email}</div>` : ''}
-                    </td>
-                    <td class="py-3.5">
-                        <span class="px-2.5 py-1 rounded-full text-xs ${catBadge}">${tx.category}</span>
-                        <span class="text-[10px] text-slate-400 ml-1">(${recurrenceLabel})</span>
-                    </td>
-                    <td class="py-3.5 font-bold text-slate-100">฿${tx.amount.toLocaleString('th-TH', {minimumFractionDigits: 2})}</td>
-                    <td class="py-3.5 text-xs text-slate-400">${formatDateDisplay(tx.lastPaidDate)}</td>
-                    <td class="py-3.5">
-                        ${tx.nextBillingDate ? `
-                            <div class="text-xs font-semibold text-slate-200">${formatDateDisplay(tx.nextBillingDate)}</div>
-                            <div class="text-[11px] font-medium ${statusObj.indicatorColor}">${statusObj.label}</div>
-                            ${isPaidToday ? '<div class="text-[10px] text-emerald-400 mt-0.5"><i class="fa-solid fa-circle-check mr-1"></i>ชำระรอบล่าสุดแล้ว</div>' : ''}
-                        ` : '<span class="text-xs text-slate-500">-</span>'}
-                    </td>
-                    <td class="py-3.5 text-right space-x-2">
-                        ${tx.nextBillingDate ? `
-                            <button data-id="${tx.id}" onclick="markAsPaid('${tx.id}')" class="px-2.5 py-1 bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-slate-950 border border-emerald-500/30 rounded-lg text-xs font-semibold transition-all inline-flex items-center gap-1" title="บันทึกว่าจ่ายเงินแล้วและเลื่อนรอบบิล">
-                                <i class="fa-solid fa-check"></i> Mark as Paid
-                            </button>
-                        ` : ''}
-                        <button data-id="${tx.id}" onclick="deleteTransaction('${tx.id}')" class="text-xs text-slate-500 hover:text-rose-400 transition-colors p-1" title="ลบรายการ">
-                            <i class="fa-solid fa-trash"></i>
+                    <td class="p-3 font-medium text-white">${sub.merchant}</td>
+                    <td class="p-3 text-xs text-slate-400">${sub.category}</td>
+                    <td class="p-3 font-semibold text-emerald-400">฿${parseFloat(sub.amount).toLocaleString('th-TH', {minimumFractionDigits: 2})}</td>
+                    <td class="p-3 text-xs text-slate-300">${sub.nextBillingDate}</td>
+                    <td class="p-3">${statusBadge}</td>
+                    <td class="p-3 text-center">
+                        <button onclick="deleteSubscription('${sub.id}')" class="text-slate-500 hover:text-rose-400 transition p-1">
+                            <i class="fa-solid fa-trash-can"></i>
                         </button>
                     </td>
                 `;
@@ -1762,30 +664,57 @@
             });
         }
 
-        // Render Chart.js
-        function renderChart(catTotals) {
-            const canvas = document.getElementById('expenseChart');
-            if (!canvas) return;
-            const ctx = canvas.getContext('2d');
+        // Render Chart.js Donut Chart
+        function renderChart(categoryTotals) {
+            const ctx = document.getElementById('expenseChart');
+            if (!ctx) return;
+
             if (expenseChartInstance) {
                 expenseChartInstance.destroy();
             }
 
-            const totalSum = Object.values(catTotals).reduce((a, b) => a + b, 0);
+            const dataValues = [
+                categoryTotals['Subscription'],
+                categoryTotals['Food & Beverage'],
+                categoryTotals['Transportation'],
+                categoryTotals['Ghost Expense']
+            ];
+
+            const total = dataValues.reduce((a, b) => a + b, 0);
+
+            if (total === 0) {
+                expenseChartInstance = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['ไม่มีข้อมูล'],
+                        datasets: [{
+                            data: [1],
+                            backgroundColor: ['#334155'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: { enabled: false }
+                        }
+                    }
+                });
+                return;
+            }
 
             expenseChartInstance = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: totalSum === 0 ? ['ยังไม่มีรายการค่าใช้จ่าย'] : ['Subscription', 'Food & Beverage', 'Transportation', 'Ghost Expense'],
+                    labels: ['Subscription', 'Food & Beverage', 'Transportation', 'Ghost Expense'],
                     datasets: [{
-                        data: totalSum === 0 ? [1] : [
-                            catTotals['Subscription'],
-                            catTotals['Food & Beverage'],
-                            catTotals['Transportation'],
-                            catTotals['Ghost Expense']
-                        ],
-                        backgroundColor: totalSum === 0 ? ['#1e293b'] : ['#10b981', '#f59e0b', '#0284c7', '#f43f5e'],
-                        borderWidth: 0
+                        data: dataValues,
+                        backgroundColor: ['#10b981', '#f59e0b', '#0ea5e9', '#f43f5e'],
+                        borderColor: '#0f172a',
+                        borderWidth: 2,
+                        hoverOffset: 6
                     }]
                 },
                 options: {
@@ -1794,7 +723,21 @@
                     plugins: {
                         legend: {
                             position: 'bottom',
-                            labels: { color: '#94a3b8', font: { family: 'Kanit' } }
+                            labels: {
+                                color: '#94a3b8',
+                                font: { family: 'Kanit', size: 11 },
+                                padding: 15,
+                                usePointStyle: true
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const val = context.raw || 0;
+                                    const pct = total > 0 ? ((val / total) * 100).toFixed(1) : 0;
+                                    return ` ${context.label}: ฿${val.toLocaleString('th-TH', {minimumFractionDigits: 2})} (${pct}%)`;
+                                }
+                            }
                         }
                     },
                     cutout: '70%'
@@ -1802,265 +745,154 @@
             });
         }
 
-        // Update Google Apps Script Connection Status Badge
+        // Gas Status Badge Handler
         function updateGasStatusBadge() {
             const badge = document.getElementById('gas-status-badge');
-            if (badge) {
+            const desc = document.getElementById('gas-status-desc');
+
+            if (emailSettings.gasWebAppUrl) {
                 badge.className = "px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5";
                 badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> 🟢 Gmail Notification Connected`;
-            }
-            const desc = document.getElementById('gas-status-desc');
-            if (desc) {
                 desc.className = "text-xs text-emerald-400 mt-1 flex items-center gap-1.5";
                 desc.innerHTML = `<i class="fa-solid fa-circle-check"></i> ระบบเชื่อมต่อ Google Apps Script อัตโนมัติแล้ว`;
+            } else {
+                badge.className = "px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-800 text-slate-400 border border-slate-700 flex items-center gap-1.5";
+                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-slate-500"></span> ⚪ Status Unset`;
+                desc.className = "text-xs text-slate-400 mt-1 flex items-center gap-1.5";
+                desc.innerHTML = `<i class="fa-solid fa-circle-info"></i> ยังไม่ได้กำหนด Web App URL`;
             }
         }
 
-        // ==============================================================================
-        // PULL: Google Sheets (Source of Truth) -> Frontend
-        // ==============================================================================
-        async function pullFromBackend(isManual = false, options = {}) {
-            const url = GAS_WEB_APP_URL;
-            if (!url || !url.startsWith('http')) {
-                return false;
-            }
+        // Email Settings Handler
+        function saveEmailSettings(e) {
+            e.preventDefault();
+            emailSettings.gasWebAppUrl = GAS_WEB_APP_URL;
+            emailSettings.alertDays = document.getElementById('alert-days').value;
+            emailSettings.monthlyOpt = document.getElementById('email-opt-monthly').checked;
+            emailSettings.unusedOpt = document.getElementById('email-opt-unused').checked;
 
-            try {
-                let remoteList = null;
-
-                // วิธีที่ 1: ดึงผ่าน GET (action=getSubscriptions)
-                const getUrl = url + (url.indexOf('?') === -1 ? '?action=getSubscriptions' : '&action=getSubscriptions');
-                try {
-                    const resGet = await fetch(getUrl, {
-                        method: 'GET',
-                        headers: { 'Accept': 'application/json' }
-                    });
-                    const jsonGet = await resGet.json();
-                    if (jsonGet && jsonGet.status === 'success' && Array.isArray(jsonGet.data)) {
-                        remoteList = jsonGet.data;
-                    }
-                } catch (getErr) {
-                    console.warn('GET getSubscriptions warning, trying POST fallback:', getErr);
-                }
-
-                // วิธีที่ 2: สำรองด้วย POST (action=getSubscriptions) หาก GET ติดปัญหา
-                if (remoteList === null) {
-                    try {
-                        const resPost = await fetch(url, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                            body: JSON.stringify({ action: 'getSubscriptions' })
-                        });
-                        const jsonPost = await resPost.json();
-                        if (jsonPost && jsonPost.status === 'success' && Array.isArray(jsonPost.data)) {
-                            remoteList = jsonPost.data;
-                        }
-                    } catch (postErr) {
-                        console.warn('POST getSubscriptions also failed:', postErr);
-                    }
-                }
-
-                if (remoteList === null) {
-                    throw new Error('ไม่สามารถเชื่อมต่อหรือดึงข้อมูลจาก Google Apps Script ได้ (โปรดตรวจสอบการเชื่อมต่ออินเทอร์เน็ต)');
-                }
-
-                // กรณีที่ 1 & กรณีที่ 2: Google Sheets มีข้อมูล (Cloud เป็น Source of Truth)
-                if (remoteList.length > 0) {
-                    transactions = remoteList.map(normalizeSubscription);
-                    saveToStorage(); // Cache ลง LocalStorage
-                    updateDashboard();
-                    if (isManual) {
-                        showToast(`โหลดข้อมูล ${transactions.length} รายการจาก Google Sheets สำเร็จ!`);
-                    }
-                    return true;
-                }
-
-                // กรณีที่ 3: Google Sheets ไม่มีข้อมูล แต่ LocalStorage มี Subscription
-                if (transactions.length > 0) {
-                    if (options.allowPushIfRemoteEmpty) {
-                        // Push LocalStorage ขึ้น Google Sheets แล้วใช้ Google Sheets เป็น Source of Truth
-                        await pushToBackend(false);
-                        if (isManual) {
-                            showToast(`ซิงค์ข้อมูล ${transactions.length} รายการจากเครื่องขึ้น Google Sheets เรียบร้อย!`);
-                        }
-                    }
-                    return true;
-                }
-
-                // กรณีที่ 4: ไม่มีข้อมูลทั้งสองฝั่ง -> แสดง Empty State
-                transactions = [];
-                saveToStorage();
-                updateDashboard();
-                if (isManual) {
-                    showToast('Google Sheets ยังไม่มีข้อมูล Subscription');
-                }
-                return true;
-
-            } catch (err) {
-                console.error('PULL Error:', err);
-                if (isManual) {
-                    alert('เกิดข้อผิดพลาดในการโหลดข้อมูลจาก Google Sheets:\n' + err.message);
-                }
-                return false;
-            }
-        }
-
-        // ==============================================================================
-        // PUSH: Frontend -> Google Sheets
-        // ==============================================================================
-        async function pushToBackend(isManual = false) {
-            const url = GAS_WEB_APP_URL;
-            if (!url || !url.startsWith('http')) {
-                return false;
-            }
-
-            // 🛡️ ป้องกันไม่ให้ส่ง [] ไปล้างชีตโดยไม่ได้ตั้งใจ
-            if (!transactions || transactions.length === 0) {
-                console.warn('pushToBackend ข้ามการทำงาน: transactions ว่างเปล่าเพื่อป้องกันการเขียนทับข้อมูลใน Google Sheets');
-                return false;
-            }
-
-            try {
-                const payload = {
-                    action: 'syncSubscriptions',
-                    subscriptions: transactions,
-                    email: ''
-                };
-                const res = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify(payload)
-                });
-                const json = await res.json();
-                if (json && json.status === 'success') {
-                    if (isManual) {
-                        showToast(`ซิงค์ข้อมูล ${transactions.length} รายการไปยัง Google Sheets เรียบร้อย!`);
-                    }
-                    return true;
-                }
-                return false;
-            } catch (err) {
-                console.warn('PUSH Error:', err);
-                if (isManual) {
-                    showToast('ซิงค์กับ Google Sheets ไม่สำเร็จ', false);
-                }
-                return false;
-            }
-        }
-
-        // ฟังก์ชัน syncWithBackend (คงไว้สำหรับระบบภายใน)
-        async function syncWithBackend(isManual = false) {
-            // เมื่อกด Sync จะทำการ PULL ข้อมูลล่าสุดจาก Google Sheets ก่อนเสมอ (Source of Truth)
-            // หากชีตว่างเปล่าและเครื่องมีข้อมูล จะ Push ขึ้นไป (allowPushIfRemoteEmpty: true)
-            return await pullFromBackend(isManual, { allowPushIfRemoteEmpty: true });
-        }
-
-        // Send Real Test Email via Google Apps Script Backend
-        async function sendRealTestEmail() {
-            // Find subscription that has an email specified
-            const subWithEmail = transactions.find(t => t.email && t.email.trim().indexOf('@') !== -1);
-            if (!subWithEmail) {
-                alert('กรุณาเพิ่ม Subscription และระบุ Email สำหรับรับการแจ้งเตือนก่อน');
-                return;
-            }
-
-            const email = subWithEmail.email.trim();
-            const url = GAS_WEB_APP_URL;
-
-            const btn = document.getElementById('btn-test-email');
-            const originalHtml = btn ? btn.innerHTML : '';
-            if (btn) {
-                btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> กำลังส่ง Gmail จริง...`;
-                btn.disabled = true;
-            }
-
-            try {
-                const payload = {
-                    action: 'sendTestEmail',
-                    email: email
-                };
-                const res = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify(payload)
-                });
-                const json = await res.json();
-
-                if (json && json.status === 'success') {
-                    showToast(`ส่ง Gmail ทดสอบไปยัง ${email} สำเร็จแล้ว!`);
-                    alert(`ส่ง Email จริงสำเร็จ!\n\nระบบได้ส่งอีเมลทดสอบจริงไปยัง: ${email} (จากบริการ ${subWithEmail.merchant})\nหัวข้อ: 🧪 Subscription Alert Test\n\nกรุณาตรวจสอบใน Inbox หรือ Spam ของคุณ`);
-                } else {
-                    alert('ส่งไม่สำเร็จ: ' + (json && json.message ? json.message : 'Unknown error'));
-                }
-            } catch (err) {
-                console.error(err);
-                alert('เกิดข้อผิดพลาดในการเชื่อมต่อกับ Google Apps Script:\n' + err.message);
-            } finally {
-                if (btn) {
-                    btn.innerHTML = originalHtml;
-                    btn.disabled = false;
-                }
-            }
-        }
-
-        // Save Email Settings & Connect
-        async function saveEmailSettings(e) {
-            if (e && e.preventDefault) e.preventDefault();
-
-            emailSettings = {
-                gasWebAppUrl: GAS_WEB_APP_URL,
-                alertDays: document.getElementById('alert-days') ? document.getElementById('alert-days').value : '1',
-                monthlyOpt: document.getElementById('email-opt-monthly') ? document.getElementById('email-opt-monthly').checked : true,
-                unusedOpt: document.getElementById('email-opt-unused') ? document.getElementById('email-opt-unused').checked : true
-            };
             saveToStorage();
             updateGasStatusBadge();
 
             const toast = document.getElementById('email-toast');
-            if (toast) {
-                toast.classList.remove('hidden');
-                setTimeout(() => toast.classList.add('hidden'), 3500);
-            }
-            showToast('บันทึกการตั้งค่า Gmail Notification สำเร็จ!');
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 3000);
 
-            // เมื่อบันทึกการตั้งค่า ให้ทำ PULL จาก Google Sheets ทันที (ห้าม overwrite ด้วย [])
-            await pullFromBackend(true, { allowPushIfRemoteEmpty: true });
+            pushToBackend(true);
         }
 
-        // Toast Feedback Message
-        function showToast(message, isSuccess = true) {
+        // Test Email Dispatcher
+        async function sendRealTestEmail() {
+            if (!emailSettings.gasWebAppUrl) {
+                alert('โปรดบันทึกการตั้งค่า Google Apps Script Web App URL ก่อนกดทดสอบ');
+                return;
+            }
+
+            const btn = document.getElementById('btn-test-email');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin"></i> กำลังส่ง Test Email...`;
+
+            try {
+                const response = await fetch(emailSettings.gasWebAppUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'sendTestEmail',
+                        alertDays: emailSettings.alertDays,
+                        monthlyOpt: emailSettings.monthlyOpt,
+                        unusedOpt: emailSettings.unusedOpt,
+                        sampleSubscription: transactions.length > 0 ? transactions[0] : {
+                            merchant: 'Netflix (Test)',
+                            amount: 199.00,
+                            nextBillingDate: getTodayString(),
+                            email: 'user@example.com'
+                        }
+                    })
+                });
+
+                const resData = await response.json().catch(() => ({ status: 'success' }));
+                showToast('ส่ง Email ทดสอบสำเร็จ! โปรดตรวจสอบใน Inbox / Spam');
+            } catch (err) {
+                console.warn('Test Email request sent (CORS / Async mode):', err);
+                showToast('ส่งคำขอ Test Email ไปยัง Google Apps Script แล้ว');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        }
+
+        // Sync with Google Sheets / Google Apps Script Backend
+        async function syncWithBackend(manualTrigger = false) {
+            await pullFromBackend(manualTrigger, { allowPushIfRemoteEmpty: true });
+        }
+
+        async function pullFromBackend(showToasts = false, options = {}) {
+            const { allowPushIfRemoteEmpty = false } = options;
+            if (!emailSettings.gasWebAppUrl) return;
+
+            try {
+                const response = await fetch(`${emailSettings.gasWebAppUrl}?action=getSubscriptions`, {
+                    method: 'GET',
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data && data.status === 'success' && Array.isArray(data.subscriptions)) {
+                        if (data.subscriptions.length > 0) {
+                            transactions = data.subscriptions.map(normalizeSubscription);
+                            saveToStorage();
+                            updateDashboard();
+                            if (showToasts) showToast('ดึงข้อมูลล่าสุดจาก Google Sheets สำเร็จ!');
+                            return;
+                        } else if (allowPushIfRemoteEmpty && transactions.length > 0) {
+                            await pushToBackend(false);
+                            return;
+                        }
+                    }
+                }
+            } catch (err) {
+                console.warn('Backend PULL failed, using LocalStorage state:', err);
+                if (showToasts) showToast('โหลดข้อมูลจาก LocalStorage สำเร็จ (ออฟไลน์)');
+            }
+        }
+
+        async function pushToBackend(showToasts = false) {
+            if (!emailSettings.gasWebAppUrl) return;
+
+            try {
+                await fetch(emailSettings.gasWebAppUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'syncAllSubscriptions',
+                        subscriptions: transactions
+                    })
+                });
+                if (showToasts) showToast('Sync ข้อมูลกับ Google Sheets เรียบร้อย!');
+            } catch (err) {
+                console.warn('Backend PUSH error:', err);
+            }
+        }
+
+        // Toast Helper
+        function showToast(msg) {
             const toast = document.getElementById('toast');
             const toastMsg = document.getElementById('toast-msg');
-            const toastIcon = document.getElementById('toast-icon');
+            if (!toast || !toastMsg) return;
 
-            toastMsg.innerText = message;
-            if (isSuccess) {
-                toastIcon.className = "fa-solid fa-circle-check text-emerald-400 text-lg";
-            } else {
-                toastIcon.className = "fa-solid fa-circle-exclamation text-amber-400 text-lg";
-            }
-
+            toastMsg.innerText = msg;
             toast.classList.remove('translate-y-24', 'opacity-0');
-            toast.classList.add('translate-y-0', 'opacity-100');
 
             setTimeout(() => {
-                toast.classList.remove('translate-y-0', 'opacity-100');
                 toast.classList.add('translate-y-24', 'opacity-0');
-            }, 3000);
+            }, 3500);
         }
 
-        // Start App on DOMContentLoaded
-        window.addEventListener('DOMContentLoaded', initApp);
-
-        // Close dropdown when clicked outside
-        window.addEventListener('click', (e) => {
-            const bellBtn = document.getElementById('bell-btn');
-            const bellDropdown = document.getElementById('bell-dropdown');
-            if (bellDropdown && !bellDropdown.classList.contains('hidden')) {
-                if (!bellDropdown.contains(e.target) && !bellBtn.contains(e.target)) {
-                    bellDropdown.classList.add('hidden');
-                }
-            }
+        // Bootstrapping
+        window.addEventListener('DOMContentLoaded', () => {
+            initApp();
         });
     </script>
 </body>
