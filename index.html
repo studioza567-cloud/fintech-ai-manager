@@ -309,11 +309,12 @@
                         <div>
                             <label class="text-xs text-slate-600 block mb-1 font-medium" data-i18n="labelCategory">หมวดหมู่:</label>
                             <select id="res-category" onchange="syncScanFormVisibility()" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm text-slate-800 focus:bg-white focus:border-emerald-500 outline-none">
-                                <option value="Subscription" data-i18n="catSubscriptionOption">Subscription (บริการรายเดือน)</option>
-                                <option value="Food & Beverage" data-i18n="catFoodOption">Food & Beverage (อาหาร/เครื่องดื่ม)</option>
-                                <option value="Transportation" data-i18n="catTransportOption">Transportation (การเดินทาง)</option>
-                                <option value="Shopping" data-i18n="catShoppingOption">Shopping (ช้อปปิ้ง)</option>
-                                <option value="Ghost Expense" data-i18n="catGhostOption">Ghost Expense (รายจ่ายจุกจิก)</option>
+                                <option value="Entertainment" data-i18n="catEntertainmentOption">Entertainment (ความบันเทิง)</option>
+                                <option value="Software & Cloud Service" data-i18n="catSoftwareCloudOption">Software & Cloud Service (ซอฟต์แวร์/คลาวด์)</option>
+                                <option value="Gaming" data-i18n="catGamingOption">Gaming (เกม)</option>
+                                <option value="Education & Reading" data-i18n="catEducationReadingOption">Education & Reading (การศึกษา/การอ่าน)</option>
+                                <option value="Health & Fitness" data-i18n="catHealthFitnessOption">Health & Fitness (สุขภาพ/ฟิตเนส)</option>
+                                <option value="Music" data-i18n="catMusicOption">Music (เพลงและพอดแคสต์)</option>
                                 <option value="Other" data-i18n="catOtherOption">Other (อื่นๆ)</option>
                             </select>
                         </div>
@@ -393,11 +394,12 @@
                     <div>
                         <label class="text-xs text-slate-600 block mb-1 font-medium" data-i18n="labelCategory">หมวดหมู่:</label>
                         <select id="manual-category" onchange="syncManualFormVisibility()" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-sm text-slate-800 focus:border-emerald-500 outline-none">
-                            <option value="Subscription" data-i18n="catSubscriptionOption">Subscription (บริการรายเดือน)</option>
-                            <option value="Food & Beverage" data-i18n="catFoodOption">Food & Beverage (อาหาร/เครื่องดื่ม)</option>
-                            <option value="Transportation" data-i18n="catTransportOption">Transportation (การเดินทาง)</option>
-                            <option value="Shopping" data-i18n="catShoppingOption">Shopping (ช้อปปิ้ง)</option>
-                            <option value="Ghost Expense" data-i18n="catGhostOption">Ghost Expense (รายจ่ายจุกจิก)</option>
+                            <option value="Entertainment" data-i18n="catEntertainmentOption">Entertainment (ความบันเทิง)</option>
+                            <option value="Software & Cloud Service" data-i18n="catSoftwareCloudOption">Software & Cloud Service (ซอฟต์แวร์/คลาวด์)</option>
+                            <option value="Gaming" data-i18n="catGamingOption">Gaming (เกม)</option>
+                            <option value="Education & Reading" data-i18n="catEducationReadingOption">Education & Reading (การศึกษา/การอ่าน)</option>
+                            <option value="Health & Fitness" data-i18n="catHealthFitnessOption">Health & Fitness (สุขภาพ/ฟิตเนส)</option>
+                            <option value="Music" data-i18n="catMusicOption">Music (เพลงและพอดแคสต์)</option>
                             <option value="Other" data-i18n="catOtherOption">Other (อื่นๆ)</option>
                         </select>
                     </div>
@@ -575,11 +577,19 @@
                 </div>
                 <div>
                     <label class="text-xs text-slate-600 block mb-1 font-medium" data-i18n="labelCategory">หมวดหมู่:</label>
-                    <input type="text" id="modal-category" readonly class="w-full bg-slate-100 border border-slate-300 rounded-xl px-3 py-2 text-sm text-slate-600 outline-none cursor-not-allowed">
+                    <select id="modal-category" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm text-slate-800 font-semibold focus:bg-white focus:border-emerald-500 outline-none">
+                        <option value="Entertainment" data-i18n="catEntertainmentOption">Entertainment (ความบันเทิง)</option>
+                        <option value="Software & Cloud Service" data-i18n="catSoftwareCloudOption">Software & Cloud Service (ซอฟต์แวร์/คลาวด์)</option>
+                        <option value="Gaming" data-i18n="catGamingOption">Gaming (เกม)</option>
+                        <option value="Education & Reading" data-i18n="catEducationReadingOption">Education & Reading (การศึกษา/การอ่าน)</option>
+                        <option value="Health & Fitness" data-i18n="catHealthFitnessOption">Health & Fitness (สุขภาพ/ฟิตเนส)</option>
+                        <option value="Music" data-i18n="catMusicOption">Music (เพลงและพอดแคสต์)</option>
+                        <option value="Other" data-i18n="catOtherOption">Other (อื่นๆ)</option>
+                    </select>
                 </div>
                 <div>
                     <label class="text-xs text-slate-600 block mb-1 font-medium" data-i18n="modalLabelPrice">ราคาต่อรอบ (บาท):</label>
-                    <input type="number" step="0.01" id="modal-amount" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm text-emerald-700 font-bold focus:bg-white focus:border-emerald-500 outline-none">
+                    <input type="number" step="0.01" id="modal-amount" placeholder="0.00" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm text-emerald-700 font-bold focus:bg-white focus:border-emerald-500 outline-none">
                 </div>
                 <div>
                     <label class="text-xs text-slate-600 block mb-1 font-medium" data-i18n="labelRecurrence">รอบการจ่าย (Billing Cycle):</label>
@@ -692,17 +702,18 @@
                 tabScan: "สแกนสลิปด้วย AI OCR",
                 tabManual: "พิมพ์กรอกข้อมูลเอง",
 
-                // Preset Categories (3 หมวดหมู่เท่านั้น)
+                // Preset Categories (7 หมวดหมู่หลัก)
                 presetSectionTitle: "เลือกจากแอปยอดนิยม (Quick Add)",
                 presetSectionSub: "กำหนดวันจ่ายล่าสุดและรอบบิล เพื่อให้ระบบคำนวณวันแจ้งเตือนล่วงหน้า",
-                presetCategoryVideo: "วิดีโอสตรีมมิ่ง",
-                presetCategoryDating: "แอปพลิเคชันหาคู่",
-                presetCategoryMusic: "แอปฟังเพลงและพอดแคสต์",
                 presetGroups: {
                     'ทั้งหมด': 'ทั้งหมด',
-                    'วิดีโอสตรีมมิ่ง': '🎬 วิดีโอสตรีมมิ่ง',
-                    'แอปพลิเคชันหาคู่': '💖 แอปพลิเคชันหาคู่',
-                    'แอปฟังเพลงและพอดแคสต์': '🎵 แอปฟังเพลงและพอดแคสต์'
+                    'Entertainment': '🎬 Entertainment',
+                    'Software & Cloud Service': '💻 Software & Cloud',
+                    'Gaming': '🎮 Gaming',
+                    'Education & Reading': '📚 Education & Reading',
+                    'Health & Fitness': '🏃 Health & Fitness',
+                    'Music': '🎵 Music',
+                    'Other': '✨ Other'
                 },
 
                 // OCR Section
@@ -730,11 +741,12 @@
                 cycleOptYearly: "รายปี (Yearly)",
                 cycleOptWeekly: "รายสัปดาห์ (Weekly)",
                 cycleOptOneTime: "จ่ายครั้งเดียว (One-time)",
-                catSubscriptionOption: "Subscription (บริการรายเดือน)",
-                catFoodOption: "Food & Beverage (อาหาร/เครื่องดื่ม)",
-                catTransportOption: "Transportation (การเดินทาง)",
-                catShoppingOption: "Shopping (ช้อปปิ้ง)",
-                catGhostOption: "Ghost Expense (รายจ่ายจุกจิก)",
+                catEntertainmentOption: "Entertainment (ความบันเทิง)",
+                catSoftwareCloudOption: "Software & Cloud Service (ซอฟต์แวร์/คลาวด์)",
+                catGamingOption: "Gaming (เกม)",
+                catEducationReadingOption: "Education & Reading (การศึกษา/การอ่าน)",
+                catHealthFitnessOption: "Health & Fitness (สุขภาพ/ฟิตเนส)",
+                catMusicOption: "Music (เพลงและพอดแคสต์)",
                 catOtherOption: "Other (อื่นๆ)",
 
                 // Forms & Labels
@@ -791,18 +803,23 @@
                 btnCancel: "ยกเลิก",
                 btnConfirmPresetSub: "ยืนยันเพิ่ม Subscription",
 
-                // Categories & Cycles
-                catSubscription: "Subscription",
-                catFood: "Food & Beverage",
-                catTransport: "Transportation",
-                catShopping: "Shopping",
-                catGhost: "Ghost Expense",
-                catOther: "Other",
-                catSubscriptionOption: "Subscription (บริการรายเดือน)",
-                catFoodOption: "Food & Beverage (อาหาร/เครื่องดื่ม)",
-                catTransportOption: "Transportation (การเดินทาง)",
-                catShoppingOption: "Shopping (ช้อปปิ้ง)",
-                catGhostOption: "Ghost Expense (รายจ่ายจุกจิก)",
+                // Categories & Cycles (7 หมวดหมู่หลัก)
+                catEntertainment: "ความบันเทิง (Entertainment)",
+                catSoftware: "ซอฟต์แวร์และคลาวด์ (Software & Cloud)",
+                catSoftwareCloud: "ซอฟต์แวร์และคลาวด์ (Software & Cloud)",
+                catGaming: "เกม (Gaming)",
+                catEducation: "การศึกษาและการอ่าน (Education & Reading)",
+                catEducationReading: "การศึกษาและการอ่าน (Education & Reading)",
+                catHealth: "สุขภาพและฟิตเนส (Health & Fitness)",
+                catHealthFitness: "สุขภาพและฟิตเนส (Health & Fitness)",
+                catMusic: "เพลงและดนตรี (Music)",
+                catOther: "อื่นๆ (Other)",
+                catEntertainmentOption: "Entertainment (ความบันเทิง)",
+                catSoftwareCloudOption: "Software & Cloud Service (ซอฟต์แวร์/คลาวด์)",
+                catGamingOption: "Gaming (เกม)",
+                catEducationReadingOption: "Education & Reading (การศึกษา/การอ่าน)",
+                catHealthFitnessOption: "Health & Fitness (สุขภาพ/ฟิตเนส)",
+                catMusicOption: "Music (เพลงและพอดแคสต์)",
                 catOtherOption: "Other (อื่นๆ)",
                 cycleOptMonthly: "รายเดือน (Monthly)",
                 cycleOptYearly: "รายปี (Yearly)",
@@ -831,12 +848,15 @@
                 bellNoUrgent: "ไม่มีการแจ้งเตือนด่วน",
                 bellEmpty: "ไม่มีรายการแจ้งเตือน",
                 btnAddPresetCard: "+ เพิ่ม",
+                specifyPrice: "ระบุราคาเอง",
                 confirmDelete: "คุณต้องการลบ \"{name}\" ใช่หรือไม่?",
                 confirmResetAll: "คุณต้องการรีเซ็ตข้อมูลทั้งหมดใช่หรือไม่?\n(รายการ Subscription และประวัติค่าใช้จ่ายทั้งหมดจะถูกล้าง)",
                 
                 // Feedback & Toast
                 alertValidService: "กรุณากรอกชื่อบริการและราคาให้ถูกต้อง",
+                alertValidMerchant: "กรุณากรอกชื่อบริการให้ถูกต้อง",
                 alertValidApp: "กรุณากรอกชื่อแอปและจำนวนเงินให้ถูกต้อง",
+                alertValidPrice: "กรุณาระบุราคาที่ถูกต้อง (มากกว่า 0)",
                 alertValidEmail: "กรุณากรอก Email สำหรับรับการแจ้งเตือน",
                 alertScanFailed: "อ่านข้อความสลิปไม่สำเร็จ กรุณากรอกข้อมูลเพื่อตรวจสอบด้วยตนเอง",
                 alertInvalidMerchant: "กรุณาระบุชื่อร้านค้าหรือบริการที่ถูกต้อง (ห้ามใช้คำทั่วไป เช่น สลิป หรือ โอนเงิน)",
@@ -939,17 +959,18 @@
                 tabScan: "Scan Slip with AI OCR",
                 tabManual: "Manual Entry",
 
-                // Preset Categories (3 categories only)
+                // Preset Categories (7 main categories)
                 presetSectionTitle: "Popular Services (Quick Add)",
                 presetSectionSub: "Set last paid date and billing cycle so the system calculates reminder alerts",
-                presetCategoryVideo: "Video Streaming",
-                presetCategoryDating: "Dating Apps",
-                presetCategoryMusic: "Music & Podcast Apps",
                 presetGroups: {
                     'ทั้งหมด': 'All',
-                    'วิดีโอสตรีมมิ่ง': '🎬 Video Streaming',
-                    'แอปพลิเคชันหาคู่': '💖 Dating Apps',
-                    'แอปฟังเพลงและพอดแคสต์': '🎵 Music & Podcast Apps'
+                    'Entertainment': '🎬 Entertainment',
+                    'Software & Cloud Service': '💻 Software & Cloud',
+                    'Gaming': '🎮 Gaming',
+                    'Education & Reading': '📚 Education & Reading',
+                    'Health & Fitness': '🏃 Health & Fitness',
+                    'Music': '🎵 Music',
+                    'Other': '✨ Other'
                 },
 
                 // OCR Section
@@ -977,11 +998,12 @@
                 cycleOptYearly: "Yearly",
                 cycleOptWeekly: "Weekly",
                 cycleOptOneTime: "One-time",
-                catSubscriptionOption: "Subscription",
-                catFoodOption: "Food & Beverage",
-                catTransportOption: "Transportation",
-                catShoppingOption: "Shopping",
-                catGhostOption: "Ghost Expense",
+                catEntertainmentOption: "Entertainment",
+                catSoftwareCloudOption: "Software & Cloud Service",
+                catGamingOption: "Gaming",
+                catEducationReadingOption: "Education & Reading",
+                catHealthFitnessOption: "Health & Fitness",
+                catMusicOption: "Music",
                 catOtherOption: "Other",
 
                 // Forms & Labels
@@ -1038,18 +1060,23 @@
                 btnCancel: "Cancel",
                 btnConfirmPresetSub: "Confirm Add Subscription",
 
-                // Categories & Cycles
-                catSubscription: "Subscription",
-                catFood: "Food & Beverage",
-                catTransport: "Transportation",
-                catShopping: "Shopping",
-                catGhost: "Ghost Expense",
+                // Categories & Cycles (7 main categories)
+                catEntertainment: "Entertainment",
+                catSoftware: "Software & Cloud Service",
+                catSoftwareCloud: "Software & Cloud Service",
+                catGaming: "Gaming",
+                catEducation: "Education & Reading",
+                catEducationReading: "Education & Reading",
+                catHealth: "Health & Fitness",
+                catHealthFitness: "Health & Fitness",
+                catMusic: "Music",
                 catOther: "Other",
-                catSubscriptionOption: "Subscription",
-                catFoodOption: "Food & Beverage",
-                catTransportOption: "Transportation",
-                catShoppingOption: "Shopping",
-                catGhostOption: "Ghost Expense",
+                catEntertainmentOption: "Entertainment",
+                catSoftwareCloudOption: "Software & Cloud Service",
+                catGamingOption: "Gaming",
+                catEducationReadingOption: "Education & Reading",
+                catHealthFitnessOption: "Health & Fitness",
+                catMusicOption: "Music",
                 catOtherOption: "Other",
                 cycleOptMonthly: "Monthly",
                 cycleOptYearly: "Yearly",
@@ -1078,12 +1105,15 @@
                 bellNoUrgent: "No urgent notifications",
                 bellEmpty: "No notifications",
                 btnAddPresetCard: "+ Add",
+                specifyPrice: "Enter price",
                 confirmDelete: "Are you sure you want to delete \"{name}\"?",
                 confirmResetAll: "Are you sure you want to reset all data?\n(All subscriptions and expense records will be cleared)",
 
                 // Feedback & Toast
                 alertValidService: "Please enter a valid service name and amount.",
+                alertValidMerchant: "Please enter a valid service name.",
                 alertValidApp: "Please enter a valid app name and amount.",
+                alertValidPrice: "Please enter a valid price (greater than 0).",
                 alertValidEmail: "Please enter an email for notifications.",
                 alertScanFailed: "Failed to read receipt text. Please enter details manually.",
                 alertInvalidMerchant: "Please specify a valid merchant/service name (cannot be generic like Slip or Transfer).",
@@ -1189,25 +1219,46 @@
         }
 
         // ==========================================
-        // RECOMMENDED APPS (EXACTLY 3 CATEGORIES)
+        // RECOMMENDED APPS (7 CATEGORIES - NO PRESET PRICES)
         // ==========================================
         const APP_PRESETS = [
-            // หมวดที่ 1: วิดีโอสตรีมมิ่ง (Video Streaming)
-            { group: 'วิดีโอสตรีมมิ่ง', keywords: ['netflix'], merchant: 'Netflix', price: 199.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: 'วิดีโอสตรีมมิ่ง', keywords: ['disney', 'hotstar'], merchant: 'Disney+ Hotstar', price: 289.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: 'วิดีโอสตรีมมิ่ง', keywords: ['viu'], merchant: 'Viu', price: 149.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: 'วิดีโอสตรีมมิ่ง', keywords: ['prime', 'amazon prime'], merchant: 'Amazon Prime Video', price: 149.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: 'วิดีโอสตรีมมิ่ง', keywords: ['hbo', 'max'], merchant: 'HBO Max', price: 199.00, category: 'Subscription', defaultCycle: 'monthly' },
+            // 1. Entertainment
+            { group: 'Entertainment', keywords: ['netflix'], merchant: 'Netflix', category: 'Entertainment', defaultCycle: 'monthly' },
+            { group: 'Entertainment', keywords: ['disney', 'hotstar'], merchant: 'Disney+ Hotstar', category: 'Entertainment', defaultCycle: 'monthly' },
+            { group: 'Entertainment', keywords: ['viu'], merchant: 'Viu', category: 'Entertainment', defaultCycle: 'monthly' },
+            { group: 'Entertainment', keywords: ['prime', 'amazon prime'], merchant: 'Amazon Prime Video', category: 'Entertainment', defaultCycle: 'monthly' },
+            { group: 'Entertainment', keywords: ['hbo', 'max'], merchant: 'HBO Max', category: 'Entertainment', defaultCycle: 'monthly' },
 
-            // หมวดที่ 2: แอปพลิเคชันหาคู่ (Dating Apps)
-            { group: 'แอปพลิเคชันหาคู่', keywords: ['tinder'], merchant: 'Tinder', price: 350.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: 'แอปพลิเคชันหาคู่', keywords: ['bumble'], merchant: 'Bumble', price: 450.00, category: 'Subscription', defaultCycle: 'monthly' },
+            // 2. Music
+            { group: 'Music', keywords: ['spotify'], merchant: 'Spotify', category: 'Music', defaultCycle: 'monthly' },
+            { group: 'Music', keywords: ['youtube music'], merchant: 'YouTube Music', category: 'Music', defaultCycle: 'monthly' },
+            { group: 'Music', keywords: ['apple music'], merchant: 'Apple Music', category: 'Music', defaultCycle: 'monthly' },
+            { group: 'Music', keywords: ['amazon music'], merchant: 'Amazon Music', category: 'Music', defaultCycle: 'monthly' },
 
-            // หมวดที่ 3: แอปฟังเพลงและพอดแคสต์ (Music & Podcast Apps)
-            { group: 'แอปฟังเพลงและพอดแคสต์', keywords: ['spotify'], merchant: 'Spotify', price: 129.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: 'แอปฟังเพลงและพอดแคสต์', keywords: ['youtube music'], merchant: 'YouTube Music', price: 129.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: 'แอปฟังเพลงและพอดแคสต์', keywords: ['apple music'], merchant: 'Apple Music', price: 139.00, category: 'Subscription', defaultCycle: 'monthly' },
-            { group: 'แอปฟังเพลงและพอดแคสต์', keywords: ['amazon music'], merchant: 'Amazon Music', price: 149.00, category: 'Subscription', defaultCycle: 'monthly' }
+            // 3. Software & Cloud Service
+            { group: 'Software & Cloud Service', keywords: ['chatgpt', 'openai'], merchant: 'ChatGPT Plus', category: 'Software & Cloud Service', defaultCycle: 'monthly' },
+            { group: 'Software & Cloud Service', keywords: ['icloud'], merchant: 'iCloud+', category: 'Software & Cloud Service', defaultCycle: 'monthly' },
+            { group: 'Software & Cloud Service', keywords: ['google one', 'google'], merchant: 'Google One', category: 'Software & Cloud Service', defaultCycle: 'monthly' },
+            { group: 'Software & Cloud Service', keywords: ['microsoft', 'office 365'], merchant: 'Microsoft 365', category: 'Software & Cloud Service', defaultCycle: 'monthly' },
+            { group: 'Software & Cloud Service', keywords: ['canva'], merchant: 'Canva Pro', category: 'Software & Cloud Service', defaultCycle: 'monthly' },
+
+            // 4. Gaming
+            { group: 'Gaming', keywords: ['steam'], merchant: 'Steam', category: 'Gaming', defaultCycle: 'monthly' },
+            { group: 'Gaming', keywords: ['playstation', 'ps plus'], merchant: 'PlayStation Plus', category: 'Gaming', defaultCycle: 'monthly' },
+            { group: 'Gaming', keywords: ['xbox', 'game pass'], merchant: 'Xbox Game Pass', category: 'Gaming', defaultCycle: 'monthly' },
+            { group: 'Gaming', keywords: ['nintendo'], merchant: 'Nintendo Switch Online', category: 'Gaming', defaultCycle: 'monthly' },
+
+            // 5. Education & Reading
+            { group: 'Education & Reading', keywords: ['duolingo'], merchant: 'Duolingo Super', category: 'Education & Reading', defaultCycle: 'monthly' },
+            { group: 'Education & Reading', keywords: ['kindle'], merchant: 'Kindle Unlimited', category: 'Education & Reading', defaultCycle: 'monthly' },
+
+            // 6. Health & Fitness
+            { group: 'Health & Fitness', keywords: ['strava'], merchant: 'Strava', category: 'Health & Fitness', defaultCycle: 'monthly' },
+            { group: 'Health & Fitness', keywords: ['fitness', 'apple fitness'], merchant: 'Apple Fitness+', category: 'Health & Fitness', defaultCycle: 'monthly' },
+
+            // 7. Other
+            { group: 'Other', keywords: ['tinder'], merchant: 'Tinder', category: 'Other', defaultCycle: 'monthly' },
+            { group: 'Other', keywords: ['bumble'], merchant: 'Bumble', category: 'Other', defaultCycle: 'monthly' }
         ];
 
         // Unique ID Generator
@@ -1423,8 +1474,8 @@
                 {
                     id: 'sub_demo_1',
                     merchant: 'Netflix',
-                    amount: 199.00,
-                    category: 'Subscription',
+                    amount: 219.00,
+                    category: 'Entertainment',
                     recurrence: 'monthly',
                     lastPaidDate: pastStr,
                     nextBillingDate: tomorrowStr,
@@ -1436,8 +1487,8 @@
                 {
                     id: 'sub_demo_2',
                     merchant: 'Spotify',
-                    amount: 129.00,
-                    category: 'Subscription',
+                    amount: 139.00,
+                    category: 'Music',
                     recurrence: 'monthly',
                     lastPaidDate: pastStr,
                     nextBillingDate: in3DaysStr,
@@ -1450,7 +1501,7 @@
                     id: 'sub_demo_3',
                     merchant: 'Disney+ Hotstar',
                     amount: 289.00,
-                    category: 'Subscription',
+                    category: 'Entertainment',
                     recurrence: 'monthly',
                     lastPaidDate: todayStr,
                     nextBillingDate: in15DaysStr,
@@ -1467,12 +1518,48 @@
             console.log('Demo data loaded successfully via loadDemoData()');
         };
 
+        function migrateLegacyCategory(legacyCat, merchant = '') {
+            const m = String(merchant || '').toLowerCase();
+            if (['netflix', 'disney', 'hotstar', 'viu', 'prime', 'hbo', 'iqiyi', 'wetv', 'bilibili', 'youtube'].some(k => m.includes(k))) {
+                return 'Entertainment';
+            }
+            if (['spotify', 'apple music', 'youtube music', 'amazon music', 'joox', 'tidal', 'deezer'].some(k => m.includes(k))) {
+                return 'Music';
+            }
+            if (['steam', 'playstation', 'xbox', 'nintendo', 'roblox', 'riot', 'epic'].some(k => m.includes(k))) {
+                return 'Gaming';
+            }
+            if (['chatgpt', 'openai', 'claude', 'notion', 'canva', 'icloud', 'google', 'microsoft', 'adobe', 'figma', 'github'].some(k => m.includes(k))) {
+                return 'Software & Cloud Service';
+            }
+            if (['duolingo', 'coursera', 'udemy', 'kindle', 'medium', 'blinkist'].some(k => m.includes(k))) {
+                return 'Education & Reading';
+            }
+            if (['strava', 'fitness', 'gym', 'workout', 'nike'].some(k => m.includes(k))) {
+                return 'Health & Fitness';
+            }
+            return 'Other';
+        }
+
+        function normalizeCategoryKey(raw, merchant = '') {
+            if (!raw) return migrateLegacyCategory('', merchant);
+            const s = String(raw).trim().toLowerCase();
+            if (s === 'entertainment' || s.includes('บันเทิง') || s.includes('สตรีม') || s.includes('stream') || s.includes('movie')) return 'Entertainment';
+            if (s === 'software & cloud service' || s.includes('software') || s.includes('cloud') || s.includes('ซอฟต์') || s.includes('saas')) return 'Software & Cloud Service';
+            if (s === 'gaming' || s.includes('game') || s.includes('เกม')) return 'Gaming';
+            if (s === 'education & reading' || s.includes('education') || s.includes('reading') || s.includes('ศึกษา') || s.includes('อ่าน')) return 'Education & Reading';
+            if (s === 'health & fitness' || s.includes('health') || s.includes('fitness') || s.includes('สุขภาพ') || s.includes('ฟิตเนส')) return 'Health & Fitness';
+            if (s === 'music' || s.includes('เพลง') || s.includes('พอดแคสต์') || s.includes('podcast')) return 'Music';
+            if (s === 'other' || s.includes('อื่น')) return 'Other';
+            return migrateLegacyCategory(raw, merchant);
+        }
+
         function normalizeSubscription(s) {
             return {
                 id: String(s.id || generateUniqueId()),
                 merchant: String(s.merchant || 'Subscription'),
                 amount: parseFloat(s.amount) || 0,
-                category: String(s.category || 'Subscription'),
+                category: normalizeCategoryKey(s.category, s.merchant),
                 recurrence: String(s.recurrence || 'monthly'),
                 lastPaidDate: String(s.lastPaidDate || getTodayString()),
                 nextBillingDate: String(s.nextBillingDate || ''),
@@ -1636,9 +1723,9 @@
             }
         }
 
-        // Render Preset UI (3 Categories Only)
+        // Render Preset UI (7 Categories with User Price Entry)
         function renderPresetUI() {
-            const groups = ['ทั้งหมด', ...new Set(APP_PRESETS.map(item => item.group))];
+            const groups = ['ทั้งหมด', ...new Set(APP_PRESETS.map(item => item.category))];
             const filterBar = document.getElementById('category-filter-bar');
             filterBar.innerHTML = '';
 
@@ -1657,21 +1744,22 @@
 
             const filteredPresets = activePresetGroup === 'ทั้งหมด' 
                 ? APP_PRESETS 
-                : APP_PRESETS.filter(item => item.group === activePresetGroup);
+                : APP_PRESETS.filter(item => item.category === activePresetGroup);
 
             filteredPresets.forEach(app => {
                 const card = document.createElement('div');
                 card.className = "bg-white border border-slate-200 hover:border-emerald-400 p-3.5 rounded-2xl flex flex-col justify-between transition-all group cursor-pointer shadow-xs hover:shadow-md";
                 card.onclick = () => openPresetModal(app);
-                const displayGroup = presetGroupsMap[app.group] || app.group;
+                const displayGroup = presetGroupsMap[app.category] || app.category;
                 const addBtnText = t('btnAddPresetCard');
+                const priceLabel = t('specifyPrice');
                 card.innerHTML = `
                     <div>
                         <div class="text-[10px] text-slate-400 font-medium">${displayGroup}</div>
                         <div class="font-semibold text-slate-800 text-sm mt-0.5 group-hover:text-emerald-700 transition-colors">${app.merchant}</div>
                     </div>
                     <div class="flex justify-between items-center mt-3 pt-2 border-t border-slate-100">
-                        <span class="text-xs font-bold text-emerald-700">฿${app.price.toLocaleString()}</span>
+                        <span class="text-xs font-medium text-slate-500 flex items-center gap-1"><i class="fa-solid fa-pen text-[10px] text-emerald-600"></i> ${priceLabel}</span>
                         <span class="text-[10px] bg-emerald-50 text-emerald-700 group-hover:bg-emerald-600 group-hover:text-white px-2.5 py-0.5 rounded-full font-medium transition-all">${addBtnText}</span>
                     </div>
                 `;
@@ -1682,9 +1770,9 @@
         // Modal for Preset Quick Add
         function openPresetModal(app) {
             selectedPresetApp = app;
-            const categoryName = (app.group || '').replace(/^[^\s]+\s+/, '') || app.category || 'Subscription';
+            const categoryName = app.category || 'Other';
             const presetGroupsMap = translations[currentLang]?.presetGroups || {};
-            const displayGroup = presetGroupsMap[app.group] || app.group || categoryName;
+            const displayGroup = presetGroupsMap[app.category] || categoryName;
 
             document.getElementById('modal-preset-title').innerText = t('modalPresetTitle', { merchant: app.merchant });
             document.getElementById('modal-preset-group').innerText = displayGroup;
@@ -1692,7 +1780,8 @@
             if (document.getElementById('modal-category')) {
                 document.getElementById('modal-category').value = categoryName;
             }
-            document.getElementById('modal-amount').value = app.price;
+            // CRITICAL: Leave price EMPTY so user enters actual amount paid
+            document.getElementById('modal-amount').value = '';
             document.getElementById('modal-recurrence').value = app.defaultCycle || 'monthly';
 
             const today = getTodayString();
@@ -1705,6 +1794,7 @@
             }
 
             document.getElementById('preset-modal').classList.remove('hidden');
+            setTimeout(() => document.getElementById('modal-amount')?.focus(), 50);
         }
 
         function closePresetModal() {
@@ -1717,20 +1807,30 @@
 
         function submitPresetModal() {
             const merchant = document.getElementById('modal-merchant').value.trim();
-            const amount = parseFloat(document.getElementById('modal-amount').value);
+            const amountVal = document.getElementById('modal-amount').value.trim();
+            const amount = parseFloat(amountVal);
+            const category = document.getElementById('modal-category')?.value || (selectedPresetApp ? selectedPresetApp.category : 'Other');
             const recurrence = document.getElementById('modal-recurrence').value;
             const lastPaidDate = document.getElementById('modal-last-paid').value;
             let nextBillingDate = document.getElementById('modal-next-billing').value;
             const reminderDays = parseInt(document.getElementById('modal-reminder-days').value, 10);
             const email = (document.getElementById('modal-email')?.value || '').trim();
 
-            if (!merchant || isNaN(amount) || amount <= 0) {
-                alert(t('alertValidService'));
+            if (!merchant) {
+                alert(t('alertValidMerchant'));
+                document.getElementById('modal-merchant').focus();
+                return;
+            }
+
+            if (!amountVal || isNaN(amount) || amount <= 0) {
+                alert(t('alertValidPrice'));
+                document.getElementById('modal-amount').focus();
                 return;
             }
 
             if (!email || email.indexOf('@') === -1) {
                 alert(t('alertValidEmail'));
+                document.getElementById('modal-email').focus();
                 return;
             }
 
@@ -1743,7 +1843,7 @@
                 id: generateUniqueId(),
                 merchant,
                 amount,
-                category: selectedPresetApp ? selectedPresetApp.category : 'Subscription',
+                category,
                 recurrence,
                 lastPaidDate,
                 nextBillingDate,
@@ -1762,67 +1862,63 @@
             showToast(t('toastPresetAdded', { merchant, amount: amount.toLocaleString(), date: formatDateDisplay(nextBillingDate) }));
         }
 
-        // Visibility Synchronization for One-time vs Subscription Payments
+        // Visibility Synchronization for One-time vs Subscription Payments (Decoupled from Category)
         function syncScanFormVisibility() {
-            const catEl = document.getElementById('res-category');
             const recEl = document.getElementById('res-recurrence');
-            const cat = catEl ? catEl.value : 'Subscription';
             const rec = recEl ? recEl.value : '';
+            const isOneTime = (rec === 'one-time');
+            const isSub = (rec === 'monthly' || rec === 'yearly' || rec === 'weekly');
 
-            const isSubscription = (cat === 'Subscription');
-            const isOneTime = (rec === 'one-time') || (!isSubscription);
-
-            const cycleGrp = document.getElementById('res-cycle-group');
             const nextGrp = document.getElementById('res-next-billing-group');
             const reminderGrp = document.getElementById('res-reminder-group');
             const emailGrp = document.getElementById('res-email-group');
 
-            if (cycleGrp) cycleGrp.classList.toggle('hidden', !isSubscription);
-            if (nextGrp) nextGrp.classList.toggle('hidden', !isSubscription || isOneTime);
-            if (reminderGrp) reminderGrp.classList.toggle('hidden', !isSubscription || isOneTime);
-            if (emailGrp) emailGrp.classList.toggle('hidden', !isSubscription || isOneTime);
+            if (nextGrp) nextGrp.classList.toggle('hidden', isOneTime || !isSub);
+            if (reminderGrp) reminderGrp.classList.toggle('hidden', isOneTime || !isSub);
+            if (emailGrp) emailGrp.classList.toggle('hidden', isOneTime || !isSub);
         }
 
         function syncManualFormVisibility() {
-            const catEl = document.getElementById('manual-category');
             const recEl = document.getElementById('manual-recurrence');
-            const cat = catEl ? catEl.value : 'Subscription';
-            const rec = recEl ? recEl.value : '';
+            const rec = recEl ? recEl.value : 'monthly';
+            const isOneTime = (rec === 'one-time');
 
-            const isSubscription = (cat === 'Subscription');
-            const isOneTime = (rec === 'one-time') || (!isSubscription);
-
-            const cycleGrp = document.getElementById('manual-cycle-group');
             const nextGrp = document.getElementById('manual-next-billing-group');
             const reminderGrp = document.getElementById('manual-reminder-group');
             const emailGrp = document.getElementById('manual-email-group');
 
-            if (cycleGrp) cycleGrp.classList.toggle('hidden', !isSubscription);
-            if (nextGrp) nextGrp.classList.toggle('hidden', !isSubscription || isOneTime);
-            if (reminderGrp) reminderGrp.classList.toggle('hidden', !isSubscription || isOneTime);
-            if (emailGrp) emailGrp.classList.toggle('hidden', !isSubscription || isOneTime);
+            if (nextGrp) nextGrp.classList.toggle('hidden', isOneTime);
+            if (reminderGrp) reminderGrp.classList.toggle('hidden', isOneTime);
+            if (emailGrp) emailGrp.classList.toggle('hidden', isOneTime);
         }
 
         // Add Manual Input
         function addManualTransaction() {
             const merchant = (document.getElementById('manual-merchant')?.value || '').trim();
-            const amount = parseFloat(document.getElementById('manual-amount')?.value);
-            const category = document.getElementById('manual-category')?.value || 'Subscription';
+            const amountVal = document.getElementById('manual-amount')?.value;
+            const amount = parseFloat(amountVal);
+            const category = normalizeCategoryKey(document.getElementById('manual-category')?.value || 'Other', merchant);
             const recurrence = document.getElementById('manual-recurrence')?.value || 'monthly';
             const lastPaidDate = (document.getElementById('manual-last-paid')?.value || '').trim();
             let nextBillingDate = document.getElementById('manual-next-billing')?.value || '';
             const reminderDays = parseInt(document.getElementById('manual-reminder-days')?.value, 10) || 1;
             const email = (document.getElementById('manual-email')?.value || '').trim();
 
-            if (!merchant || isNaN(amount) || amount <= 0) {
-                alert(t('alertValidApp'));
+            if (!merchant) {
+                alert(t('alertValidMerchant'));
+                document.getElementById('manual-merchant')?.focus();
                 return;
             }
 
-            const isSubscription = (category === 'Subscription');
-            const isOneTime = (recurrence === 'one-time') || (!isSubscription);
+            if (!amountVal || isNaN(amount) || amount <= 0) {
+                alert(t('alertValidPrice'));
+                document.getElementById('manual-amount')?.focus();
+                return;
+            }
 
-            if (isSubscription && !isOneTime && (!email || email.indexOf('@') === -1)) {
+            const isOneTime = (recurrence === 'one-time');
+
+            if (!isOneTime && (!email || email.indexOf('@') === -1)) {
                 alert(t('alertValidEmail'));
                 document.getElementById('manual-email')?.focus();
                 return;
@@ -2015,10 +2111,13 @@
         ];
 
         const CATEGORY_KEYWORDS = [
-            { category: 'Food & Beverage', keywords: ['grabfood', 'lineman', 'foodpanda', 'robinhood', '7-eleven', '7-11', 'cafe', 'coffee', 'restaurant', 'อาหาร', 'เครื่องดื่ม', 'เบเกอรี่', 'กาแฟ', 'ข้าว', 'สตาร์บัคส์', 'starbucks', 'kfc', 'mcdonald'] },
-            { category: 'Transportation', keywords: ['grabcar', 'grab', 'bolt', 'bts', 'mrt', 'taxi', 'แท็กซี่', 'รถไฟฟ้า', 'เติมน้ำมัน', 'ptt', 'shell', 'bangchak', 'caltex'] },
-            { category: 'Shopping', keywords: ['shopee', 'lazada', 'tiktok shop', 'central', 'tops', 'big c', 'lotus', 'watson', 'boots', 'uniqlo', 'zara', 'ช้อปปิ้ง', 'เสื้อผ้า'] },
-            { category: 'Subscription', keywords: ['netflix', 'spotify', 'youtube', 'apple', 'google', 'icloud', 'disney', 'prime', 'canva', 'chatgpt', 'openai', 'claude', 'notion', 'รายเดือน', 'รายปี'] }
+            { category: 'Entertainment', keywords: ['netflix', 'disney', 'hotstar', 'viu', 'prime video', 'prime', 'hbo', 'iqiyi', 'wetv', 'bilibili', 'crunchyroll', 'major cineplex', 'sf cinema', 'ดูหนัง', 'ซีรีส์'] },
+            { category: 'Music', keywords: ['spotify', 'youtube music', 'apple music', 'amazon music', 'joox', 'tidal', 'deezer', 'soundcloud', 'เพลง'] },
+            { category: 'Software & Cloud Service', keywords: ['google', 'icloud', 'microsoft', 'office', 'adobe', 'canva', 'chatgpt', 'openai', 'claude', 'anthropic', 'github', 'notion', 'figma', 'midjourney', 'cursor', 'aws', 'azure', 'dropbox', 'zoom', 'slack', 'ซอฟต์แวร์'] },
+            { category: 'Gaming', keywords: ['steam', 'playstation', 'ps plus', 'psn', 'xbox', 'game pass', 'nintendo', 'switch online', 'garena', 'riot', 'valorant', 'roblox', 'epic games', 'discord nitro', 'discord', 'เกม'] },
+            { category: 'Education & Reading', keywords: ['coursera', 'udemy', 'edx', 'skillshare', 'duolingo', 'grammarly', 'kindle', 'scribd', 'meb', 'ookbee', 'medium', 'หนังสือ', 'คอร์สเรียน', 'การศึกษา'] },
+            { category: 'Health & Fitness', keywords: ['fitness first', 'virgin active', 'jetts', 'anytime fitness', 'we fitness', 'strava', 'nike run club', 'calm', 'headspace', 'myfitnesspal', 'fitness', 'gym', 'ฟิตเนส', 'สุขภาพ'] },
+            { category: 'Other', keywords: ['tinder', 'bumble', 'grab', 'lineman', 'shopee', 'lazada', '7-eleven', 'ค่าบริการ', 'บิล'] }
         ];
 
         function normalizeOCRText(raw) {
@@ -2132,7 +2231,7 @@
                     }
                 }
             }
-            return 'Subscription';
+            return 'Other';
         }
 
         // Amount Extraction with Penalties and Disqualifiers
@@ -2469,7 +2568,7 @@
                 amount: selectedAmount === null || amountConf < 0.65,
                 date: !transactionDate || dateConf < 0.70,
                 transactionDate: !transactionDate || dateConf < 0.70,
-                recurrence: selectedCategory === 'Subscription' ? !cycleCandidate : false
+                recurrence: false
             };
 
             const overallConfidence = (
@@ -2559,7 +2658,7 @@
                     transactionTime: parsed.transactionTime || null,
                     transactionDateTime: parsed.transactionDateTime || null,
                     transactionId: parsed.transactionId || null,
-                    category: parsed.category || 'Subscription',
+                    category: parsed.category || 'Other',
                     confidence: parsed.confidence || {},
                     overallConfidence: parsed.overallConfidence !== undefined ? parsed.overallConfidence : 0,
                     needsReview: parsed.needsReview || {}
@@ -2653,7 +2752,7 @@
                 // Fill form fields
                 document.getElementById('res-merchant').value = parsed.merchant || '';
                 document.getElementById('res-amount').value = (parsed.amount !== null && parsed.amount > 0) ? parsed.amount : '';
-                document.getElementById('res-category').value = parsed.category || 'Subscription';
+                document.getElementById('res-category').value = normalizeCategoryKey(parsed.category) || 'Other';
                 document.getElementById('res-recurrence').value = parsed.recurrence || '';
                 document.getElementById('res-last-paid').value = parsed.lastPaidDate || '';
 
@@ -2675,7 +2774,7 @@
                 // Clear fields and mark for review
                 document.getElementById('res-merchant').value = '';
                 document.getElementById('res-amount').value = '';
-                document.getElementById('res-category').value = "Subscription";
+                document.getElementById('res-category').value = "Other";
                 document.getElementById('res-recurrence').value = '';
                 document.getElementById('res-last-paid').value = '';
                 document.getElementById('res-next-billing').value = '';
@@ -2701,15 +2800,14 @@
         function confirmScanTransaction() {
             const merchant = (document.getElementById('res-merchant')?.value || '').trim();
             const amount = parseFloat(document.getElementById('res-amount')?.value) || 0;
-            const category = document.getElementById('res-category')?.value || 'Subscription';
+            const category = normalizeCategoryKey(document.getElementById('res-category')?.value) || 'Other';
             let recurrence = document.getElementById('res-recurrence')?.value || '';
             const lastPaidDate = (document.getElementById('res-last-paid')?.value || '').trim();
             let nextBillingDate = document.getElementById('res-next-billing')?.value || '';
             const reminderDays = parseInt(document.getElementById('res-reminder-days')?.value, 10) || 1;
             const email = (document.getElementById('res-email')?.value || '').trim();
 
-            const isSubscription = (category === 'Subscription');
-            const isOneTime = (recurrence === 'one-time') || (!isSubscription);
+            const isOneTime = (!recurrence || recurrence === 'one-time');
 
             if (!merchant) {
                 alert(t('alertInvalidMerchant'));
@@ -2718,7 +2816,7 @@
             }
 
             if (isNaN(amount) || amount <= 0) {
-                alert(t('alertInvalidAmount'));
+                alert(t('alertInvalidAmount') || t('alertValidPrice'));
                 document.getElementById('res-amount')?.focus();
                 return;
             }
@@ -2729,13 +2827,13 @@
                 return;
             }
 
-            if (isSubscription && !isOneTime && (!recurrence || recurrence === '')) {
+            if (!isOneTime && (!recurrence || recurrence === '')) {
                 alert(t('alertInvalidRecurrence'));
                 document.getElementById('res-recurrence')?.focus();
                 return;
             }
 
-            if (isSubscription && !isOneTime && (!email || email.indexOf('@') === -1)) {
+            if (!isOneTime && (!email || email.indexOf('@') === -1)) {
                 alert(t('alertValidEmail'));
                 document.getElementById('res-email')?.focus();
                 return;
@@ -2745,7 +2843,7 @@
                 nextBillingDate = addRecurrence(lastPaidDate, recurrence);
             }
 
-            const finalRecurrence = isOneTime ? 'one-time' : (recurrence || 'one-time');
+            const finalRecurrence = isOneTime ? 'one-time' : recurrence;
             const finalNextBilling = isOneTime ? '' : nextBillingDate;
             const finalEmail = isOneTime ? '' : email;
 
@@ -2893,7 +2991,7 @@
         // ==============================================================================
         function generateExpenseInsights(allTxs) {
             const insights = [];
-            const activeSubs = allTxs.filter(t => t.active !== false && t.category === 'Subscription');
+            const activeSubs = allTxs.filter(t => t.active !== false && t.recurrence && t.recurrence !== 'one-time');
             const ghostTxs = allTxs.filter(t => t.category === 'Ghost Expense' || t.isGhost);
             const today = new Date();
             today.setHours(0, 0, 0, 0);
@@ -2925,11 +3023,12 @@
             }
 
             // B. มีหลายบริการในหมวดเดียวกัน (Multiple Services in Same Category)
-            // 1) วิดีโอสตรีมมิ่ง
+            // 1) วิดีโอสตรีมมิ่ง (Entertainment)
             const videoKeywords = ['netflix', 'disney', 'hotstar', 'viu', 'prime', 'hbo', 'iqiyi', 'wetv', 'bilibili', 'crunchyroll', 'apple tv', 'youtube'];
             const userVideoSubs = activeSubs.filter(s => {
                 const name = (s.merchant || '').toLowerCase();
-                return videoKeywords.some(kw => name.includes(kw));
+                const isCat = s.category === 'Entertainment';
+                return isCat || videoKeywords.some(kw => name.includes(kw));
             });
             if (userVideoSubs.length >= 2) {
                 const names = userVideoSubs.map(s => s.merchant).slice(0, 3).join(', ');
@@ -2945,11 +3044,12 @@
                 });
             }
 
-            // 2) แอปฟังเพลงและพอดแคสต์
+            // 2) แอปฟังเพลงและพอดแคสต์ (Music)
             const musicKeywords = ['spotify', 'youtube music', 'apple music', 'amazon music', 'joox', 'tidal', 'deezer'];
             const userMusicSubs = activeSubs.filter(s => {
                 const name = (s.merchant || '').toLowerCase();
-                return musicKeywords.some(kw => name.includes(kw));
+                const isCat = s.category === 'Music';
+                return isCat || musicKeywords.some(kw => name.includes(kw));
             });
             if (userMusicSubs.length >= 2) {
                 const names = userMusicSubs.map(s => s.merchant).slice(0, 3).join(', ');
@@ -3097,24 +3197,14 @@
         }
 
         const ALL_EXPENSE_CATEGORIES = [
-            { key: 'Subscription', labelKey: 'catSubscription', color: '#059669' },
-            { key: 'Food & Beverage', labelKey: 'catFood', color: '#d97706' },
-            { key: 'Transportation', labelKey: 'catTransport', color: '#0284c7' },
-            { key: 'Shopping', labelKey: 'catShopping', color: '#9333ea' },
-            { key: 'Ghost Expense', labelKey: 'catGhost', color: '#e11d48' },
+            { key: 'Entertainment', labelKey: 'catEntertainment', color: '#f43f5e' },
+            { key: 'Software & Cloud Service', labelKey: 'catSoftware', color: '#0284c7' },
+            { key: 'Gaming', labelKey: 'catGaming', color: '#8b5cf6' },
+            { key: 'Education & Reading', labelKey: 'catEducation', color: '#f59e0b' },
+            { key: 'Health & Fitness', labelKey: 'catHealth', color: '#10b981' },
+            { key: 'Music', labelKey: 'catMusic', color: '#ec4899' },
             { key: 'Other', labelKey: 'catOther', color: '#64748b' }
         ];
-
-        function normalizeCategoryKey(raw) {
-            if (!raw) return 'Other';
-            const s = String(raw).trim().toLowerCase();
-            if (s.includes('sub') || s.includes('รายเดือน')) return 'Subscription';
-            if (s.includes('food') || s.includes('bev') || s.includes('อาหาร') || s.includes('เครื่องดื่ม')) return 'Food & Beverage';
-            if (s.includes('trans') || s.includes('เดิน') || s.includes('รถ')) return 'Transportation';
-            if (s.includes('shop') || s.includes('ช้อป') || s.includes('ซื้อของ')) return 'Shopping';
-            if (s.includes('ghost') || s.includes('จุกจิก')) return 'Ghost Expense';
-            return 'Other';
-        }
 
         // Dashboard Calculations & Re-rendering
         function updateDashboard() {
@@ -3125,11 +3215,12 @@
             let monthDueCount = 0;
 
             const categoryTotals = {
-                'Subscription': 0,
-                'Food & Beverage': 0,
-                'Transportation': 0,
-                'Shopping': 0,
-                'Ghost Expense': 0,
+                'Entertainment': 0,
+                'Software & Cloud Service': 0,
+                'Gaming': 0,
+                'Education & Reading': 0,
+                'Health & Fitness': 0,
+                'Music': 0,
                 'Other': 0
             };
 
@@ -3139,14 +3230,15 @@
             const subsList = [];
 
             transactions.forEach(tx => {
-                const normCat = normalizeCategoryKey(tx.category);
+                const normCat = normalizeCategoryKey(tx.category, tx.merchant);
                 categoryTotals[normCat] = (categoryTotals[normCat] || 0) + (Number(tx.amount) || 0);
 
-                if (normCat === 'Ghost Expense') {
-                    ghostTotal += tx.amount;
+                if (tx.isGhost) {
+                    ghostTotal += Number(tx.amount) || 0;
                 }
 
-                if (normCat === 'Subscription') {
+                const isSub = (tx.recurrence && tx.recurrence !== 'one-time');
+                if (isSub) {
                     subCount++;
                     totalMonthlySub += getMonthlyNormalizedAmount(tx);
 
@@ -3157,7 +3249,7 @@
                         const diffDays = Math.round((target - today) / (1000 * 60 * 60 * 24));
 
                         if (diffDays >= 0 && diffDays <= 30) {
-                            monthDueTotal += tx.amount;
+                            monthDueTotal += (Number(tx.amount) || 0);
                             monthDueCount++;
                         }
 
@@ -3370,11 +3462,12 @@
             };
 
             const catDisplayMap = {
-                'Subscription': t('catSubscription'),
-                'Food & Beverage': t('catFood'),
-                'Transportation': t('catTransport'),
-                'Shopping': t('catShopping'),
-                'Ghost Expense': t('catGhost'),
+                'Entertainment': t('catEntertainment'),
+                'Software & Cloud Service': t('catSoftware'),
+                'Gaming': t('catGaming'),
+                'Education & Reading': t('catEducation'),
+                'Health & Fitness': t('catHealth'),
+                'Music': t('catMusic'),
                 'Other': t('catOther')
             };
 
@@ -3382,13 +3475,14 @@
                 const tr = document.createElement('tr');
                 tr.className = 'hover:bg-slate-50 transition-colors';
 
-                const normCat = normalizeCategoryKey(tx.category);
+                const normCat = normalizeCategoryKey(tx.category, tx.merchant);
                 let catBadge = 'bg-slate-100 text-slate-600 border border-slate-200';
-                if (normCat === 'Subscription') catBadge = 'bg-emerald-50 text-emerald-700 border border-emerald-200';
-                if (normCat === 'Ghost Expense') catBadge = 'bg-rose-50 text-rose-700 border border-rose-200';
-                if (normCat === 'Food & Beverage') catBadge = 'bg-amber-50 text-amber-700 border border-amber-200';
-                if (normCat === 'Transportation') catBadge = 'bg-sky-50 text-sky-700 border border-sky-200';
-                if (normCat === 'Shopping') catBadge = 'bg-purple-50 text-purple-700 border border-purple-200';
+                if (normCat === 'Entertainment') catBadge = 'bg-rose-50 text-rose-700 border border-rose-200';
+                if (normCat === 'Software & Cloud Service') catBadge = 'bg-sky-50 text-sky-700 border border-sky-200';
+                if (normCat === 'Gaming') catBadge = 'bg-purple-50 text-purple-700 border border-purple-200';
+                if (normCat === 'Education & Reading') catBadge = 'bg-amber-50 text-amber-700 border border-amber-200';
+                if (normCat === 'Health & Fitness') catBadge = 'bg-emerald-50 text-emerald-700 border border-emerald-200';
+                if (normCat === 'Music') catBadge = 'bg-pink-50 text-pink-700 border border-pink-200';
                 if (normCat === 'Other') catBadge = 'bg-slate-100 text-slate-700 border border-slate-300';
 
                 const displayCat = catDisplayMap[normCat] || tx.category || 'Other';
